@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="en"><head>
+<!-- UFT·UAFT AGI SOTA Control Center — Author: Mateusz Faber-Suckert -->
+<meta charset="UTF-8">
+<meta name="author" content="Mateusz Faber-Suckert">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Γ436 · AGI SOTA CONTROL CENTER — UFT·UAFT·Sovran</title>
+<style>
+:root{--bg:#06090e;--bg2:#0d1117;--bg3:#161b22;--bd:#21262d;--tx:#e6edf3;--t2:#8b949e;--t3:#484f58;
+ --red:#f85149;--grn:#3fb950;--blu:#58a6ff;--pur:#bc8cff;--yel:#e3b341;--org:#ffa657;--cyn:#79c0ff;
+ --m:ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:var(--m);min-height:100vh;
+ background-image:radial-gradient(circle at 12% 8%,rgba(88,166,255,.06),transparent 42%),
+  radial-gradient(circle at 88% 22%,rgba(188,140,255,.06),transparent 42%),
+  radial-gradient(circle at 50% 100%,rgba(63,185,80,.05),transparent 50%);}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 16px 70px;}
+header{border-bottom:1px solid var(--bd);padding-bottom:14px;margin-bottom:18px;
+ display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+.brand{font-size:10px;letter-spacing:2px;color:var(--t2);}
+h1{font-size:1.55rem;font-weight:800;
+ background:linear-gradient(135deg,#fff,#79c0ff,#bc8cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav{display:flex;gap:6px;flex-wrap:wrap;}
+.nav a{font-size:10px;padding:4px 10px;border:1px solid var(--bd);border-radius:20px;color:var(--t2);text-decoration:none;}
+.nav a:hover{border-color:var(--blu);color:var(--blu);}
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:18px;}
+.stat{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;}
+.stat .l{font-size:9px;letter-spacing:1px;color:var(--t3);}
+.stat .v{font-size:1.25rem;font-weight:800;margin-top:2px;}
+.led{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 7px var(--grn);animation:pulse 1.6s infinite;}
+@keyframes pulse{50%{opacity:.35;}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:22px;}
+.mod{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:14px;text-decoration:none;color:var(--tx);
+ transition:.14s;display:block;}
+.mod:hover{transform:translateY(-2px);border-color:var(--c,#58a6ff);box-shadow:0 6px 22px rgba(0,0,0,.4);}
+.mod .h{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.mod .ic{font-size:1.1rem;}
+.mod .n{font-weight:700;font-size:.9rem;}
+.mod .d{font-size:.74rem;color:var(--t2);line-height:1.45;}
+.mod .tag{font-size:9px;color:var(--t3);margin-top:7px;display:inline-block;border:1px solid var(--bd);border-radius:4px;padding:1px 6px;}
+.sec{font-size:9px;letter-spacing:2px;color:var(--t3);margin:6px 0 10px;}
+/* terminal */
+.term{background:#05070b;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.term .bar{background:var(--bg3);border-bottom:1px solid var(--bd);padding:7px 12px;font-size:11px;color:var(--t2);
+ display:flex;align-items:center;gap:8px;}
+.term .bar .b{width:10px;height:10px;border-radius:50%;}
+.term .out{padding:12px 14px;height:340px;overflow-y:auto;font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+.term .inl{display:flex;align-items:center;border-top:1px solid var(--bd);padding:8px 12px;gap:8px;}
+.term .ps{color:var(--grn);font-weight:700;}
+.term input{flex:1;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--m);font-size:12.5px;}
+.term a{color:var(--cyn);}
+.c-grn{color:var(--grn);}.c-red{color:var(--red);}.c-yel{color:var(--yel);}.c-blu{color:var(--blu);}.c-pur{color:var(--pur);}.c-t2{color:var(--t2);}.c-org{color:var(--org);}
+.foot{font-size:10px;color:var(--t3);text-align:center;margin-top:26px;}
+</style></head>
+<body><div class="wrap">
+
+<header>
+  <div>
+    <div class="brand">Γ436-MINUS-666 · UFT·UAFT·SOVRAN</div>
+    <h1>AGI SOTA Control Center</h1>
+  </div>
+  <nav class="nav">
+    <a href="#modules">modules</a>
+    <a href="#terminal">terminal ▸</a>
+    <a href="Sovran_Qubit_AGI_Intro.html" target="_blank">qubit intro ↗</a>
+    <a href="https://github.com/BeastDCLXVI/Sovran-Euclid" target="_blank">repo ↗</a>
+  </nav>
+</header>
+
+<!-- STATUS -->
+<div class="status" id="status">
+  <div class="stat"><div class="l">SYSTEM</div><div class="v"><span class="led"></span> ONLINE</div></div>
+  <div class="stat"><div class="l">FLEET ARMED (6GB)</div><div class="v c-grn" id="s-agents">—</div></div>
+  <div class="stat"><div class="l">CODE-QUBITS</div><div class="v c-blu" id="s-qubits">—</div></div>
+  <div class="stat"><div class="l">ENTROPY Zhe ≤</div><div class="v c-yel">0.22</div></div>
+  <div class="stat"><div class="l">χ FLOOR</div><div class="v c-pur">0.002</div></div>
+  <div class="stat"><div class="l">WUBITS</div><div class="v c-org">140187</div></div>
+</div>
+
+<!-- MODULES -->
+<div class="sec" id="modules">◈ MODULES — click to launch</div>
+<div class="grid" id="grid"></div>
+
+<!-- TERMINAL -->
+<div class="sec" id="terminal">▸ SOVRAN TERMINAL — live qubit / fleet / field engine</div>
+<div class="term">
+  <div class="bar"><span class="b" style="background:#f85149"></span><span class="b" style="background:#e3b341"></span>
+    <span class="b" style="background:#3fb950"></span>&nbsp; sovran@Γ436 — type <b>help</b></div>
+  <div class="out" id="out"></div>
+  <div class="inl"><span class="ps">Γ436 ❯</span><input id="cmd" autocomplete="off" spellcheck="false" autofocus></div>
+</div>
+
+<div class="foot">UFT·UAFT·Sovran AGI SOTA Control Center · self-contained · © Mateusz Faber-Suckert · MIT</div>
+</div>
+
+<script>
+"use strict";
+// ── module registry (hyperlink hub) ──────────────────────────────────
+const MODULES=[
+ {f:"Sovran_Qubit_AGI_Intro.html",ic:"⚛",c:"#58a6ff",n:"Qubit + Super-AGI Intro",
+  d:"Runnable code-qubit, 6GB AGI fleet, and packed INT8 base weights filtering text & images.",t:"RUNNABLE"},
+ {f:"UFT_UAFT_Analog_ML_Stack.html",ic:"🧠",c:"#bc8cff",n:"UFT·UAFT Analog ML Stack",
+  d:"13 Julia libraries on a UFT/UAFT foundation — full Python ML/data replacement.",t:"13 PKGS"},
+ {f:"Analog_ML_Stack_UFTUAFT.html",ic:"▦",c:"#7ee787",n:"Analog ML Stack (UFTUAFT)",
+  d:"Canonical UFT·UAFT remake of the analog ML stack.",t:"MIRROR"},
+ {f:"OMNILANG_v6_UFT_UAFT.html",ic:"𝛀",c:"#e3b341",n:"OMNILANG v6 UFT·UAFT",
+  d:"Unified Field Theory language taxonomy.",t:"LANG"},
+ {f:"SOVRAN_UFT_UAFT.html",ic:"◆",c:"#f85149",n:"SOVRAN — Library Download",
+  d:"Complete Julia library bundle, UFT·UAFT branded.",t:"BUNDLE"},
+ {f:"Sovran_Library_UFT_UAFT.html",ic:"⬡",c:"#79c0ff",n:"SOVRAN Runtime",
+  d:"Sovereign Scientific Runtime, UFT·UAFT.",t:"RUNTIME"},
+];
+document.getElementById('grid').innerHTML=MODULES.map(m=>
+ `<a class="mod" style="--c:${m.c}" href="${m.f}" target="_blank">
+   <div class="h"><span class="ic">${m.ic}</span><span class="n" style="color:${m.c}">${m.n}</span></div>
+   <div class="d">${m.d}</div><span class="tag">${m.t}</span></a>`).join('');
+
+// ── UFT/UAFT field + qubit + fleet engine ────────────────────────────
+const CHI=0.002,ZHE=0.22,STIGMA=6.0,GB=1024**3;
+const Lambda=v=>1/(Math.abs(v)+1), Omega=v=>1/(1-Math.min(v,1-CHI));
+const torsion=v=>v/(1+STIGMA*Lambda(v));
+function cycleC(c,cp){const R=v=>v===0?CHI:1/v;
+ const o=Lambda(Omega(Math.sqrt(Math.abs(R(c)*R(cp))))); return o>ZHE?o:Math.max(o,CHI);}
+const H=[[Math.SQRT1_2,Math.SQRT1_2],[Math.SQRT1_2,-Math.SQRT1_2]];
+function zeroState(n){const a=Array.from({length:1<<n},()=>[0,0]);a[0]=[1,0];return a;}
+function apply1(p,U,q){const st=1<<q;for(let b=0;b<p.length;b++)if((b&st)===0){
+ const a=p[b],c=p[b|st];p[b]=[U[0][0]*a[0]+U[0][1]*c[0],U[0][0]*a[1]+U[0][1]*c[1]];
+ p[b|st]=[U[1][0]*a[0]+U[1][1]*c[0],U[1][0]*a[1]+U[1][1]*c[1]];}}
+function cnot(p,c,t){const cb=1<<c,tb=1<<t;for(let b=0;b<p.length;b++)
+ if((b&cb)&&!(b&tb)){const j=b|tb,tm=p[b];p[b]=p[j];p[j]=tm;}}
+const probs=p=>p.map(z=>z[0]*z[0]+z[1]*z[1]);
+function agentFP(params,wb,nq,qb,sc=512000){return params*wb+(1<<nq)*qb+sc+512;}
+function fleet(gb,nq){const fp=agentFP(1500000,1,nq,4);const cap=Math.floor(gb*GB/fp);
+ return {cap,fp,qubits:cap*nq,used:cap*fp/GB};}
+
+// status header
+(function(){const f=fleet(6,8);
+ document.getElementById('s-agents').textContent=f.cap.toLocaleString();
+ document.getElementById('s-qubits').textContent=f.qubits.toLocaleString();})();
+
+// ── terminal ─────────────────────────────────────────────────────────
+const out=document.getElementById('out'),inp=document.getElementById('cmd');
+function put(html){out.innerHTML+=html+"\n";out.scrollTop=out.scrollHeight;}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+const HELP=[
+ "<span class='c-t2'>commands:</span>",
+ "  <span class='c-grn'>help</span>                 this list",
+ "  <span class='c-grn'>status</span>               system + fleet status",
+ "  <span class='c-grn'>ls</span>                   list modules",
+ "  <span class='c-grn'>open</span> &lt;n|name&gt;        launch a module (hyperlink)",
+ "  <span class='c-grn'>qubit</span> [bell|h]        build &amp; sample a code-qubit",
+ "  <span class='c-grn'>fleet</span> [gb] [nq]       arm an AGI fleet in a budget",
+ "  <span class='c-grn'>cycle</span> [c] [cp]        run UFT closed-loop cycle_C",
+ "  <span class='c-grn'>field</span> &lt;num&gt;          Λ / Ω / torsion of a value",
+ "  <span class='c-grn'>clear</span>                clear screen",
+].join("\n");
+
+function run(line){
+ const a=line.trim().split(/\s+/),cmd=a[0].toLowerCase();
+ if(!cmd)return;
+ if(cmd==="help"){put(HELP);return;}
+ if(cmd==="clear"){out.innerHTML="";return;}
+ if(cmd==="ls"){put(MODULES.map((m,i)=>` <span class='c-yel'>${i+1}</span>  <a href="${m.f}" target="_blank">${m.f}</a>  <span class='c-t2'>${m.n}</span>`).join("\n"));return;}
+ if(cmd==="open"){const k=a[1]||"";let m=MODULES[parseInt(k)-1];
+   if(!m)m=MODULES.find(x=>x.f.toLowerCase().includes(k.toLowerCase())||x.n.toLowerCase().includes(k.toLowerCase()));
+   if(!m){put("<span class='c-red'>no such module — try `ls`</span>");return;}
+   put(`opening <a href="${m.f}" target="_blank">${m.n} ↗</a> …`);window.open(m.f,"_blank");return;}
+ if(cmd==="status"){const f=fleet(6,8);
+   put(`<span class='c-grn'>● ONLINE</span>  node Γ436-MINUS-666  mode DOUBLE_NEGATIVE_RESONANCE
+ fleet (6GB) .... <span class='c-grn'>${f.cap.toLocaleString()}</span> agents · <span class='c-blu'>${f.qubits.toLocaleString()}</span> code-qubits · ${f.used.toFixed(3)} GB used
+ stability ...... Zhe ≤ ${ZHE} · χ floor ${CHI} · Stigma ${STIGMA.toFixed(1)}
+ modules ........ ${MODULES.length} linked`);return;}
+ if(cmd==="qubit"){const mode=(a[1]||"bell").toLowerCase();
+   if(mode==="h"){const p=zeroState(1);apply1(p,H,0);
+     put(` H|0⟩  P(|0⟩,|1⟩) = ${probs(p).map(x=>x.toFixed(3)).join(', ')}`);return;}
+   const p=zeroState(2);apply1(p,H,0);cnot(p,0,1);const pr=probs(p);
+   let acc=0;const cum=pr.map(x=>acc+=x);const N=2000,cnt=[0,0,0,0];
+   for(let i=0;i<N;i++){const u=Math.random()*acc;cnt[cum.findIndex(v=>v>=u)]++;}
+   put(` Ξ Bell pair  amp² = ${pr.map(x=>x.toFixed(2)).join(', ')}
+ sampled ${N}× : <span class='c-blu'>|00⟩=${cnt[0]}</span>  |01⟩=${cnt[1]}  |10⟩=${cnt[2]}  <span class='c-blu'>|11⟩=${cnt[3]}</span>`);return;}
+ if(cmd==="fleet"){const gb=+a[1]||6,nq=+a[2]||8,f=fleet(gb,nq);
+   put(` budget <span class='c-yel'>${gb} GB</span> · ${nq} qubits/agent · ${(f.fp/1048576).toFixed(2)} MB each
+ armed : <span class='c-grn'>${f.cap.toLocaleString()}</span> Super-AGI · <span class='c-blu'>${f.qubits.toLocaleString()}</span> code-qubits · ${f.used.toFixed(3)} GB used`);return;}
+ if(cmd==="cycle"){const c=+a[1]||0.5,cp=+a[2]||0.618;
+   put(` cycle_C(${c}, ${cp}) = <span class='c-pur'>${cycleC(c,cp).toFixed(6)}</span>`);return;}
+ if(cmd==="field"){const v=+a[1];if(isNaN(v)){put("<span class='c-red'>usage: field &lt;number&gt;</span>");return;}
+   put(` Λ(${v})=${Lambda(v).toFixed(5)}  Ω(${v})=${Omega(v).toFixed(5)}  torsion(${v})=${torsion(v).toFixed(5)}`);return;}
+ put(`<span class='c-red'>unknown command:</span> ${esc(cmd)}  — type <span class='c-grn'>help</span>`);
+}
+const hist=[];let hi=0;
+inp.addEventListener('keydown',e=>{
+ if(e.key==="Enter"){const l=inp.value;put(`<span class='c-grn'>Γ436 ❯</span> ${esc(l)}`);
+   if(l.trim()){hist.push(l);hi=hist.length;}run(l);inp.value="";}
+ else if(e.key==="ArrowUp"){if(hi>0){hi--;inp.value=hist[hi]||"";}e.preventDefault();}
+ else if(e.key==="ArrowDown"){if(hi<hist.length){hi++;inp.value=hist[hi]||"";}e.preventDefault();}});
+document.querySelector('.term').addEventListener('click',()=>inp.focus());
+
+// boot banner
+put("<span class='c-blu'>UFT·UAFT·Sovran control plane</span> — Γ436-MINUS-666");
+put("<span class='c-t2'>booting field engine … OK · qubit core … OK · fleet … armed</span>");
+run("status");
+put("type <span class='c-grn'>help</span> for commands, <span class='c-grn'>ls</span> for modules.\n");
+window.__CC_READY__=true;
+</script>
+</body></html>

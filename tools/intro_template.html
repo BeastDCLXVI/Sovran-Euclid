@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="author" content="Mateusz Faber-Suckert">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOVRAN · UFT·UAFT Qubit + Super-AGI — Runnable Intro</title>
+<style>
+:root{--bg:#080c12;--bg2:#0d1117;--bg3:#161b22;--bd:#21262d;--tx:#e6edf3;--t2:#8b949e;--t3:#484f58;
+ --red:#f85149;--grn:#3fb950;--blu:#58a6ff;--pur:#bc8cff;--yel:#e3b341;--org:#ffa657;
+ --m:ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:var(--m);line-height:1.5;
+ background-image:radial-gradient(circle at 15% 10%,rgba(88,166,255,.05),transparent 45%),
+  radial-gradient(circle at 85% 30%,rgba(188,140,255,.05),transparent 45%);min-height:100vh;}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 80px;}
+header{border-bottom:1px solid var(--bd);padding-bottom:16px;margin-bottom:22px;}
+.brand{font-size:10px;letter-spacing:2px;color:var(--t2);}
+h1{font-size:1.7rem;font-weight:800;margin:6px 0;
+ background:linear-gradient(135deg,#fff,#8b949e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sub{color:var(--t2);font-size:.85rem;max-width:720px;}
+.auth{font-size:10px;color:var(--t3);margin-top:8px;}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:16px 18px;margin:14px 0;}
+.card h2{font-size:.95rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.card .desc{font-size:.78rem;color:var(--t2);margin-bottom:12px;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+button{font-family:var(--m);font-size:12px;padding:7px 14px;border-radius:6px;border:1px solid var(--bd);
+ background:var(--bg3);color:var(--tx);cursor:pointer;transition:.12s;}
+button:hover{border-color:var(--blu);color:var(--blu);}
+button.primary{background:linear-gradient(135deg,#1f6feb,#388bfd);border-color:transparent;color:#fff;}
+textarea,input[type=range]{width:100%;font-family:var(--m);}
+textarea{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:10px;font-size:13px;min-height:90px;resize:vertical;}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.col{flex:1;min-width:240px;}
+.kv{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px dashed rgba(33,38,45,.6);}
+.kv span:first-child{color:var(--t2);}
+.big{font-size:1.5rem;font-weight:800;}
+.pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid;display:inline-block;}
+.verdict{font-size:1.1rem;font-weight:800;letter-spacing:1px;}
+.mono{font-size:11px;color:var(--t2);white-space:pre-wrap;word-break:break-word;}
+.bar{height:8px;background:var(--bg3);border-radius:5px;overflow:hidden;margin:3px 0;}
+.bar>div{height:100%;background:linear-gradient(90deg,#388bfd,#bc8cff);}
+canvas{border:1px solid var(--bd);border-radius:6px;background:#000;image-rendering:pixelated;}
+.tag{font-size:9px;color:var(--t3);letter-spacing:1px;}
+.drop{border:1px dashed var(--bd);border-radius:8px;padding:18px;text-align:center;color:var(--t2);font-size:12px;cursor:pointer;}
+.drop:hover{border-color:var(--pur);color:var(--pur);}
+a{color:var(--blu);}
+.contrib{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.chip{font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--bd);}
+.foot{font-size:10px;color:var(--t3);text-align:center;margin-top:30px;}
+</style></head>
+<body><div class="wrap">
+
+<header>
+  <div class="brand">Γ436 · UFT·UAFT·SOVRAN · RUNNABLE INTRO</div>
+  <h1>Code-Qubit + Analog Super-AGI</h1>
+  <p class="sub">A self-contained, offline demo. A pure-JS Sovran qubit, a memory-budgeted
+  Super-AGI fleet, and <b>packed INT8 base weights</b> that filter <b>text</b> and <b>images</b>
+  right in your browser — no servers, no APIs. Built on the UFT (Unified Field Theory) +
+  UAFT (Unified Anti-Field Theory) algebra.</p>
+  <div class="auth">Author: Mateusz Faber-Suckert · MIT · API-free</div>
+</header>
+
+<!-- QUBIT -->
+<div class="card">
+  <h2><span class="dot" style="background:var(--blu)"></span>1 · Sovran code-qubit</h2>
+  <div class="desc">A real statevector qubit. Build an entangled Bell pair with the Ξ unity-collision
+   gate (H + CNOT) and sample it — outcomes are genuinely random, ~50/50 |00⟩/|11⟩.</div>
+  <div class="row">
+    <button class="primary" onclick="runQubit()">⚛ Build Bell pair &amp; sample 2000×</button>
+    <button onclick="runSingle()">H|0⟩ Bloch vector</button>
+  </div>
+  <div id="qout" class="mono" style="margin-top:10px;"></div>
+</div>
+
+<!-- FLEET -->
+<div class="card">
+  <h2><span class="dot" style="background:var(--grn)"></span>2 · Super-AGI fleet within a budget</h2>
+  <div class="desc">Each agent = an INT8 cognition core + a Sovran qubit core. Drag the budget;
+   the fleet packs as many agents as fit. The default 6 GB arms thousands.</div>
+  <div class="row">
+    <div class="col">
+      <div class="kv"><span>Memory budget</span><span id="budgetLbl">6.0 GB</span></div>
+      <input type="range" id="budget" min="1" max="64" step="1" value="6" oninput="runFleet()">
+      <div class="kv"><span>Qubits / agent</span><span id="nqLbl">8</span></div>
+      <input type="range" id="nq" min="4" max="16" step="1" value="8" oninput="runFleet()">
+    </div>
+    <div class="col">
+      <div class="kv"><span>Per-agent footprint</span><span id="fp">—</span></div>
+      <div class="kv"><span class="big" style="color:var(--grn)">Agents armed</span><span class="big" id="agents" style="color:var(--grn)">—</span></div>
+      <div class="kv"><span>Total code-qubits</span><span id="totalq">—</span></div>
+      <div class="kv"><span>Fleet uses</span><span id="used">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEXT FILTER -->
+<div class="card">
+  <h2><span class="dot" style="background:var(--yel)"></span>3 · Text filter — packed base weights</h2>
+  <div class="desc">A lexicon linear classifier (INT8 weights packed into this file) scores text, then
+   the UFT field (Λ compactification) stabilises the confidence. Verdict: <b>ALLOW</b> or <b>FILTER</b>.</div>
+  <textarea id="txt">Congratulations! You are a WINNER — click here for a FREE cash prize, limited offer, act now!</textarea>
+  <div class="row" style="margin-top:10px;">
+    <button class="primary" onclick="runText()">▶ Filter text</button>
+    <button onclick="document.getElementById('txt').value='Hi team, please find the project report and data for today\'s meeting attached. Thanks!';runText()">load clean sample</button>
+  </div>
+  <div id="txtout" style="margin-top:12px;"></div>
+</div>
+
+<!-- IMAGE FILTER -->
+<div class="card">
+  <h2><span class="dot" style="background:var(--pur)"></span>4 · Image filter — packed base weights</h2>
+  <div class="desc">Extracts field features (luminance, contrast, edge energy, saturation, colourfulness…)
+   and runs the packed INT8 image weights to classify quality: PASS / TOO DARK / TOO BLURRY /
+   OVER-EXPOSED / OVER-SATURATED.</div>
+  <div class="row">
+    <div class="col">
+      <div class="drop" id="drop" onclick="document.getElementById('file').click()">
+        Click or drop an image here<br><span class="tag">processed locally — never uploaded</span></div>
+      <input type="file" id="file" accept="image/*" style="display:none">
+      <div class="row" style="margin-top:8px;">
+        <button onclick="makeSample('dark')">synth: dark</button>
+        <button onclick="makeSample('bright')">synth: bright</button>
+        <button onclick="makeSample('blur')">synth: flat/blurry</button>
+        <button onclick="makeSample('sat')">synth: saturated</button>
+      </div>
+    </div>
+    <div class="col" style="text-align:center;">
+      <canvas id="cv" width="96" height="96" style="width:96px;height:96px;"></canvas>
+    </div>
+  </div>
+  <div id="imgout" style="margin-top:12px;"></div>
+</div>
+
+<div class="foot">UFT·UAFT·Sovran — packed base weights embedded · generated by tools/pack_base_weights.py · © Mateusz Faber-Suckert</div>
+</div>
+
+<script>
+"use strict";
+// ════════════════════ PACKED BASE WEIGHTS (INT8) ════════════════════
+const BASE_WEIGHTS = /*__BASE_WEIGHTS__*/ null;
+
+function b64ToInt8(b64){
+  const bin = atob(b64); const a = new Int8Array(bin.length);
+  for (let i=0;i<bin.length;i++){ a[i] = (bin.charCodeAt(i)<<24)>>24; }
+  return a;
+}
+// dequantise once at load
+const TXTW = (()=>{ const q=b64ToInt8(BASE_WEIGHTS.text.qweights), s=BASE_WEIGHTS.text.scale;
+  return Float32Array.from(q, v=>v*s); })();
+const IMGW = (()=>{ const q=b64ToInt8(BASE_WEIGHTS.image.qweights), s=BASE_WEIGHTS.image.scale;
+  return Float32Array.from(q, v=>v*s); })();
+
+// ════════════════════ UFT / UAFT FIELD ALGEBRA ══════════════════════
+const CHI=0.002, ZHE=0.22, STIGMA=6.0;
+const Lambda=v=>1/(Math.abs(v)+1);
+const Omega =v=>1/(1-Math.min(v,1-CHI));
+const torsion=v=>v/(1+STIGMA*Lambda(v));
+const sigmoid=x=>1/(1+Math.exp(-x));
+function cycleC(c,cp){const R=v=>v===0?CHI:1/v;
+  const o=Lambda(Omega(Math.sqrt(Math.abs(R(c)*R(cp))))); return o>ZHE?o:Math.max(o,CHI);}
+
+// ════════════════════ 1 · QUBIT (statevector) ═══════════════════════
+const H=[[Math.SQRT1_2,Math.SQRT1_2],[Math.SQRT1_2,-Math.SQRT1_2]];
+function zeroState(n){const a=new Array(1<<n).fill(0).map(()=>[0,0]);a[0]=[1,0];return a;}
+function apply1(psi,U,q){const st=1<<q;
+  for(let b=0;b<psi.length;b++){ if((b&st)===0){const i0=b,i1=b|st;
+    const a=psi[i0],c=psi[i1];
+    psi[i0]=[U[0][0]*a[0]+U[0][1]*c[0],U[0][0]*a[1]+U[0][1]*c[1]];
+    psi[i1]=[U[1][0]*a[0]+U[1][1]*c[0],U[1][0]*a[1]+U[1][1]*c[1]];}}}
+function cnot(psi,c,t){const cb=1<<c,tb=1<<t;
+  for(let b=0;b<psi.length;b++){ if((b&cb)&&!(b&tb)){const j=b|tb;const tmp=psi[b];psi[b]=psi[j];psi[j]=tmp;}}}
+const probs=psi=>psi.map(z=>z[0]*z[0]+z[1]*z[1]);
+function runSingle(){const p=zeroState(1);apply1(p,H,0);
+  const a=p[0],b=p[1];const bx=2*(a[0]*b[0]+a[1]*b[1]),by=2*(a[0]*b[1]-a[1]*b[0]),bz=a[0]*a[0]+a[1]*a[1]-(b[0]*b[0]+b[1]*b[1]);
+  document.getElementById('qout').textContent=
+    `H|0⟩ → Bloch (x,y,z) = (${bx.toFixed(3)}, ${by.toFixed(3)}, ${bz.toFixed(3)})\nP(|0⟩,|1⟩) = ${probs(p).map(x=>x.toFixed(3)).join(', ')}`;}
+function runQubit(){const p=zeroState(2);apply1(p,H,0);cnot(p,0,1); // Ξ entangle
+  const pr=probs(p),c=[0,0,0,0];let acc=0;const cum=pr.map(x=>acc+=x);
+  const N=2000;const cnt={};for(let i=0;i<N;i++){const u=Math.random()*acc;let k=cum.findIndex(v=>v>=u);cnt[k]=(cnt[k]||0)+1;}
+  const lab=['00','01','10','11'];
+  document.getElementById('qout').textContent=
+    `Ξ Bell pair amplitudes²: ${pr.map(x=>x.toFixed(2)).join(', ')}\n`+
+    `sampled ${N}×:  ${lab.map((l,i)=>`|${l}⟩=${cnt[i]||0}`).join('   ')}`;}
+
+// ════════════════════ 2 · FLEET CAPACITY ════════════════════════════
+const GB=1024**3;
+function agentFootprint(params,wbytes,nq,qbytes,scratch=512000){return params*wbytes+(1<<nq)*qbytes+scratch+512;}
+function runFleet(){
+  const gb=+document.getElementById('budget').value, nq=+document.getElementById('nq').value;
+  document.getElementById('budgetLbl').textContent=gb.toFixed(1)+' GB';
+  document.getElementById('nqLbl').textContent=nq;
+  const params=BASE_WEIGHTS.meta.params, fp=agentFootprint(params,1,nq,4); // INT8 weights, Float16 qubits
+  const cap=Math.floor(gb*GB/fp);
+  document.getElementById('fp').textContent=(fp/1048576).toFixed(2)+' MB';
+  document.getElementById('agents').textContent=cap.toLocaleString();
+  document.getElementById('totalq').textContent=(cap*nq).toLocaleString()+' qubits';
+  document.getElementById('used').textContent=(cap*fp/GB).toFixed(3)+' / '+gb.toFixed(1)+' GB';
+}
+
+// ════════════════════ 3 · TEXT FILTER ═══════════════════════════════
+function runText(){
+  const vocab=BASE_WEIGHTS.text.vocab, bias=BASE_WEIGHTS.text.bias;
+  const toks=(document.getElementById('txt').value.toLowerCase().match(/[a-z']+/g))||[];
+  const counts={}; toks.forEach(t=>counts[t]=(counts[t]||0)+1);
+  const total=Math.max(toks.length,1);
+  let score=bias; const contrib=[];
+  vocab.forEach((w,i)=>{ if(counts[w]){ const tf=counts[w]/total; const c=TXTW[i]*tf;
+    score+=c; contrib.push([w,c]); }});
+  const prob=sigmoid(score);                      // raw classifier confidence
+  const field=torsion(Lambda(Math.abs(score)));   // UAFT-stabilised margin
+  const filter=prob>=0.5;
+  contrib.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+  const col=filter?'var(--red)':'var(--grn)';
+  document.getElementById('txtout').innerHTML=
+    `<div class="row" style="align-items:baseline;gap:20px;">
+       <span class="verdict" style="color:${col}">${filter?'⛔ FILTER':'✅ ALLOW'}</span>
+       <span class="tag">P(filter)=${prob.toFixed(3)} · score=${score.toFixed(2)} · field margin=${field.toFixed(3)}</span>
+     </div>
+     <div class="bar"><div style="width:${(prob*100).toFixed(0)}%;background:${col}"></div></div>
+     <div class="tag" style="margin-top:8px;">top contributing tokens (INT8 base weights):</div>
+     <div class="contrib">${contrib.slice(0,10).map(([w,c])=>
+        `<span class="chip" style="border-color:${c>0?'var(--red)':'var(--grn)'};color:${c>0?'var(--red)':'var(--grn)'}">${w} ${c>0?'+':''}${c.toFixed(2)}</span>`).join('')||'<span class="tag">no lexicon tokens matched</span>'}</div>`;
+}
+
+// ════════════════════ 4 · IMAGE FILTER ══════════════════════════════
+function imageFeatures(){
+  const c=document.getElementById('cv'),g=c.getContext('2d');
+  const W=96,H_=96,d=g.getImageData(0,0,W,H_).data;   // read whatever is on the canvas
+  const lum=new Float32Array(W*H_);
+  let sL=0,sL2=0,sR=0,sG=0,sB=0,sSat=0,dark=0,bright=0;
+  const rg=[],yb=[];
+  for(let i=0,p=0;i<d.length;i+=4,p++){
+    const r=d[i]/255,gg=d[i+1]/255,b=d[i+2]/255;
+    const l=0.299*r+0.587*gg+0.114*b; lum[p]=l;
+    sL+=l;sL2+=l*l;sR+=r;sG+=gg;sB+=b;
+    const mx=Math.max(r,gg,b),mn=Math.min(r,gg,b);
+    sSat+=mx>0?(mx-mn)/mx:0; if(l<0.2)dark++; if(l>0.8)bright++;
+    rg.push(r-gg); yb.push(0.5*(r+gg)-b);
+  }
+  const N=W*H_, mean=sL/N, varr=Math.max(sL2/N-mean*mean,0);
+  // edge energy (Sobel mean) on lum grid
+  let edge=0,ec=0;
+  for(let y=1;y<H_-1;y++)for(let x=1;x<W-1;x++){const o=y*W+x;
+    const gx=lum[o-1]-lum[o+1], gy=lum[o-W]-lum[o+W];
+    edge+=Math.hypot(gx,gy); ec++;}
+  edge=edge/ec;
+  const stat=arr=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;
+    const v=arr.reduce((a,b)=>a+(b-m)*(b-m),0)/arr.length; return [m,Math.sqrt(v)];};
+  const [mRG,sdRG]=stat(rg),[mYB,sdYB]=stat(yb);
+  const colorful=Math.sqrt(sdRG*sdRG+sdYB*sdYB)+0.3*Math.sqrt(mRG*mRG+mYB*mYB);
+  // feature vector (normalised ~0..1), order MUST match packer
+  return [ mean, Math.min(Math.sqrt(varr)*2,1), Math.min(edge*3,1), sSat/N,
+           Math.min(colorful*1.5,1), dark/N, bright/N, sR/N, sG/N, sB/N ];
+}
+function classifyImage(){
+  const f=imageFeatures();
+  const F=BASE_WEIGHTS.image.features.length, C=BASE_WEIGHTS.image.classes.length;
+  const bias=BASE_WEIGHTS.image.bias, logits=new Array(C).fill(0);
+  for(let c=0;c<C;c++){let s=bias[c];for(let k=0;k<F;k++)s+=IMGW[c*F+k]*f[k];logits[c]=s;}
+  const mx=Math.max(...logits), ex=logits.map(z=>Math.exp(z-mx)), sum=ex.reduce((a,b)=>a+b,0);
+  const sm=ex.map(z=>z/sum); const best=sm.indexOf(Math.max(...sm));
+  const cls=BASE_WEIGHTS.image.classes[best], pass=best===0;
+  const col=pass?'var(--grn)':'var(--org)';
+  document.getElementById('imgout').innerHTML=
+    `<div class="row" style="align-items:baseline;gap:20px;">
+       <span class="verdict" style="color:${col}">${pass?'✅ PASS':'⚠ '+cls}</span>
+       <span class="tag">confidence ${(sm[best]*100).toFixed(1)}%</span></div>`+
+    BASE_WEIGHTS.image.classes.map((c,i)=>
+      `<div class="kv"><span>${c}</span><span>${(sm[i]*100).toFixed(1)}%</span></div>
+       <div class="bar"><div style="width:${(sm[i]*100).toFixed(0)}%"></div></div>`).join('')+
+    `<div class="tag" style="margin-top:8px;">features: ${BASE_WEIGHTS.image.features.map((n,i)=>n+'='+f[i].toFixed(2)).join(' · ')}</div>`;
+}
+// image input
+function loadImg(file){const img=new Image();
+  img.onload=()=>{const g=document.getElementById('cv').getContext('2d');
+    g.clearRect(0,0,96,96); g.drawImage(img,0,0,96,96); classifyImage();};
+  img.onerror=()=>{document.getElementById('imgout').textContent='could not read image';};
+  const fr=new FileReader();fr.onload=e=>img.src=e.target.result;fr.readAsDataURL(file);}
+document.getElementById('file').addEventListener('change',e=>{if(e.target.files[0])loadImg(e.target.files[0]);});
+const drop=document.getElementById('drop');
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();}));
+drop.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files[0])loadImg(e.dataTransfer.files[0]);});
+// synthetic test images (so the demo runs with zero assets)
+function makeSample(kind){const c=document.getElementById('cv'),g=c.getContext('2d');
+  if(kind==='dark'){g.fillStyle='#070708';g.fillRect(0,0,96,96);g.fillStyle='#222';g.fillRect(30,30,20,20);}
+  else if(kind==='bright'){g.fillStyle='#f8f8f8';g.fillRect(0,0,96,96);}
+  else if(kind==='blur'){g.fillStyle='#6a7280';g.fillRect(0,0,96,96);}
+  else if(kind==='sat'){for(let i=0;i<96;i++){g.fillStyle=`hsl(${i*4%360},100%,50%)`;g.fillRect(i,0,1,96);}}
+  classifyImage();}
+
+// ════════════════════ INIT ══════════════════════════════════════════
+runSingle(); runFleet(); runText();
+makeSample('blur');
+window.__SOVRAN_READY__=true;
+</script>
+</body></html>

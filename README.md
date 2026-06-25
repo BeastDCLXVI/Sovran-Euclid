@@ -80,6 +80,31 @@ Run the live Julia demo:
 julia demo/qubit_agi_demo.jl
 ```
 
+## Runnable web apps (`libraries/`)
+
+Two self-contained, **offline** pages (no servers, no APIs, no external assets):
+
+- **`Sovran_Control_Center.html`** — the **AGI SOTA Control Center**: a live
+  status board, hyperlinked launch cards for every module, and an in-browser
+  **terminal** driving the real field engine. Commands: `help`, `status`,
+  `ls`, `open <n>`, `qubit [bell|h]`, `fleet [gb] [nq]`, `cycle [c] [cp]`,
+  `field <num>`, `clear`.
+- **`Sovran_Qubit_AGI_Intro.html`** — runnable intro with **packed INT8 base
+  weights** that filter **text** (lexicon classifier) and **images** (quality
+  classifier: PASS / TOO DARK / TOO BLURRY / OVER-EXPOSED / OVER-SATURATED),
+  plus a live qubit and the 6 GB fleet calculator. Weights are quantised,
+  base64-packed, and embedded directly in the file.
+
+Just open either file in a browser. Both were verified end-to-end in headless
+Chromium (qubit sampling, fleet math, text + image filtering, terminal
+commands) with zero JS errors.
+
+Rebuild the intro after editing weights:
+
+```bash
+python3 tools/pack_base_weights.py   # packs tools/intro_template.html → libraries/
+```
+
 ## Rebuild (expandable)
 
 Edit a foundation `.jl` file or add a symbol to `spec/symbols/*.json`, then:
