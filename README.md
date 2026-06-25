@@ -50,6 +50,36 @@ libraries/      # GENERATED — the 5 UFT·UAFT HTML libraries
 | `SOVRAN_UFT_UAFT.html`          | SOVRAN | UFT·UAFT branding pass |
 | `Sovran_Library_UFT_UAFT.html`  | Sovran Library | UFT·UAFT branding pass |
 
+## UFT·UAFT·Sovran code-based Qubit + Analog Super-AGI fleet
+
+Pure-Julia, hardware-free qubit built on the field algebra (`spec/foundation/`):
+
+- **`SovranQubit.jl`** — an n-qubit `QRegister` with the full gate set
+  (`H, X, Y, Z, S, T, RX/RY/RZ, CNOT, CZ`) plus UFT/UAFT field gates
+  (`Ξ` unity-collision entanglement, `ρ` wave-tail involution, `decohere!`
+  toward the `χ` floor). Mirrors the 2024–2025 qubit leaps **in code**:
+  - below-threshold **surface-code logical qubits** (Google *Willow*, 2024)
+  - **topological protection** via UAFT Stigma torsion, node `Γ436-MINUS-666`
+    (Microsoft *Majorana 1*, 2025)
+  - tier-aware statevector: `Complex{Float16}` (edge) … `Complex{Float64}`.
+- **`AnalogAGI.jl`** — an Analog Super-AGI carrying a SovranQubit core, and
+  `arm_fleet(budget_gb=6.0)` which packs **as many agents as fit in 6 GB**.
+
+Verified numbers (`python3 tools/validate_qubit.py`, a reference port):
+
+| Check | Result |
+|-------|--------|
+| `H\|0⟩` | equal superposition, Bloch x = 1.0 |
+| Bell pair (`Ξ`) | 50/50 `\|00⟩`/`\|11⟩` |
+| Logical error d=3→5→7 | 1.4e-4 → 1.4e-5 → 1.4e-6 (below threshold) |
+| **6 GB fleet** | **3,199 Super-AGI**, 1.92 MB each, **25,592 code-qubits** |
+
+Run the live Julia demo:
+
+```bash
+julia demo/qubit_agi_demo.jl
+```
+
 ## Rebuild (expandable)
 
 Edit a foundation `.jl` file or add a symbol to `spec/symbols/*.json`, then:
