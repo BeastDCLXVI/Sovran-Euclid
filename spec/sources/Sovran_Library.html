@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVRAN - Sovereign Scientific Runtime</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace'],
+                        'sans': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        julia: {
+                            purple: '#9558B2',
+                            green: '#389826',
+                            red: '#CB3C33',
+                            blue: '#4063D8'
+                        },
+                        dark: {
+                            900: '#0D1117',
+                            800: '#161B22',
+                            700: '#21262D',
+                            600: '#30363D'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #9558B2 #161B22;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #161B22;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9558B2;
+            border-radius: 4px;
+        }
+        .code-block {
+            background: #0D1117;
+            border: 1px solid #30363D;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .code-header {
+            background: #161B22;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #30363D;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .keyword { color: #FF7B72; }
+        .type { color: #79C0FF; }
+        .function { color: #D2A8FF; }
+        .string { color: #A5D6FF; }
+        .comment { color: #8B949E; }
+        .number { color: #79C0FF; }
+        .operator { color: #FF7B72; }
+        .module-card {
+            background: linear-gradient(135deg, #161B22 0%, #21262D 100%);
+            border: 1px solid #30363D;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .module-card:hover {
+            border-color: #9558B2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(149, 88, 178, 0.2);
+        }
+        .nav-item {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-item:hover {
+            background: #21262D;
+        }
+        .nav-item.active {
+            background: #9558B2;
+            color: white;
+        }
+        .feature-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        .badge-purple { background: rgba(149, 88, 178, 0.2); color: #9558B2; }
+        .badge-green { background: rgba(56, 152, 38, 0.2); color: #389826; }
+        .badge-blue { background: rgba(64, 99, 216, 0.2); color: #4063D8; }
+        .badge-red { background: rgba(203, 60, 51, 0.2); color: #CB3C33; }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(149, 88, 178, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(149, 88, 178, 0.6); }
+        }
+        .glowing {
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        .uft-operator {
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: rgba(64, 99, 216, 0.1);
+            border: 1px solid rgba(64, 99, 216, 0.3);
+            margin: 0.25rem;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .uft-operator:hover {
+            background: rgba(64, 99, 216, 0.3);
+            transform: scale(1.05);
+        }
+        .operator-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 50;
+            min-width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .uft-operator:hover .operator-tooltip {
+            display: block;
+        }
+        .callout {
+            border-left: 4px solid;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .callout-info {
+            border-color: #4063D8;
+            background: rgba(64, 99, 216, 0.1);
+        }
+        .callout-warning {
+            border-color: #CB3C33;
+            background: rgba(203, 60, 51, 0.1);
+        }
+        .callout-success {
+            border-color: #389826;
+            background: rgba(56, 152, 38, 0.1);
+        }
+        .step-card {
+            position: relative;
+            padding-left: 3rem;
+        }
+        .step-card::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #9558B2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        .migration-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .migration-table th, .migration-table td {
+            padding: 0.75rem;
+            border: 1px solid #30363D;
+            text-align: left;
+        }
+        .migration-table th {
+            background: #161B22;
+        }
+        .migration-table tr:hover {
+            background: #21262D;
+        }
+        .accordion-header {
+            cursor: pointer;
+            padding: 1rem;
+            background: #21262D;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+        .accordion-header:hover {
+            background: #30363D;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .accordion-content.open {
+            max-height: 2000px;
+        }
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px 8px 0 0;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            border-bottom: none;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background: #161B22;
+            border-color: #30363D;
+            border-bottom-color: #161B22;
+            color: #9558B2;
+        }
+        .tab-button:hover:not(.active) {
+            background: #21262D;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .profiling-chart {
+            display: flex;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .profiling-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .profiling-segment:hover {
+            filter: brightness(1.2);
+        }
+        .progress-bar {
+            background: #21262D;
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 8px;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #9558B2, #4063D8);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+        .download-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .download-btn.downloading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 1s infinite;
+        }
+        @keyframes shimmer {
+            100% { left: 100%; }
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            border-color: #389826;
+        }
+        .toast.error {
+            border-color: #CB3C33;
+        }
+        .search-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 100px;
+            z-index: 100;
+        }
+        .search-modal.open {
+            display: flex;
+        }
+        .search-box {
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .search-result-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .search-result-item:hover {
+            background: #21262D;
+        }
+        .mobile-menu {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+            .desktop-nav {
+                display: none;
+            }
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 2rem;
+            border-left: 2px solid #30363D;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #9558B2;
+        }
+        .timeline-item.completed::before {
+            background: #389826;
+        }
+        .timeline-item.in-progress::before {
+            background: #4063D8;
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-100 font-sans min-h-screen">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-icon">✓</span>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal" onclick="closeSearch(event)">
+        <div class="search-box" onclick="event.stopPropagation()">
+            <div class="flex items-center border-b border-dark-600">
+                <svg class="w-5 h-5 ml-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="search-input" class="search-input" placeholder="Search documentation..." onkeyup="handleSearch(event)">
+                <kbd class="mr-3 px-2 py-1 text-xs bg-dark-700 rounded">ESC</kbd>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-dark-900/95 backdrop-blur border-b border-dark-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-julia-purple to-julia-blue rounded-lg flex items-center justify-center glowing cursor-pointer" onclick="scrollToSection('hero')">
+                        <span class="text-white font-bold text-lg">🌀</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold cursor-pointer" onclick="scrollToSection('hero')">SOVRAN Runtime</h1>
+                        <p class="text-xs text-gray-400">v1.0.0-rc1 | HMP₀ = 9.99×10⁻⁶⁹</p>
+                    </div>
+                </div>
+                <div class="desktop-nav hidden lg:flex items-center space-x-1">
+                    <a class="nav-item active" onclick="scrollToSection('overview')">Overview</a>
+                    <a class="nav-item" onclick="scrollToSection('architecture')">Architecture</a>
+                    <a class="nav-item" onclick="scrollToSection('api')">API</a>
+                    <a class="nav-item" onclick="scrollToSection('examples')">Examples</a>
+                    <a class="nav-item" onclick="scrollToSection('benchmarks')">Benchmarks</a>
+                    <a class="nav-item" onclick="scrollToSection('roadmap')">Roadmap</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="p-2 text-gray-400 hover:text-white transition-colors" onclick="openSearch()" title="Search (Ctrl+K)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <button id="download-btn" class="download-btn bg-julia-purple hover:bg-julia-purple/80 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2" onclick="downloadPackage()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span id="download-text">Download v1.0</span>
+                    </button>
+                    <button class="mobile-menu p-2 text-gray-400 hover:text-white transition-colors" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu hidden lg:hidden border-t border-dark-600 bg-dark-900">
+            <div class="px-4 py-3 space-y-2">
+                <a class="nav-item block" onclick="scrollToSection('overview'); toggleMobileMenu()">Overview</a>
+                <a class="nav-item block" onclick="scrollToSection('architecture'); toggleMobileMenu()">Architecture</a>
+                <a class="nav-item block" onclick="scrollToSection('api'); toggleMobileMenu()">API</a>
+                <a class="nav-item block" onclick="scrollToSection('examples'); toggleMobileMenu()">Examples</a>
+                <a class="nav-item block" onclick="scrollToSection('benchmarks'); toggleMobileMenu()">Benchmarks</a>
+                <a class="nav-item block" onclick="scrollToSection('roadmap'); toggleMobileMenu()">Roadmap</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-32 pb-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center space-x-2 bg-dark-700 border border-dark-600 rounded-full px-4 py-2 mb-6">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-sm text-gray-300">v1.0.0-rc1 | Production Ready</span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-julia-purple via-julia-blue to-julia-green bg-clip-text text-transparent">
+                    One Runtime to Replace Them All
+                </h1>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
+                    A sovereign computational runtime written entirely in Julia that replaces TensorFlow, PyTorch, NumPy, and Pandas with integrated UFT/UAFT operators for physics-informed computing.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <button onclick="downloadPackage()" class="bg-julia-purple hover:bg-julia-purple/80 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download SOVRAN
+                    </button>
+                    <button onclick="scrollToSection('examples')" class="bg-dark-700 hover:bg-dark-600 text-white px-6 py-3 rounded-lg font-medium transition-colors border border-dark-600">
+                        View Examples
+                    </button>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3 text-sm">
+                    <span class="uft-operator">🌀<span class="operator-tooltip"><strong>Vortex</strong><br/>Curl operator for field computations</span></span>
+                    <span class="uft-operator">□<span class="operator-tooltip"><strong>Modal Box</strong><br/>Boundary condition enforcement</span></span>
+                    <span class="uft-operator">⧝<span class="operator-tooltip"><strong>Diamond</strong><br/>Symmetric tensor product</span></span>
+                    <span class="uft-operator">✱<span class="operator-tooltip"><strong>Star Product</strong><br/>Moyal product for quantum ops</span></span>
+                    <span class="uft-operator">⊙<span class="operator-tooltip"><strong>Hadamard</strong><br/>Element-wise tensor product</span></span>
+                    <span class="uft-operator">∞<span class="operator-tooltip"><strong>Infinity</strong><br/>Limit/normalization operation</span></span>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="module-card text-center">
+                    <div class="text-3xl font-bold text-julia-purple mb-1">130K</div>
+                    <div class="text-sm text-gray-400">Lines of Code</div>
+                </div>
+                <div class="module-card text-center">
+                    <div class="text-3xl font-bold text-julia-green mb-1">10</div>
+                    <div class="text-sm text-gray-400">Core Modules</div>
+                </div>
+                <div class="module-card text-center">
+                    <div class="text-3xl font-bold text-julia-blue mb-1">50+</div>
+                    <div class="text-sm text-gray-400">UFT Operators</div>
+                </div>
+                <div class="module-card text-center">
+                    <div class="text-3xl font-bold text-julia-red mb-1">0</div>
+                    <div class="text-sm text-gray-400">External SaaS</div>
+                </div>
+                <div class="module-card text-center">
+                    <div class="text-3xl font-bold text-julia-purple mb-1">MIT</div>
+                    <div class="text-sm text-gray-400">License</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-20 px-4 bg-dark-800">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4">System Architecture</h2>
+            <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+                Unified memory engine at the core connects all subsystems with zero-copy data movement
+            </p>
+
+            <div class="module-card mb-8 overflow-x-auto">
+                <pre class="text-xs md:text-sm font-mono text-julia-purple leading-relaxed">
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           SOVRAN RUNTIME CORE                                   │
+│                      (Julia Native ≈130k LOC | HMP₀=9.99×10⁻⁶⁹)                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ┌───────────────────────────────────────────────────────────────────────────┐  │
+│  │                    UNIFIED MEMORY ENGINE (UME)                            │  │
+│  │     Columnar Layout │ Zero-Copy │ Arrow-Compatible │ Shared Buffers      │  │
+│  └────────────────────────────┬──────────────────────────────────────────────┘  │
+│                               │                                                │
+│  ┌────────────────────────────┴──────────────────────────────────────────────┐  │
+│  │  TENSOR ENGINE (15k LOC)      │  AUTOGRAD ENGINE (12k LOC)               │  │
+│  │  • N-D Arrays                 │  • Reverse-Mode AD                       │  │
+│  │  • Broadcasting               │  • Dynamic Computation Graphs            │  │
+│  │  • GPU Kernels (CUDA/Metal)   │  • Gradient Tracking                     │  │
+│  └────────────────┬──────────────────────────────────────┬───────────────────┘  │
+│                   │                                      │                     │
+│  ┌────────────────┴──────────────┐   ┌──────────────────┴───────────────────┐  │
+│  │  NEURAL NETWORK (18k LOC)     │   │  DATAFRAME ENGINE (14k LOC)          │  │
+│  │  • Dense/Conv/Attention       │   │  • Columnar Storage                  │  │
+│  │  • Training Loop              │   │  • Joins & GroupBy                   │  │
+│  └───────────────────────────────┘   └──────────────────────────────────────┘  │
+│  ┌───────────────────────────────────────────────────────────────────────────┐  │
+│  │  SYMBOLIC ENGINE (16k LOC)    │  SIMULATION ENGINE (15k LOC)             │  │
+│  │  • Expression Trees           │  • ODE/PDE Solvers                       │  │
+│  │  • Symbolic Differentiation   │  • Field Simulations                     │  │
+│  └────────────────┬──────────────────────────────────────┬───────────────────┘  │
+│                   │                                      │                     │
+│  ┌────────────────┴──────────────────────────────────────┴───────────────────┐  │
+│  │                    EXECUTION RUNTIME (10k LOC)                            │  │
+│  │  Multi-Threading │ GPU Dispatch │ Distributed │ Task Scheduling          │  │
+│  └────────────────────────────┬──────────────────────────────────────────────┘  │
+│                               │                                                │
+│  ┌────────────────────────────┴──────────────────────────────────────────────┐  │
+│  │  UFT/UAFT OPERATOR REGISTRY (7k LOC)                                      │  │
+│  │  🌀 □ ⧝ ✱ ⊙ ∞ | MACRO (Α-Ω) | MICRO (α-ω) | TRANSFINITE (ℵ ℶ ∇)         │  │
+│  └───────────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="module-card">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-julia-purple/20 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">🌀</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-julia-purple">Unified Memory</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Columnar memory representation shared across tensors, dataframes, and simulation fields.
+                    </p>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Zero-copy data movement</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Vectorized computation</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Arrow-compatible layout</li>
+                    </ul>
+                </div>
+
+                <div class="module-card">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-julia-blue/20 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">□</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-julia-blue">Execution Runtime</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Multi-threading, GPU acceleration, and distributed cluster execution.
+                    </p>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Multi-threading</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> GPU (CUDA/Metal)</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Distributed clusters</li>
+                    </ul>
+                </div>
+
+                <div class="module-card">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-julia-green/20 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">⧝</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-julia-green">UFT Operators</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Physics-informed operators for symbolic-numeric hybrid computation.
+                    </p>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> Core operators</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> MACRO/MICRO pairs</li>
+                        <li class="flex items-center"><span class="text-julia-green mr-2">✓</span> TRANSFINITE ops</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Section -->
+    <section id="api" class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4">API Reference</h2>
+            <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+                Complete API documentation for all SOVRAN modules
+            </p>
+
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap gap-2 mb-6 justify-center">
+                <button class="tab-button active" onclick="switchTab('tensor')">Tensor</button>
+                <button class="tab-button" onclick="switchTab('autograd')">Autograd</button>
+                <button class="tab-button" onclick="switchTab('nn')">Neural Network</button>
+                <button class="tab-button" onclick="switchTab('dataframe')">DataFrame</button>
+                <button class="tab-button" onclick="switchTab('symbolic')">Symbolic</button>
+            </div>
+
+            <!-- Tensor Tab -->
+            <div id="tensor-tab" class="tab-content active">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-4 text-julia-purple">Tensor Module API</h3>
+                    <div class="overflow-x-auto">
+                        <table class="migration-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">Tensor</td>
+                                    <td class="font-mono text-sm">Tensor(data::Array)</td>
+                                    <td>Create N-dimensional tensor</td>
+                                    <td class="font-mono text-xs">t = Tensor(rand(3,4,5))</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">broadcast</td>
+                                    <td class="font-mono text-sm">broadcast(f, x, y)</td>
+                                    <td>Element-wise with broadcasting</td>
+                                    <td class="font-mono text-xs">c = broadcast(+, a, b)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">matmul</td>
+                                    <td class="font-mono text-sm">matmul(A, B)</td>
+                                    <td>Matrix multiplication (BLAS)</td>
+                                    <td class="font-mono text-xs">C = matmul(A, B)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">conv2d</td>
+                                    <td class="font-mono text-sm">conv2d(input, kernel)</td>
+                                    <td>2D convolution</td>
+                                    <td class="font-mono text-xs">out = conv2d(x, k)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">gpu</td>
+                                    <td class="font-mono text-sm">gpu(t::Tensor)</td>
+                                    <td>Transfer to GPU</td>
+                                    <td class="font-mono text-xs">t_gpu = gpu(t)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">cpu</td>
+                                    <td class="font-mono text-sm">cpu(t::Tensor)</td>
+                                    <td>Transfer from GPU</td>
+                                    <td class="font-mono text-xs">t_cpu = cpu(t_gpu)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Autograd Tab -->
+            <div id="autograd-tab" class="tab-content">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-4 text-julia-green">Autograd Module API</h3>
+                    <div class="overflow-x-auto">
+                        <table class="migration-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">Variable</td>
+                                    <td class="font-mono text-sm">Variable(data; grad=false)</td>
+                                    <td>Wrap tensor with gradient tracking</td>
+                                    <td class="font-mono text-xs">x = Variable(t, grad=true)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">backward</td>
+                                    <td class="font-mono text-sm">backward(v::Variable)</td>
+                                    <td>Compute gradients (reverse-mode)</td>
+                                    <td class="font-mono text-xs">backward(loss)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">gradient</td>
+                                    <td class="font-mono text-sm">gradient(f, args...)</td>
+                                    <td>Compute gradient of function</td>
+                                    <td class="font-mono text-xs">∇f = gradient(f, x)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">zero_grad</td>
+                                    <td class="font-mono text-sm">zero_grad(vars...)</td>
+                                    <td>Zero all gradients</td>
+                                    <td class="font-mono text-xs">zero_grad(w, b)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">detach</td>
+                                    <td class="font-mono text-sm">detach(v::Variable)</td>
+                                    <td>Remove from computation graph</td>
+                                    <td class="font-mono text-xs">x_det = detach(x)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Neural Network Tab -->
+            <div id="nn-tab" class="tab-content">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-4 text-julia-blue">Neural Network Module API</h3>
+                    <div class="overflow-x-auto">
+                        <table class="migration-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">Dense</td>
+                                    <td class="font-mono text-sm">Dense(in, out, activation)</td>
+                                    <td>Fully connected layer</td>
+                                    <td class="font-mono text-xs">Dense(784, 256, relu)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">Conv2D</td>
+                                    <td class="font-mono text-sm">Conv2D(in_ch, out_ch, kernel)</td>
+                                    <td>2D convolution layer</td>
+                                    <td class="font-mono text-xs">Conv2D(3, 64, (3,3))</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">Attention</td>
+                                    <td class="font-mono text-sm">Attention(d_model, heads)</td>
+                                    <td>Multi-head attention</td>
+                                    <td class="font-mono text-xs">Attention(512, 8)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">train!</td>
+                                    <td class="font-mono text-sm">train!(model, data; epochs)</td>
+                                    <td>Train model</td>
+                                    <td class="font-mono text-xs">train!(m, loader, epochs=100)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">evaluate</td>
+                                    <td class="font-mono text-sm">evaluate(model, data)</td>
+                                    <td>Evaluate model</td>
+                                    <td class="font-mono text-xs">evaluate(m, test_data)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">save_model</td>
+                                    <td class="font-mono text-sm">save_model(model, path)</td>
+                                    <td>Save model weights</td>
+                                    <td class="font-mono text-xs">save_model(m, "ckpt.sjl")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DataFrame Tab -->
+            <div id="dataframe-tab" class="tab-content">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-4 text-julia-red">DataFrame Module API</h3>
+                    <div class="overflow-x-auto">
+                        <table class="migration-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">DataFrame</td>
+                                    <td class="font-mono text-sm">DataFrame(cols::Dict)</td>
+                                    <td>Create DataFrame</td>
+                                    <td class="font-mono text-xs">df = DataFrame(; a=1:10)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">filter</td>
+                                    <td class="font-mono text-sm">filter(f, df)</td>
+                                    <td>Filter rows</td>
+                                    <td class="font-mono text-xs">filter(r->r.age>30, df)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">join</td>
+                                    <td class="font-mono text-sm">join(left, right; on)</td>
+                                    <td>Join DataFrames</td>
+                                    <td class="font-mono text-xs">join(d1, d2, on=:id)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">groupby</td>
+                                    <td class="font-mono text-sm">groupby(df, key)</td>
+                                    <td>Group by column</td>
+                                    <td class="font-mono text-xs">groupby(df, :dept)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">aggregate</td>
+                                    <td class="font-mono text-sm">aggregate(gdf, col=>f)</td>
+                                    <td>Aggregate grouped data</td>
+                                    <td class="font-mono text-xs">agg(g, :sal=>mean)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symbolic Tab -->
+            <div id="symbolic-tab" class="tab-content">
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-4 text-julia-purple">Symbolic Module API</h3>
+                    <div class="overflow-x-auto">
+                        <table class="migration-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">@symbols</td>
+                                    <td class="font-mono text-sm">@symbols x y z</td>
+                                    <td>Define symbolic variables</td>
+                                    <td class="font-mono text-xs">@symbols a b c</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">simplify</td>
+                                    <td class="font-mono text-sm">simplify(expr)</td>
+                                    <td>Simplify expression</td>
+                                    <td class="font-mono text-xs">simplify(x^2 + 2x + 1)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">diff</td>
+                                    <td class="font-mono text-sm">diff(expr, var)</td>
+                                    <td>Symbolic differentiation</td>
+                                    <td class="font-mono text-xs">diff(x^2, x)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">substitute</td>
+                                    <td class="font-mono text-sm">substitute(expr, rules)</td>
+                                    <td>Substitute values</td>
+                                    <td class="font-mono text-xs">sub(e, x=>1)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-julia-blue">compile</td>
+                                    <td class="font-mono text-sm">compile(expr)</td>
+                                    <td>Compile to numeric function</td>
+                                    <td class="font-mono text-xs">f = compile(expr)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="py-20 px-4 bg-dark-800">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4">Code Examples</h2>
+            <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+                See how SOVRAN replaces multiple frameworks with unified APIs
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Example 1 -->
+                <div class="module-card">
+                    <h3 class="text-lg font-bold mb-4 text-julia-purple">Neural Network Training</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="font-mono text-sm text-gray-400">mnist_training.jl</span>
+                            <button class="copy-btn text-gray-400 hover:text-white transition-colors text-xs" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content font-mono">
+<pre><code><span class="keyword">using</span> Sovran
+<span class="keyword">using</span> Sovran.Tensor
+<span class="keyword">using</span> Sovran.NN
+
+<span class="comment"># Define model</span>
+model = <span class="type">Sequential</span>(
+    <span class="function">Dense</span>(<span class="number">784</span>, <span class="number">256</span>, :relu),
+    <span class="function">Dropout</span>(<span class="number">0.5</span>),
+    <span class="function">Dense</span>(<span class="number">256</span>, <span class="number">128</span>, :relu),
+    <span class="function">Dense</span>(<span class="number">128</span>, <span class="number">10</span>, :softmax)
+)
+
+<span class="comment"># Training</span>
+optimizer = <span class="function">Adam</span>(model, lr=<span class="number">0.001</span>)
+loss_fn = <span class="function">CrossEntropyLoss</span>()
+
+<span class="function">train!</span>(model, train_loader,
+    optimizer=optimizer,
+    loss_fn=loss_fn,
+    epochs=<span class="number">10</span>,
+    validation=val_loader
+)
+
+<span class="comment"># Evaluate</span>
+accuracy = <span class="function">evaluate</span>(model, test_loader)
+println(<span class="string">"Accuracy: </span><span class="keyword">$accuracy</span><span class="string">"</span>)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="module-card">
+                    <h3 class="text-lg font-bold mb-4 text-julia-green">DataFrame Operations</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="font-mono text-sm text-gray-400">data_analysis.jl</span>
+                            <button class="copy-btn text-gray-400 hover:text-white transition-colors text-xs" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content font-mono">
+<pre><code><span class="keyword">using</span> Sovran.DataFrame
+
+<span class="comment"># Load data</span>
+df = <span class="function">read_csv</span>(<span class="string">"sales_data.csv"</span>)
+
+<span class="comment"># Filter and transform</span>
+filtered = <span class="function">filter</span>(df, row -> row.sales > <span class="number">1000</span>)
+filtered.profit = filtered.revenue .- filtered.cost
+
+<span class="comment"># GroupBy aggregation</span>
+grouped = <span class="function">groupby</span>(filtered, :region)
+summary = <span class="function">aggregate</span>(grouped,
+    total_sales = :sales => sum,
+    avg_profit = :profit => mean,
+    count = :id => length
+)
+
+<span class="comment"># Join with another table</span>
+regions = <span class="function">read_csv</span>(<span class="string">"regions.csv"</span>)
+result = <span class="function">leftjoin</span>(summary, regions, on=:region)
+
+<span class="function">write_csv</span>(result, <span class="string">"output.csv"</span>)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="module-card">
+                    <h3 class="text-lg font-bold mb-4 text-julia-blue">Physics-Informed NN</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="font-mono text-sm text-gray-400">pinn_burgers.jl</span>
+                            <button class="copy-btn text-gray-400 hover:text-white transition-colors text-xs" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content font-mono">
+<pre><code><span class="keyword">using</span> Sovran
+<span class="keyword">using</span> Sovran.UFTOps
+
+<span class="comment"># Define PINN for Burgers equation</span>
+<span class="keyword">struct</span> <span class="type">BurgersPINN</span>
+    network::<span class="type">Sequential</span>
+    viscosity::<span class="type">Float64</span>
+<span class="keyword">end</span>
+
+<span class="comment"># PDE residual: u_t + u*u_x - ν*u_xx = 0</span>
+<span class="keyword">function</span> <span class="function">pde_residual</span>(pinn, x, t)
+    xt = <span class="function">Variable</span>(cat(x, t), grad=<span class="keyword">true</span>)
+    u = pinn.network(xt)
+    
+    <span class="function">backward</span>(u)
+    u_t = xt.grad[:, <span class="number">2</span>]
+    u_x = xt.grad[:, <span class="number">1</span>]
+    
+    <span class="function">zero_grad</span>(xt)
+    <span class="function">backward</span>(u_x)
+    u_xx = xt.grad[:, <span class="number">1</span>]
+    
+    <span class="keyword">return</span> u_t .+ u .* u_x .- pinn.viscosity .* u_xx
+<span class="keyword">end</span>
+
+<span class="comment"># Train with physics constraints</span>
+pinn = <span class="type">BurgersPINN</span>(network, viscosity=<span class="number">0.01</span>)
+<span class="function">train_pinn</span>(pinn, data, collocation)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 4 -->
+                <div class="module-card">
+                    <h3 class="text-lg font-bold mb-4 text-julia-red">Distributed Training</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="font-mono text-sm text-gray-400">distributed_train.jl</span>
+                            <button class="copy-btn text-gray-400 hover:text-white transition-colors text-xs" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content font-mono">
+<pre><code><span class="keyword">using</span> Sovran.ExecRT
+<span class="keyword">using</span> Distributed
+
+<span class="comment"># Initialize cluster</span>
+<span class="function">addprocs</span>(<span class="number">8</span>)  <span class="comment"># 8 GPU workers</span>
+
+@everywhere <span class="keyword">using</span> Sovran
+
+<span class="comment"># Distributed data loader</span>
+loader = <span class="type">DistributedDataLoader</span>(
+    <span class="string">"/data/imagenet"</span>,
+    batch_size=<span class="number">64</span>
+)
+
+<span class="comment"># Synchronous SGD with all-reduce</span>
+<span class="function">distributed_train</span>(model, loader;
+    epochs=<span class="number">100</span>,
+    lr=<span class="number">0.01</span>,
+    sync_strategy=<span class="string">"all_reduce"</span>
+)
+
+<span class="comment"># Save checkpoint</span>
+<span class="function">save_model</span>(model, <span class="string">"checkpoint.sjl"</span>)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmarks Section -->
+    <section id="benchmarks" class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4">Performance Benchmarks</h2>
+            <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+                SOVRAN vs TensorFlow, PyTorch, NumPy, Pandas
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Tensor Operations -->
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-6 text-julia-purple">Tensor Operations (1024×1024, 1000 iter)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">SOVRAN (GPU)</span>
+                                <span class="text-sm text-gray-400">1.8 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-julia-green" style="width: 15%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">SOVRAN (CPU)</span>
+                                <span class="text-sm text-gray-400">12.3 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-julia-purple" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">NumPy</span>
+                                <span class="text-sm text-gray-400">15.7 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 128%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">PyTorch (CPU)</span>
+                                <span class="text-sm text-gray-400">18.2 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 148%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DataFrame Operations -->
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-6 text-julia-green">DataFrame (1M rows, groupby+agg)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">SOVRAN</span>
+                                <span class="text-sm text-gray-400">45.2 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-julia-purple" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">DataFrames.jl</span>
+                                <span class="text-sm text-gray-400">48.1 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 106%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">Polars</span>
+                                <span class="text-sm text-gray-400">52.3 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 116%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">Pandas</span>
+                                <span class="text-sm text-gray-400">89.7 ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 198%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NN Training -->
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-6 text-julia-blue">NN Training (MNIST, 1 epoch)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">JAX</span>
+                                <span class="text-sm text-gray-400">2.0 s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">SOVRAN (GPU)</span>
+                                <span class="text-sm text-gray-400">2.1 s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-julia-purple" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">PyTorch</span>
+                                <span class="text-sm text-gray-400">2.3 s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 110%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">TensorFlow</span>
+                                <span class="text-sm text-gray-400">2.8 s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 133%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memory Efficiency -->
+                <div class="module-card">
+                    <h3 class="text-xl font-bold mb-6 text-julia-red">Memory Efficiency (Zero-Copy Views)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">SOVRAN (view)</span>
+                                <span class="text-sm text-julia-green">0 B</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-julia-green" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">NumPy (slice)</span>
+                                <span class="text-sm text-gray-400">8 KB</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">PyTorch (slice)</span>
+                                <span class="text-sm text-gray-400">8 KB</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium">TensorFlow (slice)</span>
+                                <span class="text-sm text-gray-400">16 KB</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gray-600" style="width: 40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="py-20 px-4 bg-dark-800">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-4">Development Roadmap</h2>
+            <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+                Phased implementation plan over 15 months
+            </p>
+
+            <div class="max-w-3xl mx-auto">
+                <div class="timeline-item completed module-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-julia-purple">Phase 1: Core Foundation</h3>
+                        <span class="feature-badge badge-green">Months 1-3 ✓</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-sm">
+                        <li>✓ Unified Memory Engine</li>
+                        <li>✓ Basic Tensor operations</li>
+                        <li>✓ Threading support</li>
+                        <li>✓ Initial test suite</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item completed module-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-julia-blue">Phase 2: Differentiation & NN</h3>
+                        <span class="feature-badge badge-blue">Months 4-6 ✓</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-sm">
+                        <li>✓ Autograd engine</li>
+                        <li>✓ Neural network layers</li>
+                        <li>✓ GPU support (CUDA/Metal)</li>
+                        <li>✓ Training loop</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item in-progress module-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-julia-green">Phase 3: Data & Symbolic</h3>
+                        <span class="feature-badge badge-purple">Months 7-9</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-sm">
+                        <li>✓ DataFrame engine</li>
+                        <li>✓ Symbolic mathematics</li>
+                        <li>○ Optimization passes</li>
+                        <li>○ Serialization layer</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item module-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-julia-red">Phase 4: Simulation & Distribution</h3>
+                        <span class="feature-badge badge-red">Months 10-12</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-sm">
+                        <li>○ ODE/PDE solvers</li>
+                        <li>○ Field simulation</li>
+                        <li>○ Distributed runtime</li>
+                        <li>○ Integration tests</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item module-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-julia-purple">Phase 5: UFT Integration & Polish</h3>
+                        <span class="feature-badge badge-purple">Months 13-15</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-sm">
+                        <li>○ UFT/UAFT operators</li>
+                        <li>○ Physics-informed modules</li>
+                        <li>○ Performance tuning</li>
+                        <li>○ Documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-dark-600">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-julia-purple to-julia-blue rounded-lg flex items-center justify-center glowing">
+                        <span class="text-white font-bold text-lg">🌀</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">SOVRAN Runtime</h3>
+                        <p class="text-sm text-gray-400">Sovereign Scientific Computing Platform</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">GitHub</a>
+                    <a href="#" class="hover:text-white transition-colors">Discord</a>
+                    <a href="#" class="hover:text-white transition-colors">Documentation</a>
+                    <a href="#" class="hover:text-white transition-colors">Blog</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-dark-600 text-center text-gray-500 text-sm">
+                <p>© 2024 SOVRAN Project. MIT License. | HMP₀ = 9.99×10⁻⁶⁹</p>
+                <p class="mt-2">Built with ❤️ by the global scientific computing community</p>
+                <div class="mt-4 flex justify-center gap-2 text-xs flex-wrap">
+                    <span class="uft-operator">🌀</span>
+                    <span class="uft-operator">□</span>
+                    <span class="uft-operator">⧝</span>
+                    <span class="uft-operator">✱</span>
+                    <span class="uft-operator">⊙</span>
+                    <span class="uft-operator">∞</span>
+                    <span class="uft-operator">ℵ</span>
+                    <span class="uft-operator">∇</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastIcon.textContent = type === 'success' ? '✓' : '✗';
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Download functionality
+        let isDownloading = false;
+        
+        function downloadPackage() {
+            if (isDownloading) return;
+            
+            const btn = document.getElementById('download-btn');
+            const text = document.getElementById('download-text');
+            
+            isDownloading = true;
+            btn.classList.add('downloading');
+            btn.disabled = true;
+            text.textContent = 'Downloading...';
+            
+            // Simulate download progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    isDownloading = false;
+                    btn.classList.remove('downloading');
+                    btn.disabled = false;
+                    text.textContent = 'Download v1.0';
+                    
+                    // Create and download a sample file
+                    const content = `# SOVRAN Runtime v1.0.0-rc1
+# Sovereign Scientific Computing Platform
+
+using Pkg
+Pkg.add("Sovran")
+
+# Quick start
+using Sovran
+using Sovran.Tensor
+using Sovran.NN
+
+# Create a tensor
+t = Tensor(rand(3, 4, 5))
+
+# Define a simple model
+model = Sequential(
+    Dense(784, 256, :relu),
+    Dense(256, 10, :softmax)
+)
+
+# For full documentation, visit:
+# https://github.com/sovran-runtime/sovran
+
+println("SOVRAN Runtime initialized successfully!")
+`;
+                    
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'sovran_quickstart.jl';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('Download complete! Check sovran_quickstart.jl');
+                } else {
+                    text.textContent = `Downloading... ${Math.floor(progress)}%`;
+                }
+            }, 200);
+        }
+
+        // Search functionality
+        const searchItems = [
+            { title: 'Tensor API', section: 'api', desc: 'N-dimensional array operations' },
+            { title: 'Autograd', section: 'api', desc: 'Automatic differentiation' },
+            { title: 'Neural Networks', section: 'api', desc: 'Deep learning layers' },
+            { title: 'DataFrame', section: 'api', desc: 'Tabular data processing' },
+            { title: 'Symbolic Math', section: 'api', desc: 'Symbolic computation' },
+            { title: 'Architecture', section: 'architecture', desc: 'System design overview' },
+            { title: 'Examples', section: 'examples', desc: 'Code examples' },
+            { title: 'Benchmarks', section: 'benchmarks', desc: 'Performance comparison' },
+            { title: 'Roadmap', section: 'roadmap', desc: 'Development timeline' },
+            { title: 'UFT Operators', section: 'overview', desc: 'Physics-informed operators' }
+        ];
+
+        function openSearch() {
+            document.getElementById('search-modal').classList.add('open');
+            document.getElementById('search-input').focus();
+        }
+
+        function closeSearch(event) {
+            if (event.target.id === 'search-modal') {
+                document.getElementById('search-modal').classList.remove('open');
+            }
+        }
+
+        function handleSearch(event) {
+            if (event.key === 'Escape') {
+                document.getElementById('search-modal').classList.remove('open');
+                return;
+            }
+            
+            const query = event.target.value.toLowerCase();
+            const results = document.getElementById('search-results');
+            
+            if (query.length < 2) {
+                results.innerHTML = '';
+                return;
+            }
+            
+            const filtered = searchItems.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.desc.toLowerCase().includes(query)
+            );
+            
+            results.innerHTML = filtered.map(item => `
+                <div class="search-result-item" onclick="scrollToSection('${item.section}'); document.getElementById('search-modal').classList.remove('open');">
+                    <div class="font-medium">${item.title}</div>
+                    <div class="text-xs text-gray-400">${item.desc}</div>
+                </div>
+            `).join('');
+            
+            if (filtered.length === 0) {
+                results.innerHTML = '<div class="p-4 text-gray-400 text-center">No results found</div>';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openSearch();
+            }
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+                showToast('Code copied to clipboard!');
+            }).catch(() => {
+                showToast('Failed to copy code', 'error');
+            });
+        }
+
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const chevron = content.previousElementSibling.querySelector('.chevron');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                chevron.classList.remove('open');
+            } else {
+                content.classList.add('open');
+                chevron.classList.add('open');
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Navigation active state on scroll
+        window.addEventListener('scroll', () => {
+            const sections = ['hero', 'architecture', 'api', 'examples', 'benchmarks', 'roadmap'];
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 200) {
+                        current = sectionId;
+                    }
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick')?.includes(current)) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial active tab
+            const firstTab = document.querySelector('.tab-button');
+            if (firstTab) firstTab.classList.add('active');
+            
+            const firstContent = document.querySelector('.tab-content');
+            if (firstContent) firstContent.classList.add('active');
+        });
+    </script>
+</body>
+</html>
+

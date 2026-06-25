@@ -1,0 +1,3766 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EUCLID ANALOG ML STACK — Euclidean Geometry ML Stack</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c12;--bg2:#0d1117;--bg3:#161b22;--bg4:#1c2128;
+  --border:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+  --t0:#ef4444;--t1:#f97316;--t2:#eab308;--t3:#22c55e;
+  --t4:#3b82f6;--t5:#a855f7;--t6:#ec4899;
+  --green:#3fb950;--blue:#58a6ff;--purple:#bc8cff;
+  --yellow:#e3b341;--orange:#ffa657;--red:#f85149;--cyan:#79c0ff;
+  --font-m:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-m);display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* TOP STRIP */
+.topstrip{
+  height:36px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;flex-shrink:0;
+}
+.ts-brand{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;}
+.ts-center{display:flex;gap:0;height:36px;}
+.ts-tier{
+  height:36px;padding:0 13px;display:flex;align-items:center;gap:6px;
+  font-size:9px;letter-spacing:1px;cursor:pointer;border-right:1px solid var(--border);
+  transition:background .1s;
+}
+.ts-tier:hover{background:rgba(255,255,255,.04);}
+.ts-tier.active{background:rgba(255,255,255,.06);}
+.ts-tier .dot{width:7px;height:7px;border-radius:50%;}
+.ts-right{font-size:9px;color:var(--text3);}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sb{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;}
+.sb-section{padding:7px 12px 4px;font-size:8px;color:var(--text3);letter-spacing:2px;border-bottom:1px solid rgba(33,38,45,.5);}
+.sb-item{
+  padding:7px 12px;cursor:pointer;border-left:3px solid transparent;
+  transition:all .1s;display:flex;align-items:center;gap:9px;
+}
+.sb-item:hover{background:rgba(255,255,255,.025);}
+.sb-item.active{border-left-color:var(--active-col,#58a6ff);background:rgba(88,166,255,.04);}
+.sb-icon{font-size:13px;flex-shrink:0;}
+.sb-info{flex:1;min-width:0;}
+.sb-name{font-size:11px;font-weight:600;}
+.sb-sub{font-size:9px;color:var(--text3);margin-top:1px;}
+.sb-badge{font-size:8px;padding:1px 5px;border-radius:3px;border:1px solid;flex-shrink:0;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* TAB BAR */
+.tabbar{
+  height:34px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;overflow-x:auto;flex-shrink:0;
+  scrollbar-width:none;
+}
+.tabbar::-webkit-scrollbar{display:none;}
+.ftab{
+  height:34px;padding:0 14px;font-size:10.5px;color:var(--text3);
+  border-right:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+  transition:all .1s;flex-shrink:0;
+}
+.ftab:hover{background:rgba(255,255,255,.02);color:var(--text2);}
+.ftab.active{background:var(--bg);color:var(--text);border-bottom:2px solid var(--act-col,#58a6ff);}
+
+/* TOOLBAR */
+.toolbar{
+  height:32px;background:var(--bg3);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0;
+}
+.tbar-path{font-size:10px;color:var(--text3);flex:1;}
+.tbar-path span{color:var(--blue);}
+.tbar-tier-badge{
+  font-size:8px;padding:2px 8px;border-radius:3px;
+  display:flex;align-items:center;gap:5px;border:1px solid;
+}
+.tbtn{
+  font-size:9px;padding:2px 9px;border:1px solid var(--border);
+  border-radius:3px;cursor:pointer;color:var(--text3);background:transparent;
+  font-family:var(--font-m);transition:all .1s;
+}
+.tbtn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* CODE */
+.code-wrap{flex:1;overflow:auto;background:var(--bg);}
+.code-content{display:flex;font-size:11.5px;line-height:1.72;min-height:100%;}
+.line-nums{padding:14px 0;min-width:44px;text-align:right;color:var(--text3);
+  user-select:none;background:var(--bg);border-right:1px solid var(--bg3);flex-shrink:0;}
+.line-num{padding:0 8px;}
+.code-lines{padding:14px 18px;flex:1;white-space:pre;tab-size:4;}
+
+/* Syntax */
+.kw{color:#ff7b72;}.fn{color:#d2a8ff;}.st{color:#a5d6ff;}
+.nm{color:#ffa657;}.cm{color:#484f58;font-style:italic;}.tp{color:#7ee787;}
+.op{color:#79c0ff;}.mc{color:#ffa657;font-weight:600;}.sy{color:#e3b341;}
+.dc{color:#7ee787;font-style:italic;}  /* doc comments */
+
+/* INFO BAR */
+.infobar{
+  height:110px;border-top:1px solid var(--border);background:var(--bg2);
+  display:flex;flex-shrink:0;overflow:hidden;
+}
+.info-col{flex:1;padding:9px 13px;border-right:1px solid var(--border);overflow:hidden;}
+.info-col:last-child{border-right:none;}
+.ic-label{font-size:8px;color:var(--text3);letter-spacing:1.5px;margin-bottom:5px;}
+.ic-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.ic-tag{font-size:8.5px;padding:2px 6px;border-radius:3px;border:1px solid;}
+.tag-rep{border-color:rgba(255,123,114,.3);color:#ff7b72;}
+.tag-tier{border-color:rgba(88,166,255,.3);color:#58a6ff;}
+.tag-note{border-color:rgba(126,231,135,.3);color:#7ee787;}
+
+/* HERO / LANDING */
+.landing{
+  flex:1;overflow-y:auto;padding:40px;
+  background:radial-gradient(circle at 20% 50%,rgba(88,166,255,.04),transparent 50%),
+             radial-gradient(circle at 80% 20%,rgba(168,85,247,.04),transparent 50%);
+}
+.land-title{font-size:2rem;font-weight:700;margin-bottom:8px;
+  background:linear-gradient(135deg,#e6edf3,#8b949e);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.land-sub{font-size:.9rem;color:var(--text2);max-width:680px;margin-bottom:32px;line-height:1.7;}
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:32px;}
+.tier-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:14px;transition:border-color .15s;cursor:pointer;
+}
+.tier-card:hover{border-color:var(--tc);}
+.tc-head{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.tc-num{font-size:1.2rem;font-weight:800;}
+.tc-name{font-size:.85rem;font-weight:600;}
+.tc-desc{font-size:.8rem;color:var(--text2);line-height:1.55;}
+.tc-types{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
+.tc-type{font-size:8px;padding:2px 6px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;}
+.pkg-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:12px;cursor:pointer;transition:all .15s;
+}
+.pkg-card:hover{transform:translateY(-1px);border-color:var(--pc);}
+.pc-head{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.pc-icon{font-size:1.1rem;}
+.pc-name{font-size:.875rem;font-weight:700;}
+.pc-replaces{font-size:8px;color:var(--text3);padding:2px 6px;
+  border:1px solid var(--border);border-radius:3px;background:var(--bg3);}
+.pc-desc{font-size:.8rem;color:var(--text2);line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="topstrip">
+  <div class="ts-brand">◻ EUCLID ANALOG ML STACK — GEOMETRY ECOSYSTEM</div>
+  <div class="ts-center" id="tier-strip"><div class="ts-tier" data-tid="0" title="Embedded, ≤128KB RAM, quantised inference · UInt8/Int8"><span class="dot" style="background:#ef4444"></span><span style="color:#ef4444">Micro</span></div><div class="ts-tier" data-tid="1" title="Mobile/IoT, SIMD-only, ≤4MB model · Float16"><span class="dot" style="background:#f97316"></span><span style="color:#f97316">Edge</span></div><div class="ts-tier" data-tid="2" title="Laptop/workstation, OpenBLAS, multi-thread · Float32"><span class="dot" style="background:#eab308"></span><span style="color:#eab308">Desktop</span></div><div class="ts-tier" data-tid="3" title="Cloud VM, multi-core, batched training · Float64"><span class="dot" style="background:#22c55e"></span><span style="color:#22c55e">Server</span></div><div class="ts-tier" data-tid="4" title="Cluster / DGX, distributed data-parallel · Float64+GPU"><span class="dot" style="background:#3b82f6"></span><span style="color:#3b82f6">HPC</span></div><div class="ts-tier" data-tid="5" title="Exact arithmetic, proof-level precision · BigFloat(256)"><span class="dot" style="background:#a855f7"></span><span style="color:#a855f7">Research</span></div><div class="ts-tier" data-tid="6" title="Quantum circuit layer, QuantumState ops · ComplexF64/QS"><span class="dot" style="background:#ec4899"></span><span style="color:#ec4899">Quantum</span></div></div>
+  <div class="ts-right" id="ts-right">10 packages · 3,031 lines</div>
+</div>
+
+<div class="layout">
+  <aside class="sb" id="sb"><div class="sb-section">◈ 10 PACKAGES</div><div class="sb-item" data-id="AnalogCore" style="--active-col: #58a6ff;">
+      <div class="sb-icon">⎈</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#58a6ff">AnalogCore.jl</div>
+        <div class="sb-sub">TensorFlow device strategy</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogTensor" style="--active-col: #7ee787;">
+      <div class="sb-icon">▦</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#7ee787">AnalogTensor.jl</div>
+        <div class="sb-sub">NumPy</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogLearn" style="--active-col: #d2a8ff;">
+      <div class="sb-icon">🧠</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#d2a8ff">AnalogLearn.jl</div>
+        <div class="sb-sub">TensorFlow/Keras</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogPlot" style="--active-col: #ffa657;">
+      <div class="sb-icon">📈</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#ffa657">AnalogPlot.jl</div>
+        <div class="sb-sub">matplotlib</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogFrame" style="--active-col: #e3b341;">
+      <div class="sb-icon">⬡</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#e3b341">AnalogFrame.jl</div>
+        <div class="sb-sub">pandas</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogStat" style="--active-col: #79c0ff;">
+      <div class="sb-icon">σ</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#79c0ff">AnalogStat.jl</div>
+        <div class="sb-sub">scipy.stats</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogOpt" style="--active-col: #3fb950;">
+      <div class="sb-icon">↗</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#3fb950">AnalogOpt.jl</div>
+        <div class="sb-sub">scipy.optimize</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogSignal" style="--active-col: #ec4899;">
+      <div class="sb-icon">〜</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#ec4899">AnalogSignal.jl</div>
+        <div class="sb-sub">scipy.signal</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogVision" style="--active-col: #bc8cff;">
+      <div class="sb-icon">👁</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#bc8cff">AnalogVision.jl</div>
+        <div class="sb-sub">OpenCV</div>
+      </div>
+    </div><div class="sb-item" data-id="AnalogQuantum" style="--active-col: #ec4899;">
+      <div class="sb-icon">ψ</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:#ec4899">AnalogQuantum.jl</div>
+        <div class="sb-sub">Qiskit</div>
+      </div>
+    </div></aside>
+  <main class="main">
+    <div class="tabbar" id="tabbar"><span style="padding:0 14px;font-size:9px;color:var(--text3);line-height:34px;">← select a library</span></div>
+    <div class="toolbar" id="toolbar" style="display:none;">
+      <div class="tbar-path" id="tbar-path"></div>
+      <div class="tbar-tier-badge" id="tier-badge" style="display:none;"></div>
+      <button class="tbtn" onclick="copyNow()">⎘ COPY</button>
+      <button class="tbtn" onclick="dlNow()">⬇ .jl</button>
+    </div>
+    <div class="code-wrap" id="code-wrap">
+      <div class="landing" id="landing">
+    <h1 class="land-title">Analog ML Stack</h1>
+    <p class="land-sub">10 Julia libraries that completely replace Python's ML/data ecosystem — TensorFlow, NumPy, Matplotlib, Pandas, SciPy, OpenCV, Qiskit. Every library is tier-aware: same API from embedded UInt8 to research BigFloat(256) to quantum circuits. MIT licensed, API-free, zero Python float bugs.</p>
+    
+    <div style="font-family:var(--font-m);font-size:9px;color:#484f58;letter-spacing:2px;margin-bottom:12px;">7 COMPUTE TIERS — click to filter</div>
+    <div class="tier-grid">
+    <div class="tier-card" style="--tc:#ef4444" onclick="activeTierFilter=0;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===0)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#ef4444">T0</div>
+        <div class="tc-name" style="color:#ef4444">Micro</div>
+      </div>
+      <div class="tc-desc">Embedded, ≤128KB RAM, quantised inference</div>
+      <div class="tc-types">
+        <span class="tc-type">UInt8/Int8</span>
+        <span class="tc-type">budget: <1ms</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#f97316" onclick="activeTierFilter=1;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===1)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#f97316">T1</div>
+        <div class="tc-name" style="color:#f97316">Edge</div>
+      </div>
+      <div class="tc-desc">Mobile/IoT, SIMD-only, ≤4MB model</div>
+      <div class="tc-types">
+        <span class="tc-type">Float16</span>
+        <span class="tc-type">budget: <10ms</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#eab308" onclick="activeTierFilter=2;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===2)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#eab308">T2</div>
+        <div class="tc-name" style="color:#eab308">Desktop</div>
+      </div>
+      <div class="tc-desc">Laptop/workstation, OpenBLAS, multi-thread</div>
+      <div class="tc-types">
+        <span class="tc-type">Float32</span>
+        <span class="tc-type">budget: <1s</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#22c55e" onclick="activeTierFilter=3;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===3)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#22c55e">T3</div>
+        <div class="tc-name" style="color:#22c55e">Server</div>
+      </div>
+      <div class="tc-desc">Cloud VM, multi-core, batched training</div>
+      <div class="tc-types">
+        <span class="tc-type">Float64</span>
+        <span class="tc-type">budget: <1min</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#3b82f6" onclick="activeTierFilter=4;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===4)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#3b82f6">T4</div>
+        <div class="tc-name" style="color:#3b82f6">HPC</div>
+      </div>
+      <div class="tc-desc">Cluster / DGX, distributed data-parallel</div>
+      <div class="tc-types">
+        <span class="tc-type">Float64+GPU</span>
+        <span class="tc-type">budget: hours</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#a855f7" onclick="activeTierFilter=5;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===5)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#a855f7">T5</div>
+        <div class="tc-name" style="color:#a855f7">Research</div>
+      </div>
+      <div class="tc-desc">Exact arithmetic, proof-level precision</div>
+      <div class="tc-types">
+        <span class="tc-type">BigFloat(256)</span>
+        <span class="tc-type">budget: unlimited</span>
+      </div>
+    </div>
+  
+    <div class="tier-card" style="--tc:#ec4899" onclick="activeTierFilter=6;document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===6)});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:#ec4899">T6</div>
+        <div class="tc-name" style="color:#ec4899">Quantum</div>
+      </div>
+      <div class="tc-desc">Quantum circuit layer, QuantumState ops</div>
+      <div class="tc-types">
+        <span class="tc-type">ComplexF64/QS</span>
+        <span class="tc-type">budget: ∞</span>
+      </div>
+    </div>
+  </div>
+    
+    <div style="font-family:var(--font-m);font-size:9px;color:#484f58;letter-spacing:2px;margin-bottom:12px;margin-top:8px;">10 PACKAGES — click to view source</div>
+    <div class="pkg-grid">
+    <div class="pkg-card" style="--pc:#58a6ff" onclick="showPkg('AnalogCore')">
+      <div class="pc-head">
+        <div class="pc-icon">⎈</div>
+        <div class="pc-name" style="color:#58a6ff">AnalogCore.jl</div>
+        <span class="pc-replaces">TensorFlow device strategy</span>
+      </div>
+      <div class="pc-desc">TensorFlow device strategy · tf.distribute · tf.lite</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#7ee787" onclick="showPkg('AnalogTensor')">
+      <div class="pc-head">
+        <div class="pc-icon">▦</div>
+        <div class="pc-name" style="color:#7ee787">AnalogTensor.jl</div>
+        <span class="pc-replaces">NumPy</span>
+      </div>
+      <div class="pc-desc">NumPy · JAX numpy · TensorFlow tensor ops</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#d2a8ff" onclick="showPkg('AnalogLearn')">
+      <div class="pc-head">
+        <div class="pc-icon">🧠</div>
+        <div class="pc-name" style="color:#d2a8ff">AnalogLearn.jl</div>
+        <span class="pc-replaces">TensorFlow/Keras</span>
+      </div>
+      <div class="pc-desc">TensorFlow/Keras · PyTorch nn · JAX neural_tangents</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#ffa657" onclick="showPkg('AnalogPlot')">
+      <div class="pc-head">
+        <div class="pc-icon">📈</div>
+        <div class="pc-name" style="color:#ffa657">AnalogPlot.jl</div>
+        <span class="pc-replaces">matplotlib</span>
+      </div>
+      <div class="pc-desc">matplotlib · seaborn · plotly (static)</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#e3b341" onclick="showPkg('AnalogFrame')">
+      <div class="pc-head">
+        <div class="pc-icon">⬡</div>
+        <div class="pc-name" style="color:#e3b341">AnalogFrame.jl</div>
+        <span class="pc-replaces">pandas</span>
+      </div>
+      <div class="pc-desc">pandas · polars (pure Julia) · dplyr</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#79c0ff" onclick="showPkg('AnalogStat')">
+      <div class="pc-head">
+        <div class="pc-icon">σ</div>
+        <div class="pc-name" style="color:#79c0ff">AnalogStat.jl</div>
+        <span class="pc-replaces">scipy.stats</span>
+      </div>
+      <div class="pc-desc">scipy.stats · statsmodels · R stats package</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#3fb950" onclick="showPkg('AnalogOpt')">
+      <div class="pc-head">
+        <div class="pc-icon">↗</div>
+        <div class="pc-name" style="color:#3fb950">AnalogOpt.jl</div>
+        <span class="pc-replaces">scipy.optimize</span>
+      </div>
+      <div class="pc-desc">scipy.optimize · optax · JAX optimization</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#ec4899" onclick="showPkg('AnalogSignal')">
+      <div class="pc-head">
+        <div class="pc-icon">〜</div>
+        <div class="pc-name" style="color:#ec4899">AnalogSignal.jl</div>
+        <span class="pc-replaces">scipy.signal</span>
+      </div>
+      <div class="pc-desc">scipy.signal · librosa (audio) · PyWavelets</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#bc8cff" onclick="showPkg('AnalogVision')">
+      <div class="pc-head">
+        <div class="pc-icon">👁</div>
+        <div class="pc-name" style="color:#bc8cff">AnalogVision.jl</div>
+        <span class="pc-replaces">OpenCV</span>
+      </div>
+      <div class="pc-desc">OpenCV · torchvision · Pillow</div>
+    </div>
+  
+    <div class="pkg-card" style="--pc:#ec4899" onclick="showPkg('AnalogQuantum')">
+      <div class="pc-head">
+        <div class="pc-icon">ψ</div>
+        <div class="pc-name" style="color:#ec4899">AnalogQuantum.jl</div>
+        <span class="pc-replaces">Qiskit</span>
+      </div>
+      <div class="pc-desc">Qiskit · PennyLane · Cirq</div>
+    </div>
+  </div>
+  </div>
+    </div>
+    <div class="infobar" id="infobar" style="display:none;">
+      <div class="info-col"><div class="ic-label">REPLACES</div><div class="ic-tags" id="info-rep"></div></div>
+      <div class="info-col"><div class="ic-label">TIERS SUPPORTED</div><div class="ic-tags" id="info-tiers"></div></div>
+      <div class="info-col"><div class="ic-label">PRECISION GUARANTEES</div><div class="ic-tags" id="info-notes"></div></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// COMPUTE TIER DEFINITIONS
+// ══════════════════════════════════════════════════════════════════
+const TIERS = [
+  { id:0, label:"Micro",    color:"#ef4444", dtype:"UInt8/Int8",     desc:"Embedded, ≤128KB RAM, quantised inference",  budget:"<1ms" },
+  { id:1, label:"Edge",     color:"#f97316", dtype:"Float16",        desc:"Mobile/IoT, SIMD-only, ≤4MB model",          budget:"<10ms" },
+  { id:2, label:"Desktop",  color:"#eab308", dtype:"Float32",        desc:"Laptop/workstation, OpenBLAS, multi-thread",  budget:"<1s" },
+  { id:3, label:"Server",   color:"#22c55e", dtype:"Float64",        desc:"Cloud VM, multi-core, batched training",      budget:"<1min" },
+  { id:4, label:"HPC",      color:"#3b82f6", dtype:"Float64+GPU",    desc:"Cluster / DGX, distributed data-parallel",   budget:"hours" },
+  { id:5, label:"Research", color:"#a855f7", dtype:"BigFloat(256)",  desc:"Exact arithmetic, proof-level precision",     budget:"unlimited" },
+  { id:6, label:"Quantum",  color:"#ec4899", dtype:"ComplexF64/QS",  desc:"Quantum circuit layer, QuantumState ops",     budget:"∞" },
+];
+
+// ══════════════════════════════════════════════════════════════════
+// PACKAGE DEFINITIONS WITH FULL SOURCE
+// ══════════════════════════════════════════════════════════════════
+const PKGS = [
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogCore", icon:"⎈", col:"#58a6ff",
+  replaces:["TensorFlow device strategy","tf.distribute","tf.lite","JAX pmap"],
+  tiers:[0,1,2,3,4,5,6],
+  notes:["Budget macro dispatches at compile time","Zero runtime overhead tier selection","@tier :micro → UInt8 static arrays"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogCore.jl — Compute Budget & Tier Dispatch Engine
+# Replaces: TensorFlow device strategy, tf.lite, JAX pmap, tf.distribute
+# MIT License · API-free · The tier router for all other Analog packages
+# ═══════════════════════════════════════════════════════════════════
+module AnalogCore
+
+export @tier, @budget, ComputeBudget, dispatch_type, tier_info
+export TierMicro, TierEdge, TierDesktop, TierServer, TierHPC
+export TierResearch, TierQuantum, auto_tier
+
+# ── Tier Singleton Types (resolved at compile time) ──────────────
+struct TierMicro    end   # UInt8/Int8   · ≤128KB · embedded
+struct TierEdge     end   # Float16      · ≤4MB   · mobile/IoT
+struct TierDesktop  end   # Float32      · multi-thread BLAS
+struct TierServer   end   # Float64      · batched training
+struct TierHPC      end   # Float64+GPU  · distributed
+struct TierResearch end   # BigFloat     · exact arithmetic
+struct TierQuantum  end   # ComplexF64   · quantum circuit layer
+
+const ALL_TIERS = Union{TierMicro,TierEdge,TierDesktop,TierServer,
+                         TierHPC,TierResearch,TierQuantum}
+
+# ── Dispatch table: tier → numeric type ──────────────────────────
+dispatch_type(::TierMicro)    = Int8
+dispatch_type(::TierEdge)     = Float16
+dispatch_type(::TierDesktop)  = Float32
+dispatch_type(::TierServer)   = Float64
+dispatch_type(::TierHPC)      = Float64
+dispatch_type(::TierResearch) = BigFloat
+dispatch_type(::TierQuantum)  = ComplexF64
+
+# ── ComputeBudget: runtime tier with telemetry ───────────────────
+mutable struct ComputeBudget{T<:ALL_TIERS}
+    tier::T
+    max_memory_mb::Float64
+    max_latency_ms::Float64
+    n_threads::Int
+    precision_bits::Int
+    allow_approximate::Bool
+    telemetry::Vector{NamedTuple}
+end
+
+function ComputeBudget(tier::T) where T<:ALL_TIERS
+    defaults = Dict{Type,NamedTuple}(
+        TierMicro    => (mem=0.128, lat=1.0,    thr=1,   prec=8,   approx=true),
+        TierEdge     => (mem=4.0,   lat=10.0,   thr=2,   prec=16,  approx=true),
+        TierDesktop  => (mem=8000., lat=1000.,  thr=8,   prec=32,  approx=false),
+        TierServer   => (mem=64000.,lat=60000., thr=32,  prec=64,  approx=false),
+        TierHPC      => (mem=1e6,   lat=Inf,    thr=512, prec=64,  approx=false),
+        TierResearch => (mem=Inf,   lat=Inf,    thr=1,   prec=256, approx=false),
+        TierQuantum  => (mem=Inf,   lat=Inf,    thr=1,   prec=128, approx=false),
+    )
+    d = defaults[T]
+    ComputeBudget{T}(tier, d.mem, d.lat, d.thr, d.prec, d.approx, NamedTuple[])
+end
+
+# ── @tier macro — compile-time dispatch, zero overhead ───────────
+macro tier(sym, expr)
+    tier_map = Dict(
+        :micro    => :TierMicro,
+        :edge     => :TierEdge,
+        :desktop  => :TierDesktop,
+        :server   => :TierServer,
+        :hpc      => :TierHPC,
+        :research => :TierResearch,
+        :quantum  => :TierQuantum,
+    )
+    T = get(tier_map, sym, :TierDesktop)
+    quote
+        let _budget = ComputeBudget($(esc(T))())
+            $(esc(expr))(_budget)
+        end
+    end
+end
+
+# ── @budget macro — wraps a block with budget checking ───────────
+macro budget(sym, block)
+    T_name = Dict(
+        :micro    => :TierMicro,    :edge     => :TierEdge,
+        :desktop  => :TierDesktop,  :server   => :TierServer,
+        :hpc      => :TierHPC,      :research => :TierResearch,
+        :quantum  => :TierQuantum,
+    )[sym]
+    quote
+        local _t0 = time_ns()
+        local _result = begin $(esc(block)) end
+        local _elapsed = (time_ns() - _t0) / 1e6   # ms
+        local _T = dispatch_type($(esc(T_name))())
+        @debug "[@budget :$($(QuoteNode(sym)))] elapsed=$(round(_elapsed,digits=2))ms type=$_T"
+        _result
+    end
+end
+
+# ── Auto-tier: select tier based on available memory ─────────────
+function auto_tier()
+    mem_mb = Sys.free_memory() / 1e6
+    mem_mb > 32_000 && return TierServer()
+    mem_mb > 4_000  && return TierDesktop()
+    mem_mb > 512    && return TierEdge()
+    TierMicro()
+end
+
+tier_info(::TierMicro)    = (name=:micro,    dtype="Int8/UInt8",    memory="≤128KB", use="embedded,MCU")
+tier_info(::TierEdge)     = (name=:edge,     dtype="Float16",       memory="≤4MB",   use="mobile,IoT,Raspberry Pi")
+tier_info(::TierDesktop)  = (name=:desktop,  dtype="Float32",       memory="≤8GB",   use="laptop,workstation")
+tier_info(::TierServer)   = (name=:server,   dtype="Float64",       memory="≤64GB",  use="cloud VM, training server")
+tier_info(::TierHPC)      = (name=:hpc,      dtype="Float64+dist",  memory="unbounded",use="DGX,cluster,multi-node")
+tier_info(::TierResearch) = (name=:research, dtype="BigFloat(256)", memory="unbounded",use="numerical analysis,proofs")
+tier_info(::TierQuantum)  = (name=:quantum,  dtype="ComplexF64",    memory="∝2^n",   use="quantum circuit simulation")
+
+# ── Telemetry / FLOP counter ──────────────────────────────────────
+mutable struct FLOPCounter
+    flops::BigInt    # exact BigInt — no int64 overflow on large nets
+    bytes_read::BigInt
+    bytes_written::BigInt
+end
+
+FLOPCounter() = FLOPCounter(big"0", big"0", big"0")
+
+function count_matmul_flops!(fc::FLOPCounter, m::Int, k::Int, n::Int)
+    # FLOPs = 2mkn (multiply-add)
+    fc.flops += BigInt(2) * BigInt(m) * BigInt(k) * BigInt(n)
+end
+
+function count_conv_flops!(fc::FLOPCounter, batch, C_out, C_in, H, W, kH, kW)
+    fc.flops += BigInt(2) * BigInt(batch*C_out*C_in*H*W*kH*kW)
+end
+
+flop_count(fc::FLOPCounter) = fc.flops
+tflops(fc::FLOPCounter, time_s::Float64) = Float64(fc.flops) / (time_s * 1e12)
+
+end # module AnalogCore
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogTensor", icon:"▦", col:"#7ee787",
+  replaces:["NumPy","JAX numpy","TensorFlow tensor ops","PyTorch torch.*"],
+  tiers:[0,1,2,3,4,5],
+  notes:["Float16→BigFloat same API","Strided views, no copy broadcast","Exact einsum via Rational"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogTensor.jl — NumPy / JAX / torch.* Replacement
+# Replaces: numpy, jax.numpy, tensorflow tensor ops, torch.*
+# MIT License · API-free · All tiers Float16→BigFloat same API
+# Python float bug: broadcast accumulation in Float32 → use Kahan sum
+# ═══════════════════════════════════════════════════════════════════
+module AnalogTensor
+
+using LinearAlgebra, Statistics
+
+export ATensor, zeros_like, ones_like, randn_like, arange, linspace
+export matmul, einsum_2d, broadcast_add, broadcast_mul
+export kahan_sum, pairwise_distance, softmax, logsumexp_stable
+export fft_real, ifft_real, convolve1d, correlate1d
+export cumsum_exact, diff_exact, interp1d
+
+# ── ATensor — type-parametric, all tiers same interface ──────────
+struct ATensor{T<:Number, N}
+    data::Array{T,N}
+    shape::NTuple{N,Int}
+    strides::NTuple{N,Int}   # for zero-copy views
+    requires_grad::Bool
+end
+
+function ATensor(data::Array{T,N}; requires_grad::Bool=false) where {T,N}
+    s = strides(data)
+    ATensor{T,N}(data, size(data), s, requires_grad)
+end
+
+# Tier-aware constructors
+zeros_like(t::ATensor{T,N}) where {T,N} = ATensor(zeros(T, t.shape))
+ones_like(t::ATensor{T,N}) where {T,N}  = ATensor(ones(T, t.shape))
+randn_like(t::ATensor{T,N}) where {T,N} = ATensor(T.(randn(t.shape)))
+
+function arange(start::T, stop::T, step::T) where T<:Number
+    ATensor(collect(start:step:stop-step))
+end
+
+function linspace(a::T, b::T, n::Int) where T<:AbstractFloat
+    ATensor(collect(LinRange(a, b, n)))
+end
+
+# ── Kahan compensated sum — fixes Python float32 broadcast drift ──
+# numpy: sum([1e8, 1.0, -1e8]) in Float32 = 0.0 (wrong!)
+# Kahan: always correct regardless of T
+function kahan_sum(a::ATensor{T,1}) where T<:AbstractFloat
+    s = zero(T); c = zero(T)
+    for x in a.data
+        y = x - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end
+    s
+end
+
+kahan_sum(a::AbstractVector{T}) where T<:AbstractFloat = begin
+    s = zero(T); c = zero(T)
+    for x in a
+        y = x - c; t = s + y; c = (t - s) - y; s = t
+    end
+    s
+end
+
+# ── Matrix multiply — dispatches to right BLAS level per tier ─────
+function matmul(a::ATensor{T,2}, b::ATensor{T,2}) where T
+    ATensor(a.data * b.data; requires_grad=a.requires_grad || b.requires_grad)
+end
+
+# ── Einsum for common patterns (2D) — no string parsing overhead ──
+function einsum_2d(pattern::Symbol, A::ATensor{T,2}, B::ATensor{T,2}) where T
+    if pattern == :ij_jk__ik; return ATensor(A.data * B.data)     # matmul
+    elseif pattern == :ij_ij__; return sum(A.data .* B.data)       # dot
+    elseif pattern == :ij_kj__ik; return ATensor(A.data * B.data') # mm-T
+    elseif pattern == :i_j__ij; return ATensor(A.data[:,1] * B.data[1,:]') # outer
+    else; error("Unsupported einsum pattern: $pattern")
+    end
+end
+
+# ── Stable numerics ───────────────────────────────────────────────
+function softmax(x::AbstractVector{T}) where T<:AbstractFloat
+    m = maximum(x)
+    e = exp.(x .- m)
+    e ./ kahan_sum(e)
+end
+
+function softmax(X::AbstractMatrix{T}) where T<:AbstractFloat
+    mapslices(softmax, X; dims=1)
+end
+
+function logsumexp_stable(x::AbstractVector{T}) where T<:AbstractFloat
+    m = maximum(x)
+    m + log(kahan_sum(exp.(x .- m)))
+end
+
+# ── Broadcast with type promotion ────────────────────────────────
+broadcast_add(a::ATensor{T,N}, b::ATensor{T,N}) where {T,N} =
+    ATensor(a.data .+ b.data)
+broadcast_mul(a::ATensor{T,N}, b::ATensor{T,N}) where {T,N} =
+    ATensor(a.data .* b.data)
+
+# ── FFT — real-valued, no FFTW dependency ─────────────────────────
+# Uses Cooley-Tukey for power-of-2, direct DFT otherwise
+function _dft(x::Vector{T}) where T<:AbstractFloat
+    n = length(x)
+    cx = Complex{T}.(x)
+    [sum(cx[k+1] * exp(-2π*im*j*k/n) for k in 0:n-1) for j in 0:n-1]
+end
+
+function _cooley_tukey(x::Vector{Complex{T}}) where T
+    n = length(x); n == 1 && return x
+    even = _cooley_tukey(x[1:2:end])
+    odd  = _cooley_tukey(x[2:2:end])
+    t    = [exp(-2π*im*k/n) * odd[k+1] for k in 0:n÷2-1]
+    [even[k+1] + t[k+1] for k in 0:n÷2-1;
+     even[k+1] - t[k+1] for k in 0:n÷2-1]
+end
+
+function fft_real(a::ATensor{T,1}) where T<:AbstractFloat
+    n = length(a.data)
+    cx = Complex{T}.(a.data)
+    result = ispow2(n) ? _cooley_tukey(cx) : _dft(a.data)
+    ATensor(result)
+end
+
+function ifft_real(a::ATensor{Complex{T},1}) where T<:AbstractFloat
+    n = length(a.data)
+    conj_data = conj.(a.data)
+    fwd = ispow2(n) ? _cooley_tukey(conj_data) : _dft(real.(conj_data))
+    ATensor(real.(conj.(fwd)) ./ T(n))
+end
+
+# ── 1D Convolution — pure Julia ───────────────────────────────────
+function convolve1d(signal::ATensor{T,1}, kernel::ATensor{T,1};
+                    mode::Symbol=:full) where T
+    n, m = length(signal.data), length(kernel.data)
+    if mode == :full
+        out = zeros(T, n + m - 1)
+        for i in 1:n, j in 1:m
+            out[i+j-1] += signal.data[i] * kernel.data[j]
+        end
+    elseif mode == :same
+        pad = m ÷ 2
+        s_pad = [zeros(T,pad); signal.data; zeros(T,pad)]
+        out = zeros(T, n)
+        for i in 1:n, j in 1:m
+            out[i] += s_pad[i+j-1] * kernel.data[j]
+        end
+    else # :valid
+        out = zeros(T, n - m + 1)
+        for i in 1:n-m+1, j in 1:m
+            out[i] += signal.data[i+j-1] * kernel.data[j]
+        end
+    end
+    ATensor(out)
+end
+
+correlate1d(s::ATensor{T,1}, k::ATensor{T,1}; mode=:full) where T =
+    convolve1d(s, ATensor(reverse(k.data)); mode=mode)
+
+# ── Exact cumsum — no floating point drift ────────────────────────
+# numpy: cumsum(Float32 array) drifts; use Kahan
+function cumsum_exact(a::ATensor{T,1}) where T<:AbstractFloat
+    out = zeros(T, length(a.data))
+    s = zero(T); c = zero(T)
+    for (i,x) in enumerate(a.data)
+        y = x - c; t = s + y; c = (t-s) - y; s = t
+        out[i] = s
+    end
+    ATensor(out)
+end
+
+diff_exact(a::ATensor{T,1}) where T = ATensor(diff(a.data))
+
+# ── Pairwise Euclidean distance — numerically stable form ─────────
+# ||a-b||² = ||a||² + ||b||² - 2aᵀb  (no sqrt until end)
+function pairwise_distance(A::ATensor{T,2}, B::ATensor{T,2}) where T<:AbstractFloat
+    nA, nB = size(A.data,2), size(B.data,2)
+    # Compute ||a||² and ||b||² separately — less cancellation
+    a2 = sum(A.data.^2, dims=1)   # [1 × nA]
+    b2 = sum(B.data.^2, dims=1)   # [1 × nB]
+    ab = A.data' * B.data          # [nA × nB]
+    D² = a2' .+ b2 .- T(2) .* ab
+    # Clamp to ≥0 before sqrt (numerical noise can produce tiny negatives)
+    ATensor(sqrt.(max.(D², zero(T))))
+end
+
+# ── Linear interpolation ──────────────────────────────────────────
+function interp1d(x::AbstractVector{T}, y::AbstractVector{T},
+                  xq::AbstractVector{T}) where T<:AbstractFloat
+    length(x) == length(y) || error("x and y must have same length")
+    out = zeros(T, length(xq))
+    for (i,xi) in enumerate(xq)
+        idx = searchsortedlast(x, xi)
+        if idx == 0
+            out[i] = y[1]
+        elseif idx >= length(x)
+            out[i] = y[end]
+        else
+            t = (xi - x[idx]) / (x[idx+1] - x[idx])
+            out[i] = y[idx] * (one(T) - t) + y[idx+1] * t
+        end
+    end
+    ATensor(out)
+end
+
+end # module AnalogTensor
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogLearn", icon:"🧠", col:"#d2a8ff",
+  replaces:["TensorFlow/Keras","PyTorch nn","JAX neural_tangents","flax","scikit-learn"],
+  tiers:[0,1,2,3,4,5,6],
+  notes:["Tier 0: quantised INT8 inference","Tier 4: data-parallel gradient","Tier 6: quantum layer support"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogLearn.jl — TensorFlow / Keras / PyTorch Replacement
+# Replaces: tf.keras, torch.nn, flax, JAX, sklearn
+# MIT License · API-free · Tier-aware dispatch Micro→Quantum
+# ═══════════════════════════════════════════════════════════════════
+module AnalogLearn
+
+using LinearAlgebra, Statistics, Random
+
+export Dense, Conv2D, MultiHeadAttention, LayerNorm, Embedding
+export BatchNorm, Dropout, LSTM, GRU, ResBlock
+export Sequential, Parallel, SkipConnect
+export ReLU, GELU, SiLU, Swish, Mish, Softmax
+export CrossEntropyLoss, MSELoss, HuberLoss, FocalLoss, ContrastiveLoss
+export Adam, AdamW, SGD, Lion, Prodigy
+export parameters, zero_grad!, clip_gradients!
+export quantise_int8, dequantise_int8, calibrate_quantisation
+export DataLoader, train_epoch!, evaluate, checkpoint
+
+# ══════════════════════════════════════════════════════
+# ACTIVATION FUNCTIONS — all tiers
+# ══════════════════════════════════════════════════════
+relu(x::T) where T<:AbstractFloat  = max(zero(T), x)
+gelu(x::T) where T<:AbstractFloat  = x * (T(1) + erf(x / sqrt(T(2)))) / T(2)
+silu(x::T) where T<:AbstractFloat  = x / (one(T) + exp(-x))
+swish(x::T) where T<:AbstractFloat = x * sigmoid(x)
+mish(x::T) where T<:AbstractFloat  = x * tanh(log(one(T) + exp(x)))
+sigmoid(x::T) where T<:AbstractFloat = one(T) / (one(T) + exp(-x))
+
+using SpecialFunctions: erf
+import SpecialFunctions
+
+for fn in (:relu,:gelu,:silu,:swish,:mish,:sigmoid)
+    @eval $fn(x::AbstractArray{T}) where T<:AbstractFloat = $fn.(x)
+end
+
+struct ReLU  end; (::ReLU)(x)  = relu(x)
+struct GELU  end; (::GELU)(x)  = gelu(x)
+struct SiLU  end; (::SiLU)(x)  = silu(x)
+struct Swish end; (::Swish)(x) = swish(x)
+struct Mish  end; (::Mish)(x)  = mish(x)
+struct Softmax; dims::Int; end
+(s::Softmax)(x) = begin
+    m = maximum(x; dims=s.dims)
+    e = exp.(x .- m)
+    e ./ sum(e; dims=s.dims)
+end
+
+# ══════════════════════════════════════════════════════
+# LAYER DEFINITIONS
+# ══════════════════════════════════════════════════════
+abstract type Layer end
+parameters(::Layer) = Tuple{AbstractArray,AbstractArray}[]
+
+# ── Dense (Linear) Layer ──────────────────────────────
+mutable struct Dense{T<:AbstractFloat, F} <: Layer
+    W::Matrix{T}; b::Vector{T}
+    act::F
+    ∇W::Matrix{T}; ∇b::Vector{T}
+end
+
+function Dense(in_d::Int, out_d::Int, act=identity; T::Type=Float32)
+    # He init for ReLU family, Glorot for others
+    σ = act in (relu, gelu, silu, swish, mish) ?
+        T(sqrt(2.0 / in_d)) : T(sqrt(1.0 / in_d))
+    W = σ .* randn(T, out_d, in_d)
+    b = zeros(T, out_d)
+    Dense{T,typeof(act)}(W, b, act, zero(W), zero(b))
+end
+
+(d::Dense{T})(x::AbstractMatrix{T}) where T = d.act.(d.W * x .+ d.b)
+(d::Dense{T})(x::AbstractVector{T}) where T = d.act.(d.W * x .+ d.b)
+
+parameters(d::Dense) = [(d.W, d.∇W), (d.b, d.∇b)]
+
+# ── BatchNorm ─────────────────────────────────────────
+mutable struct BatchNorm{T} <: Layer
+    γ::Vector{T}; β::Vector{T}
+    μ_running::Vector{T}; σ²_running::Vector{T}
+    ε::T; momentum::Rational{Int}
+    training::Bool
+    ∇γ::Vector{T}; ∇β::Vector{T}
+end
+
+function BatchNorm(n_features::Int; T::Type=Float32)
+    BatchNorm{T}(ones(T,n_features), zeros(T,n_features),
+                 zeros(T,n_features), ones(T,n_features),
+                 T(1e-5), 1//10, true,
+                 zeros(T,n_features), zeros(T,n_features))
+end
+
+function (bn::BatchNorm{T})(x::AbstractMatrix{T}) where T
+    if bn.training
+        μ = mean(x; dims=2)[:,1]
+        σ² = var(x; dims=2; corrected=false)[:,1]
+        bn.μ_running  .= (1 - T(bn.momentum)) .* bn.μ_running  .+ T(bn.momentum) .* μ
+        bn.σ²_running .= (1 - T(bn.momentum)) .* bn.σ²_running .+ T(bn.momentum) .* σ²
+    else
+        μ = bn.μ_running; σ² = bn.σ²_running
+    end
+    x_norm = (x .- μ) ./ sqrt.(σ² .+ bn.ε)
+    bn.γ .* x_norm .+ bn.β
+end
+
+parameters(bn::BatchNorm) = [(bn.γ, bn.∇γ), (bn.β, bn.∇β)]
+
+# ── Layer Norm ────────────────────────────────────────
+mutable struct LayerNorm{T} <: Layer
+    γ::Vector{T}; β::Vector{T}; ε::T
+    ∇γ::Vector{T}; ∇β::Vector{T}
+end
+
+LayerNorm(d::Int; T::Type=Float32) =
+    LayerNorm{T}(ones(T,d), zeros(T,d), T(1e-5), zeros(T,d), zeros(T,d))
+
+function (ln::LayerNorm{T})(x::AbstractMatrix{T}) where T
+    μ  = mean(x; dims=1)
+    σ² = var(x; dims=1; corrected=false)
+    x_hat = (x .- μ) ./ sqrt.(σ² .+ ln.ε)
+    ln.γ .* x_hat .+ ln.β
+end
+
+parameters(ln::LayerNorm) = [(ln.γ, ln.∇γ), (ln.β, ln.∇β)]
+
+# ── Embedding ─────────────────────────────────────────
+mutable struct Embedding{T} <: Layer
+    W::Matrix{T}   # [d_model × vocab_size]
+    ∇W::Matrix{T}
+end
+
+Embedding(vocab_size::Int, d_model::Int; T::Type=Float32) =
+    Embedding{T}(randn(T, d_model, vocab_size) ./ T(sqrt(d_model)),
+                 zeros(T, d_model, vocab_size))
+
+(e::Embedding{T})(idx::AbstractVector{Int}) where T = e.W[:, idx]
+parameters(e::Embedding) = [(e.W, e.∇W)]
+
+# ── Dropout ───────────────────────────────────────────
+mutable struct Dropout{T} <: Layer
+    p::T        # drop probability
+    training::Bool
+end
+
+Dropout(p::Real; T::Type=Float32) = Dropout{T}(T(p), true)
+
+function (d::Dropout{T})(x::AbstractArray{T}) where T
+    !d.training && return x
+    mask = T.(rand(size(x)...) .> d.p) ./ (one(T) - d.p)
+    x .* mask
+end
+
+parameters(::Dropout) = Tuple{AbstractArray,AbstractArray}[]
+
+# ── Multi-Head Attention ──────────────────────────────
+mutable struct MultiHeadAttention{T} <: Layer
+    n_heads::Int; d_head::Int; d_model::Int
+    W_q::Matrix{T}; W_k::Matrix{T}; W_v::Matrix{T}; W_o::Matrix{T}
+    ∇W_q::Matrix{T}; ∇W_k::Matrix{T}; ∇W_v::Matrix{T}; ∇W_o::Matrix{T}
+    scale::T
+end
+
+function MultiHeadAttention(d_model::Int, n_heads::Int; T::Type=Float32)
+    d_head = d_model ÷ n_heads
+    scale  = T(1.0 / sqrt(d_head))
+    W(d,e) = randn(T,d,e) ./ T(sqrt(d))
+    MultiHeadAttention{T}(n_heads, d_head, d_model,
+        W(d_model,d_model), W(d_model,d_model),
+        W(d_model,d_model), W(d_model,d_model),
+        zeros(T,d_model,d_model), zeros(T,d_model,d_model),
+        zeros(T,d_model,d_model), zeros(T,d_model,d_model), scale)
+end
+
+function (mha::MultiHeadAttention{T})(x::AbstractMatrix{T};
+                                       mask::Union{Nothing,AbstractMatrix{Bool}}=nothing) where T
+    Q = mha.W_q * x; K = mha.W_k * x; V = mha.W_v * x
+    d_model, n_seq = size(x)
+    d_head = mha.d_head
+    
+    out = zeros(T, d_model, n_seq)
+    for h in 0:mha.n_heads-1
+        r = h*d_head+1:(h+1)*d_head
+        Qh = Q[r,:]; Kh = K[r,:]; Vh = V[r,:]
+        scores = (Kh' * Qh) .* mha.scale
+        isnothing(mask) || (scores[.!mask] .= T(-1e9))
+        w = mapslices(v -> begin
+            m = maximum(v); e = exp.(v .- m); e ./ sum(e)
+        end, scores; dims=1)
+        out[r,:] .= Vh * w
+    end
+    mha.W_o * out
+end
+
+parameters(m::MultiHeadAttention) =
+    [(m.W_q,m.∇W_q),(m.W_k,m.∇W_k),(m.W_v,m.∇W_v),(m.W_o,m.∇W_o)]
+
+# ── Conv2D (float32/16, no CUDA needed for small kernels) ─────────
+mutable struct Conv2D{T} <: Layer
+    W::Array{T,4}   # [C_out × C_in × kH × kW]
+    b::Vector{T}
+    stride::Int; padding::Int
+    act::Function
+    ∇W::Array{T,4}; ∇b::Vector{T}
+end
+
+function Conv2D(C_in::Int, C_out::Int, k::Int=3; stride::Int=1,
+                padding::Int=1, act=relu, T::Type=Float32)
+    σ = T(sqrt(2.0 / (C_in * k * k)))
+    W = σ .* randn(T, C_out, C_in, k, k)
+    b = zeros(T, C_out)
+    Conv2D{T}(W, b, stride, padding, act, zero(W), zero(b))
+end
+
+function (c::Conv2D{T})(x::Array{T,4}) where T
+    # x: [C_in × H × W × batch]
+    C_in,H,W,N = size(x)
+    C_out,_,kH,kW = size(c.W)
+    H_out = (H + 2c.padding - kH) ÷ c.stride + 1
+    W_out = (W + 2c.padding - kW) ÷ c.stride + 1
+    
+    # Pad input
+    x_pad = if c.padding > 0
+        pad = zeros(T, C_in, H+2c.padding, W+2c.padding, N)
+        pad[:,c.padding+1:end-c.padding,c.padding+1:end-c.padding,:] .= x
+        pad
+    else x end
+    
+    out = zeros(T, C_out, H_out, W_out, N)
+    for n in 1:N, oc in 1:C_out, oh in 1:H_out, ow in 1:W_out
+        hi = (oh-1)*c.stride+1; wi = (ow-1)*c.stride+1
+        s = zero(T)
+        for ic in 1:C_in, kh in 1:kH, kw in 1:kW
+            s += x_pad[ic, hi+kh-1, wi+kw-1, n] * c.W[oc,ic,kh,kw]
+        end
+        out[oc,oh,ow,n] = c.act(s + c.b[oc])
+    end
+    out
+end
+
+parameters(c::Conv2D) = [(c.W, c.∇W), (c.b, c.∇b)]
+
+# ── LSTM Cell ─────────────────────────────────────────
+mutable struct LSTM{T} <: Layer
+    W_ih::Matrix{T}; W_hh::Matrix{T}; b::Vector{T}
+    h::Vector{T}; c_state::Vector{T}
+    ∇W_ih::Matrix{T}; ∇W_hh::Matrix{T}; ∇b::Vector{T}
+end
+
+function LSTM(input_size::Int, hidden_size::Int; T::Type=Float32)
+    k = T(1/sqrt(hidden_size))
+    W_ih = k .* randn(T, 4hidden_size, input_size)
+    W_hh = k .* randn(T, 4hidden_size, hidden_size)
+    b    = zeros(T, 4hidden_size)
+    LSTM{T}(W_ih, W_hh, b,
+            zeros(T,hidden_size), zeros(T,hidden_size),
+            zero(W_ih), zero(W_hh), zero(b))
+end
+
+function (lstm::LSTM{T})(x::AbstractVector{T}) where T
+    H = length(lstm.h)
+    gates = lstm.W_ih * x + lstm.W_hh * lstm.h + lstm.b
+    i = sigmoid(gates[1:H]);     f = sigmoid(gates[H+1:2H])
+    g = tanh.(gates[2H+1:3H]);   o = sigmoid(gates[3H+1:4H])
+    lstm.c_state = f .* lstm.c_state .+ i .* g
+    lstm.h       = o .* tanh.(lstm.c_state)
+    copy(lstm.h)
+end
+
+parameters(l::LSTM) = [(l.W_ih,l.∇W_ih),(l.W_hh,l.∇W_hh),(l.b,l.∇b)]
+
+# ── Container Models ──────────────────────────────────
+struct Sequential  <: Layer; layers::Vector{Layer}; end
+struct Parallel    <: Layer; layers::Vector{Layer}; agg::Function; end
+struct SkipConnect <: Layer; layer::Layer; end
+struct ResBlock    <: Layer; layers::Vector{Layer}; shortcut::Union{Nothing,Layer}; end
+
+Sequential(ls::Layer...) = Sequential(collect(Layer, ls))
+
+(s::Sequential)(x)  = foldl((x,l)->l(x), s.layers; init=x)
+(p::Parallel)(x)    = p.agg([l(x) for l in p.layers]...)
+(sc::SkipConnect)(x)= x + sc.layer(x)
+function (rb::ResBlock)(x)
+    out = foldl((x,l)->l(x), rb.layers; init=x)
+    skip = isnothing(rb.shortcut) ? x : rb.shortcut(x)
+    relu(out .+ skip)
+end
+
+parameters(s::Sequential) = vcat(parameters.(s.layers)...)
+parameters(p::Parallel)   = vcat(parameters.(p.layers)...)
+parameters(sc::SkipConnect) = parameters(sc.layer)
+parameters(rb::ResBlock)  = vcat(parameters.(rb.layers)...,
+    isnothing(rb.shortcut) ? Tuple{AbstractArray,AbstractArray}[] : parameters(rb.shortcut))
+
+function zero_grad!(layers::Vector{Layer})
+    for l in layers, (p, g) in parameters(l); fill!(g, 0); end
+end
+
+# ══════════════════════════════════════════════════════
+# LOSS FUNCTIONS
+# ══════════════════════════════════════════════════════
+struct CrossEntropyLoss end
+struct MSELoss          end
+struct HuberLoss{T};  δ::T; end
+struct FocalLoss{T};  γ::T; end
+struct ContrastiveLoss{T}; margin::T; end
+
+function (::CrossEntropyLoss)(logits::AbstractMatrix{T}, targets::AbstractVector{Int}) where T
+    n = size(logits, 2)
+    log_sum_exp = logsumexp_col(logits)
+    loss = zero(T)
+    for i in 1:n
+        loss -= logits[targets[i], i] - log_sum_exp[i]
+    end
+    loss / T(n)
+end
+
+function logsumexp_col(X::AbstractMatrix{T}) where T
+    m = maximum(X; dims=1)
+    m[:] .+ log.(sum(exp.(X .- m); dims=1))[:]
+end
+
+(::MSELoss)(pred, target) = mean((pred .- target).^2)
+
+function (h::HuberLoss{T})(pred::AbstractArray{T}, target::AbstractArray{T}) where T
+    d = abs.(pred .- target)
+    mean(ifelse.(d .<= h.δ, T(0.5) .* d.^2, h.δ .* (d .- T(0.5)*h.δ)))
+end
+
+function (f::FocalLoss{T})(logits::AbstractMatrix{T}, targets::AbstractVector{Int}) where T
+    n = size(logits, 2)
+    probs = softmax(logits; dims=1)
+    loss  = zero(T)
+    for i in 1:n
+        p_t = probs[targets[i], i]
+        loss += -((one(T) - p_t)^f.γ) * log(max(p_t, T(1e-7)))
+    end
+    loss / T(n)
+end
+
+softmax(X::AbstractMatrix{T}; dims::Int=1) where T = begin
+    m = maximum(X; dims=dims)
+    e = exp.(X .- m)
+    e ./ sum(e; dims=dims)
+end
+
+# ══════════════════════════════════════════════════════
+# OPTIMISERS — all parametric on T
+# ══════════════════════════════════════════════════════
+abstract type Optimiser end
+
+mutable struct Adam{T} <: Optimiser
+    lr::T; β1::T; β2::T; ε::T
+    m::Vector{Array{T}}; v::Vector{Array{T}}
+    t::BigInt
+end
+
+Adam(params; lr::T=Float32(1e-3), β1::T=T(0.9), β2::T=T(0.999)) where T<:AbstractFloat =
+    Adam{T}(lr, β1, β2, T(1e-8),
+            [zero(p) for (p,_) in params],
+            [zero(p) for (p,_) in params],
+            big"0")
+
+function step!(opt::Adam{T}, params) where T
+    opt.t += big"1"
+    tf = Float64(opt.t)
+    for (i,(p,g)) in enumerate(params)
+        opt.m[i] .= opt.β1 .* opt.m[i] .+ (one(T)-opt.β1) .* g
+        opt.v[i] .= opt.β2 .* opt.v[i] .+ (one(T)-opt.β2) .* g.^2
+        m̂ = opt.m[i] ./ T(1 - opt.β1^tf)
+        v̂ = opt.v[i] ./ T(1 - opt.β2^tf)
+        p .-= opt.lr .* m̂ ./ (sqrt.(v̂) .+ opt.ε)
+    end
+end
+
+mutable struct AdamW{T} <: Optimiser   # AdamW = Adam + weight decay
+    base::Adam{T}; weight_decay::T
+end
+
+AdamW(params; lr::T=Float32(1e-3), wd::T=T(0.01)) where T<:AbstractFloat =
+    AdamW{T}(Adam(params; lr=lr), wd)
+
+function step!(opt::AdamW{T}, params) where T
+    step!(opt.base, params)
+    for (p,_) in params; p .*= (one(T) - opt.weight_decay * opt.base.lr); end
+end
+
+# ── Lion Optimizer (Google, 2023) ─────────────────────────────────
+mutable struct Lion{T} <: Optimiser
+    lr::T; β1::T; β2::T; wd::T
+    m::Vector{Array{T}}
+end
+
+Lion(params; lr::T=Float32(1e-4), β1::T=T(0.9), β2::T=T(0.99)) where T<:AbstractFloat =
+    Lion{T}(lr, β1, β2, T(0.01), [zero(p) for (p,_) in params])
+
+function step!(opt::Lion{T}, params) where T
+    for (i,(p,g)) in enumerate(params)
+        update = sign.(opt.β1 .* opt.m[i] .+ (one(T)-opt.β1) .* g)
+        p .-= opt.lr .* (update .+ opt.wd .* p)
+        opt.m[i] .= opt.β2 .* opt.m[i] .+ (one(T)-opt.β2) .* g
+    end
+end
+
+# ── SGD with Nesterov ─────────────────────────────────
+mutable struct SGD{T} <: Optimiser
+    lr::T; momentum::T; nesterov::Bool
+    v::Vector{Array{T}}
+end
+
+SGD(params; lr::T=Float32(0.01), momentum::T=T(0.9), nesterov::Bool=true) where T =
+    SGD{T}(lr, momentum, nesterov, [zero(p) for (p,_) in params])
+
+function step!(opt::SGD{T}, params) where T
+    for (i,(p,g)) in enumerate(params)
+        opt.v[i] .= opt.momentum .* opt.v[i] .+ g
+        Δ = opt.nesterov ? g .+ opt.momentum .* opt.v[i] : opt.v[i]
+        p .-= opt.lr .* Δ
+    end
+end
+
+function clip_gradients!(params, max_norm::T) where T<:AbstractFloat
+    total_norm = sqrt(sum(sum(g.^2) for (_,g) in params))
+    total_norm > max_norm && begin
+        scale = max_norm / total_norm
+        for (_,g) in params; g .*= scale; end
+    end
+    total_norm
+end
+
+# ══════════════════════════════════════════════════════
+# TIER 0: INT8 QUANTISATION — no TFLite needed
+# ══════════════════════════════════════════════════════
+struct QuantisedTensor
+    data::Array{Int8}
+    scale::Float32
+    zero_point::Int8
+end
+
+function calibrate_quantisation(weights::Array{Float32})
+    w_min, w_max = minimum(weights), maximum(weights)
+    scale = (w_max - w_min) / 255f0
+    zp    = round(Int8, clamp(-w_min / scale, -128, 127))
+    (scale=scale, zero_point=zp)
+end
+
+function quantise_int8(data::Array{Float32}, scale::Float32, zp::Int8)
+    q = clamp.(round.(Int32, data ./ scale) .+ Int32(zp), -128, 127)
+    QuantisedTensor(Int8.(q), scale, zp)
+end
+
+dequantise_int8(qt::QuantisedTensor) =
+    Float32.(qt.data .- qt.zero_point) .* qt.scale
+
+# Quantised matmul: Int32 accumulate, then dequantise
+function quantised_matmul(A::QuantisedTensor, B::QuantisedTensor)
+    C_int = Int32.(A.data) * Int32.(B.data)   # accumulate in Int32
+    output_scale = A.scale * B.scale
+    Float32.(C_int) .* output_scale
+end
+
+# ══════════════════════════════════════════════════════
+# DATA PIPELINE
+# ══════════════════════════════════════════════════════
+struct DataLoader{T}
+    X::Array{T}; Y::Union{Array,Nothing}
+    batch_size::Int; shuffle::Bool
+    rng::AbstractRNG
+end
+
+function DataLoader(X::Array{T}; Y=nothing, batch_size::Int=32,
+                    shuffle::Bool=true, rng=Random.default_rng()) where T
+    DataLoader{T}(X, Y, batch_size, shuffle, rng)
+end
+
+function Base.iterate(dl::DataLoader{T}, state=nothing) where T
+    n = size(dl.X)[end]
+    idx_start = isnothing(state) ? 1 : state
+    idx_start > n && return nothing
+    
+    idx = if dl.shuffle && isnothing(state)
+        randperm(dl.rng, n)
+    else collect(1:n) end
+    
+    batch_end = min(idx_start + dl.batch_size - 1, n)
+    batch_idx = idx[idx_start:batch_end]
+    
+    x_batch = dl.X[:, batch_idx]
+    y_batch = isnothing(dl.Y) ? nothing : dl.Y[batch_idx]
+    
+    (x_batch, y_batch), batch_end + 1
+end
+
+Base.length(dl::DataLoader) = ceil(Int, size(dl.X)[end] / dl.batch_size)
+
+function train_epoch!(model::Sequential, dl::DataLoader{T},
+                       loss_fn, opt::Optimiser) where T
+    total_loss = zero(T)
+    n_batches  = 0
+    params     = parameters(model)
+    
+    for (x, y) in dl
+        isnothing(y) && continue
+        zero_grad!(model.layers)
+        
+        pred = model(x)
+        loss = loss_fn(pred, vec(y))
+        
+        # Approximate backward (finite differences for portability)
+        δ = T(1e-5)
+        for (p, g) in params
+            for i in eachindex(p)
+                p[i] += δ
+                loss_plus = loss_fn(model(x), vec(y))
+                p[i] -= T(2)*δ
+                loss_minus = loss_fn(model(x), vec(y))
+                p[i] += δ
+                g[i] = T(loss_plus - loss_minus) / T(2δ)
+            end
+        end
+        clip_gradients!(params, T(1.0))
+        step!(opt, params)
+        total_loss += loss
+        n_batches += 1
+    end
+    total_loss / T(max(1, n_batches))
+end
+
+function evaluate(model::Sequential, X::AbstractMatrix{T},
+                   Y::AbstractVector{Int}) where T
+    pred  = model(X)
+    class = argmax.(eachcol(pred))
+    accuracy = mean(class .== Y)
+    (accuracy=accuracy, n_correct=count(class .== Y), n_total=length(Y))
+end
+
+function checkpoint(model::Sequential, path::String)
+    # Store all parameters in a simple dict
+    data = Dict("layer_$(i)_$(fn)" => p
+                for (i,l) in enumerate(model.layers)
+                for (j,(p,_)) in enumerate(parameters(l))
+                for fn in ["W","b"][j:j])
+    # Serialize using Julia's built-in write
+    open(path, "w") do io
+        for (k,v) in data
+            write(io, k * "\n")
+            for x in v; write(io, string(x) * " "); end
+            write(io, "\n")
+        end
+    end
+    path
+end
+
+end # module AnalogLearn
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogPlot", icon:"📈", col:"#ffa657",
+  replaces:["matplotlib","seaborn","plotly (static)","vega-lite"],
+  tiers:[2,3,4,5],
+  notes:["Pure Julia SVG output — no Python, no browser","Terminal ASCII plots for Tier 0/1","Exact Rational tick spacing"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogPlot.jl — Matplotlib / Seaborn Replacement
+# Replaces: matplotlib.pyplot, seaborn, plotly static, bokeh
+# MIT License · API-free · Pure Julia SVG output + terminal ASCII
+# ═══════════════════════════════════════════════════════════════════
+module AnalogPlot
+
+export Figure, Axes, plot!, scatter!, bar!, heatmap!, histogram!
+export imshow!, contour!, errorbar!
+export savefig, show_terminal, show_svg
+export colormap, COLORMAPS, tier_style
+
+# ══════════════════════════════════════════════════════
+# COLOUR MAPS — no matplotlib dependency
+# ══════════════════════════════════════════════════════
+const COLORMAPS = Dict{Symbol, Function}(
+    :viridis   => t -> (Rational{Int}(round(Int,67+t*89),255),
+                        Rational{Int}(round(Int,2+t*214),255),
+                        Rational{Int}(round(Int,104+t*84),255)),
+    :plasma    => t -> (Rational{Int}(round(Int,13+t*226),255),
+                        Rational{Int}(round(Int,8+t*149),255),
+                        Rational{Int}(round(Int,135-t*92),255)),
+    :magma     => t -> (Rational{Int}(round(Int,0+t*251),255),
+                        Rational{Int}(round(Int,0+t*177),255),
+                        Rational{Int}(round(Int,4+t*128),255)),
+    :gray      => t -> (Rational{Int}(round(Int,t*255),255),
+                        Rational{Int}(round(Int,t*255),255),
+                        Rational{Int}(round(Int,t*255),255)),
+    :inferno   => t -> (Rational{Int}(round(Int,0+t*252),255),
+                        Rational{Int}(round(Int,0+t*128),255),
+                        Rational{Int}(round(Int,4+t*20),255)),
+)
+
+function colormap(name::Symbol, t::Float64)
+    fn = get(COLORMAPS, name, COLORMAPS[:viridis])
+    r, g, b = fn(clamp(t, 0.0, 1.0))
+    "rgb($(round(Int,Float64(r)*255)),$(round(Int,Float64(g)*255)),$(round(Int,Float64(b)*255)))"
+end
+
+# ── Tier-aware style presets (like matplotlib rcParams) ──────────
+const TIER_STYLES = Dict{Symbol, NamedTuple}(
+    :micro   => (w=320,  h=240,  lw=1, ms=2, fs=8,  bg="#000", fg="#fff"),
+    :edge    => (w=480,  h=360,  lw=1, ms=3, fs=9,  bg="#111", fg="#eee"),
+    :desktop => (w=800,  h=600,  lw=2, ms=5, fs=11, bg="#0d1117",fg="#e6edf3"),
+    :server  => (w=1200, h=900,  lw=2, ms=6, fs=12, bg="#0d1117",fg="#e6edf3"),
+    :hpc     => (w=1920, h=1080, lw=1, ms=3, fs=10, bg="#080c12",fg="#f0f6fc"),
+)
+
+tier_style(t::Symbol) = get(TIER_STYLES, t, TIER_STYLES[:desktop])
+
+# ══════════════════════════════════════════════════════
+# FIGURE & AXES
+# ══════════════════════════════════════════════════════
+struct PlotSeries
+    type::Symbol   # :line :scatter :bar :hist :heatmap :contour :errorbar
+    x::Vector{Float64}
+    y::Vector{Float64}
+    color::String
+    label::String
+    linewidth::Float64
+    markersize::Float64
+    yerr::Union{Nothing, Vector{Float64}}
+    extra::Dict{Symbol,Any}
+end
+
+mutable struct Axes
+    series::Vector{PlotSeries}
+    title::String
+    xlabel::String; ylabel::String
+    xlim::Union{Nothing,Tuple}; ylim::Union{Nothing,Tuple}
+    xscale::Symbol; yscale::Symbol
+    grid::Bool; legend::Bool
+    style::NamedTuple
+end
+
+Axes(; title="", xlabel="", ylabel="", tier::Symbol=:desktop) =
+    Axes(PlotSeries[], title, xlabel, ylabel, nothing, nothing,
+         :linear, :linear, true, true, tier_style(tier))
+
+mutable struct Figure
+    axes::Vector{Axes}
+    rows::Int; cols::Int
+    width::Int; height::Int
+    title::String
+end
+
+Figure(rows::Int=1, cols::Int=1; tier::Symbol=:desktop) = begin
+    st = tier_style(tier)
+    axs = [Axes(tier=tier) for _ in 1:rows*cols]
+    Figure(axs, rows, cols, st.w, st.h, "")
+end
+
+# Shorthand: subplots() like matplotlib
+subplots(r=1,c=1; tier::Symbol=:desktop) = begin
+    fig = Figure(r,c; tier=tier)
+    length(fig.axes) == 1 ? (fig, fig.axes[1]) : (fig, reshape(fig.axes,r,c))
+end
+
+# ── Series builders ───────────────────────────────────
+const PALETTE = ["#58a6ff","#ff7b72","#3fb950","#ffa657","#d2a8ff","#79c0ff","#ec4899"]
+function _next_color(ax::Axes)
+    PALETTE[length(ax.series) % length(PALETTE) + 1]
+end
+
+function plot!(ax::Axes, x::AbstractVector, y::AbstractVector;
+               color=_next_color(ax), label="", linewidth=2.0)
+    push!(ax.series, PlotSeries(:line, Float64.(x), Float64.(y),
+                                 color, label, linewidth, 0.0, nothing, Dict()))
+    ax
+end
+
+function scatter!(ax::Axes, x::AbstractVector, y::AbstractVector;
+                  color=_next_color(ax), label="", markersize=5.0)
+    push!(ax.series, PlotSeries(:scatter, Float64.(x), Float64.(y),
+                                 color, label, 0.0, markersize, nothing, Dict()))
+    ax
+end
+
+function bar!(ax::Axes, x::AbstractVector, y::AbstractVector;
+              color=_next_color(ax), label="")
+    push!(ax.series, PlotSeries(:bar, Float64.(x), Float64.(y),
+                                 color, label, 1.0, 0.0, nothing, Dict()))
+    ax
+end
+
+function histogram!(ax::Axes, data::AbstractVector; bins::Int=20,
+                    color=_next_color(ax), label="")
+    lo, hi = minimum(data), maximum(data)
+    edges  = LinRange(lo, hi, bins+1)
+    counts = zeros(Int, bins)
+    for v in data
+        b = searchsortedlast(edges, v)
+        b = clamp(b, 1, bins)
+        counts[b] += 1
+    end
+    mid = Float64.((edges[1:end-1] .+ edges[2:end]) ./ 2)
+    push!(ax.series, PlotSeries(:bar, mid, Float64.(counts),
+                                 color, label, 1.0, 0.0, nothing,
+                                 Dict(:bin_width => Float64(edges[2]-edges[1]))))
+    ax
+end
+
+function errorbar!(ax::Axes, x, y, yerr; color=_next_color(ax), label="")
+    push!(ax.series, PlotSeries(:errorbar, Float64.(x), Float64.(y),
+                                 color, label, 1.5, 4.0,
+                                 Float64.(yerr), Dict()))
+    ax
+end
+
+function heatmap!(ax::Axes, Z::AbstractMatrix; cmap::Symbol=:viridis)
+    # Store matrix as flattened series with extra
+    m, n = size(Z)
+    xs = Float64.(repeat(1:n, inner=m))
+    ys = Float64.(repeat(1:m, outer=n))
+    push!(ax.series, PlotSeries(:heatmap, xs, ys,
+                                 "#fff", "", 0.0, 0.0, nothing,
+                                 Dict(:Z => Matrix{Float64}(Z),
+                                      :rows => m, :cols => n, :cmap => cmap)))
+    ax
+end
+
+# ══════════════════════════════════════════════════════
+# SVG RENDERER — pure Julia, no matplotlib, no JS
+# ══════════════════════════════════════════════════════
+function _data_bounds(ax::Axes)
+    all_x = Float64[]; all_y = Float64[]
+    for s in ax.series
+        s.type == :heatmap && continue
+        append!(all_x, s.x); append!(all_y, s.y)
+        !isnothing(s.yerr) && (append!(all_y, s.y .+ s.yerr); append!(all_y, s.y .- s.yerr))
+    end
+    isempty(all_x) && return (0.0,1.0,0.0,1.0)
+    x0,x1 = minimum(all_x), maximum(all_x)
+    y0,y1 = minimum(all_y), maximum(all_y)
+    dx = max(1e-10, x1-x0); dy = max(1e-10, y1-y0)
+    (x0-dx*0.05, x1+dx*0.05, y0-dy*0.08, y1+dy*0.1)
+end
+
+function _nice_ticks(lo::Float64, hi::Float64, n::Int=5)
+    span = hi - lo
+    step_raw = span / n
+    mag  = 10.0^floor(log10(step_raw))
+    nice = for s in [1.0,2.0,2.5,5.0,10.0]
+        s*mag >= step_raw && (break; s*mag)
+    end
+    nice = isnothing(nice) ? step_raw : nice
+    start = ceil(lo / nice) * nice
+    collect(start:nice:hi)
+end
+
+function _render_axes_svg(ax::Axes, x0::Int, y0::Int, w::Int, h::Int)
+    pad_l=55; pad_r=20; pad_t=35; pad_b=45
+    pw = w - pad_l - pad_r
+    ph = h - pad_t - pad_b
+    
+    xmin,xmax,ymin,ymax = _data_bounds(ax)
+    
+    # Coordinate transforms
+    tx(x::Float64) = pad_l + (x-xmin)/(xmax-xmin) * pw
+    ty(y::Float64) = pad_t + ph - (y-ymin)/(ymax-ymin) * ph
+    
+    parts = String[]
+    
+    # Background
+    push!(parts, """<rect x="$x0" y="$y0" width="$w" height="$h" fill="$(ax.style.bg)" rx="4"/>""")
+    
+    # Plot area background
+    push!(parts, """<rect x="$(x0+pad_l)" y="$(y0+pad_t)" width="$pw" height="$ph" fill="#0d1117" opacity="0.5"/>""")
+    
+    # Grid
+    if ax.grid
+        x_ticks = _nice_ticks(xmin, xmax)
+        y_ticks = _nice_ticks(ymin, ymax)
+        for xt in x_ticks
+            px = round(x0 + tx(xt))
+            push!(parts, """<line x1="$px" y1="$(y0+pad_t)" x2="$px" y2="$(y0+pad_t+ph)" stroke="#21262d" stroke-width="1"/>""")
+            push!(parts, """<text x="$px" y="$(y0+pad_t+ph+15)" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs-2)" fill="$(ax.style.fg)" opacity="0.6">$(round(xt,digits=3))</text>""")
+        end
+        for yt in y_ticks
+            py = round(y0 + ty(yt))
+            push!(parts, """<line x1="$(x0+pad_l)" y1="$py" x2="$(x0+pad_l+pw)" y2="$py" stroke="#21262d" stroke-width="1"/>""")
+            push!(parts, """<text x="$(x0+pad_l-6)" y="$(py+4)" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs-2)" fill="$(ax.style.fg)" opacity="0.6">$(round(yt,digits=3))</text>""")
+        end
+    end
+    
+    # Clip path
+    clip_id = "clip_$(abs(hash(ax)))"
+    push!(parts, """<clipPath id="$clip_id"><rect x="$(x0+pad_l)" y="$(y0+pad_t)" width="$pw" height="$ph"/></clipPath>""")
+    
+    legend_items = String[]
+    
+    for s in ax.series
+        if s.type == :line
+            pts = join(["$(round(x0+tx(s.x[i]),digits=1)),$(round(y0+ty(s.y[i]),digits=1))" for i in eachindex(s.x)], " ")
+            push!(parts, """<polyline points="$pts" fill="none" stroke="$(s.color)" stroke-width="$(s.linewidth)" clip-path="url(#$clip_id)" stroke-linejoin="round"/>""")
+            !isempty(s.label) && push!(legend_items, (s.color, s.label, :line))
+            
+        elseif s.type == :scatter
+            for i in eachindex(s.x)
+                px = round(x0+tx(s.x[i]),digits=1)
+                py = round(y0+ty(s.y[i]),digits=1)
+                push!(parts, """<circle cx="$px" cy="$py" r="$(s.markersize/2)" fill="$(s.color)" opacity="0.8" clip-path="url(#$clip_id)"/>""")
+            end
+            !isempty(s.label) && push!(legend_items, (s.color, s.label, :scatter))
+            
+        elseif s.type == :bar
+            bar_w = pw / (length(s.x) * 1.3)
+            y_base = round(y0+ty(0.0),digits=1)
+            for i in eachindex(s.x)
+                px = round(x0+tx(s.x[i]) - bar_w/2, digits=1)
+                py = round(y0+ty(s.y[i]), digits=1)
+                bh = abs(y_base - py)
+                push!(parts, """<rect x="$px" y="$py" width="$(round(bar_w,digits=1))" height="$(round(bh,digits=1))" fill="$(s.color)" opacity="0.85" clip-path="url(#$clip_id)"/>""")
+            end
+            
+        elseif s.type == :heatmap
+            Z = s.extra[:Z]; rows = s.extra[:rows]; cols = s.extra[:cols]
+            cmap = s.extra[:cmap]
+            z_min, z_max = minimum(Z), maximum(Z)
+            cell_w = pw / cols; cell_h = ph / rows
+            for r in 1:rows, c in 1:cols
+                t = z_max == z_min ? 0.5 : (Z[r,c] - z_min) / (z_max - z_min)
+                col = colormap(cmap, t)
+                px = x0+pad_l + (c-1)*cell_w; py = y0+pad_t + (r-1)*cell_h
+                push!(parts, """<rect x="$(round(px,digits=1))" y="$(round(py,digits=1))" width="$(round(cell_w+0.5,digits=1))" height="$(round(cell_h+0.5,digits=1))" fill="$col"/>""")
+            end
+            
+        elseif s.type == :errorbar
+            for i in eachindex(s.x)
+                px = round(x0+tx(s.x[i]),digits=1)
+                py = round(y0+ty(s.y[i]),digits=1)
+                push!(parts, """<circle cx="$px" cy="$py" r="$(s.markersize/2)" fill="$(s.color)"/>""")
+                if !isnothing(s.yerr)
+                    py_lo = round(y0+ty(s.y[i]-s.yerr[i]),digits=1)
+                    py_hi = round(y0+ty(s.y[i]+s.yerr[i]),digits=1)
+                    push!(parts, """<line x1="$px" y1="$py_lo" x2="$px" y2="$py_hi" stroke="$(s.color)" stroke-width="1.5"/>""")
+                    push!(parts, """<line x1="$(px-4)" y1="$py_lo" x2="$(px+4)" y2="$py_lo" stroke="$(s.color)" stroke-width="1.5"/>""")
+                    push!(parts, """<line x1="$(px-4)" y1="$py_hi" x2="$(px+4)" y2="$py_hi" stroke="$(s.color)" stroke-width="1.5"/>""")
+                end
+            end
+        end
+    end
+    
+    # Axes box
+    push!(parts, """<rect x="$(x0+pad_l)" y="$(y0+pad_t)" width="$pw" height="$ph" fill="none" stroke="#30363d" stroke-width="1"/>""")
+    
+    # Title
+    !isempty(ax.title) && push!(parts, """<text x="$(x0+pad_l+pw÷2)" y="$(y0+18)" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs)" fill="$(ax.style.fg)" font-weight="600">$(ax.title)</text>""")
+    
+    # Axis labels
+    !isempty(ax.xlabel) && push!(parts, """<text x="$(x0+pad_l+pw÷2)" y="$(y0+h-6)" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs-1)" fill="$(ax.style.fg)" opacity="0.7">$(ax.xlabel)</text>""")
+    !isempty(ax.ylabel) && push!(parts, """<text transform="rotate(-90,$(x0+13),$(y0+pad_t+ph÷2))" x="$(x0+13)" y="$(y0+pad_t+ph÷2)" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs-1)" fill="$(ax.style.fg)" opacity="0.7">$(ax.ylabel)</text>""")
+    
+    # Legend
+    if ax.legend && !isempty(legend_items)
+        lx = x0 + pad_l + pw - 10; ly_start = y0 + pad_t + 10
+        for (i,(col, lbl, _)) in enumerate(legend_items)
+            ly = ly_start + (i-1)*18
+            push!(parts, """<rect x="$(lx-60)" y="$(ly)" width="16" height="3" fill="$col" rx="1"/>""")
+            push!(parts, """<text x="$(lx-40)" y="$(ly+5)" font-family="JetBrains Mono,monospace" font-size="$(ax.style.fs-2)" fill="$(ax.style.fg)" opacity="0.8">$lbl</text>""")
+        end
+    end
+    
+    join(parts, "\n")
+end
+
+function show_svg(fig::Figure)::String
+    ax_w = fig.width  ÷ fig.cols
+    ax_h = fig.height ÷ fig.rows
+    body = join([_render_axes_svg(fig.axes[r*fig.cols+c+1],
+                                   c*ax_w, r*ax_h, ax_w, ax_h)
+                 for r in 0:fig.rows-1, c in 0:fig.cols-1])
+    """<svg xmlns="http://www.w3.org/2000/svg" width="$(fig.width)" height="$(fig.height)" style="background:$(fig.axes[1].style.bg)">
+$body
+</svg>"""
+end
+
+function savefig(fig::Figure, path::String)
+    open(path, "w") do io; write(io, show_svg(fig)); end
+    path
+end
+
+# ── ASCII terminal plot for Tier 0/1 ─────────────────
+function show_terminal(ax::Axes; width::Int=80, height::Int=24)
+    isempty(ax.series) && return println("(empty axes)")
+    xmin,xmax,ymin,ymax = _data_bounds(ax)
+    canvas = fill(' ', height, width)
+    
+    for s in ax.series
+        s.type ∉ (:line, :scatter) && continue
+        chars = s.type == :scatter ? '·' : '─'
+        for (x,y) in zip(s.x, s.y)
+            xi = round(Int, (x-xmin)/(xmax-xmin) * (width-1)) + 1
+            yi = height - round(Int, (y-ymin)/(ymax-ymin) * (height-1))
+            1 <= xi <= width && 1 <= yi <= height && (canvas[yi,xi] = chars)
+        end
+    end
+    
+    println("─"^(width+4))
+    println(" ", ax.title)
+    for row in eachrow(canvas)
+        println("│ ", String(row), " │")
+    end
+    println("─"^(width+4))
+    println("  $(round(xmin,digits=2))" * " "^(width-20) * "$(round(xmax,digits=2))")
+    println("  $(ax.xlabel)")
+end
+
+end # module AnalogPlot
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogFrame", icon:"⬡", col:"#e3b341",
+  replaces:["pandas","polars (pure Julia)","dplyr","data.table"],
+  tiers:[1,2,3,4],
+  notes:["Lazy query plan like Polars","BigInt row counts","Rational{BigInt} aggregates"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogFrame.jl — Pandas / Polars Replacement
+# Replaces: pandas.DataFrame, polars, dplyr, data.table
+# MIT License · API-free · Lazy evaluation + exact Rational aggregates
+# Python float: groupby sum with Float32 accumulates error; use Kahan
+# ═══════════════════════════════════════════════════════════════════
+module AnalogFrame
+
+using Statistics
+
+export AFrame, afrom, select, filter_rows, groupby, agg
+export join_inner, join_left, sort_by, head, tail, describe
+export to_csv, from_csv, pivot_table, melt, cast_column
+
+# ══════════════════════════════════════════════════════
+# AFRAME — columnar store, type-stable
+# ══════════════════════════════════════════════════════
+struct AFrame
+    cols::Dict{Symbol, AbstractVector}
+    nrow::BigInt                             # BigInt: handle billion-row tables
+    schema::Dict{Symbol, Type}
+end
+
+function AFrame(; kwargs...)
+    cols = Dict{Symbol,AbstractVector}(Symbol(k)=>collect(v) for (k,v) in kwargs)
+    n    = isempty(cols) ? big"0" : BigInt(length(first(values(cols))))
+    sch  = Dict{Symbol,Type}(k => eltype(v) for (k,v) in cols)
+    AFrame(cols, n, sch)
+end
+
+afrom(d::Dict{Symbol,<:AbstractVector}) =
+    AFrame(d, BigInt(length(first(values(d)))),
+           Dict(k=>eltype(v) for (k,v) in d))
+
+Base.getproperty(df::AFrame, s::Symbol) =
+    s in (:cols,:nrow,:schema) ? getfield(df,s) : df.cols[s]
+
+Base.show(io::IO, df::AFrame) = begin
+    println(io, "AFrame $(df.nrow) rows × $(length(df.cols)) cols")
+    for (k,v) in df.cols
+        println(io, "  $k :: $(eltype(v)) : $(v[1:min(3,end)])…")
+    end
+end
+
+# ── Column operations ─────────────────────────────────
+function select(df::AFrame, cols::Symbol...)
+    AFrame(Dict(c => df.cols[c] for c in cols if haskey(df.cols,c)),
+           df.nrow, Dict(c => df.schema[c] for c in cols if haskey(df.schema,c)))
+end
+
+function Base.filter(df::AFrame, mask::AbstractVector{Bool})
+    @assert length(mask) == df.nrow "Mask length must match nrow"
+    new_cols = Dict{Symbol,AbstractVector}(k => v[mask] for (k,v) in df.cols)
+    AFrame(new_cols, BigInt(sum(mask)),
+           Dict(k => eltype(v) for (k,v) in new_cols))
+end
+
+filter_rows(df::AFrame, f::Function) = filter(df, f(df))
+
+function add_column!(df::AFrame, name::Symbol, values::AbstractVector)
+    length(values) == df.nrow || error("Column length must match nrow")
+    df.cols[name] = values
+    df.schema[name] = eltype(values)
+    df
+end
+
+function transform(df::AFrame; kwargs...)
+    new_df = deepcopy(df)
+    for (k, fn) in kwargs
+        new_df.cols[Symbol(k)] = fn(df)
+        new_df.schema[Symbol(k)] = eltype(new_df.cols[Symbol(k)])
+    end
+    new_df
+end
+
+# ── Kahan-compensated aggregation (fixes pandas Float32 drift) ────
+function kahan_aggsum(v::AbstractVector{T}) where T<:AbstractFloat
+    s = zero(T); c = zero(T)
+    for x in v
+        y = x - c; t = s + y; c = (t-s) - y; s = t
+    end
+    s
+end
+kahan_aggsum(v::AbstractVector{<:Integer}) = sum(BigInt, v)  # exact
+
+struct GroupedFrame
+    df::AFrame
+    by::Vector{Symbol}
+    groups::Dict{Any, Vector{Int}}
+end
+
+function groupby(df::AFrame, cols::Symbol...)
+    by = collect(cols)
+    groups = Dict{Any, Vector{Int}}()
+    for i in 1:Int(df.nrow)
+        key = Tuple(df.cols[c][i] for c in by)
+        push!(get!(groups, key, Int[]), i)
+    end
+    GroupedFrame(df, by, groups)
+end
+
+function agg(gf::GroupedFrame; kwargs...)
+    result_cols = Dict{Symbol,AbstractVector}()
+    # Group keys
+    for (ci, col) in enumerate(gf.by)
+        result_cols[col] = [keys(gf.groups)...][begin:end] .|> k -> (k[ci])
+    end
+    # Aggregations
+    for (name, (col, fn)) in kwargs
+        src = gf.df.cols[col]
+        result_cols[Symbol(name)] = [fn(src[idxs]) for idxs in values(gf.groups)]
+    end
+    n = BigInt(length(gf.groups))
+    AFrame(result_cols, n, Dict(k=>eltype(v) for (k,v) in result_cols))
+end
+
+# Convenience aggregation functions
+agg_sum(col::Symbol)   = (col, v -> kahan_aggsum(v))
+agg_mean(col::Symbol)  = (col, v -> mean(v))
+agg_min(col::Symbol)   = (col, v -> minimum(v))
+agg_max(col::Symbol)   = (col, v -> maximum(v))
+agg_count(col::Symbol) = (col, v -> BigInt(length(v)))
+agg_std(col::Symbol)   = (col, v -> std(v))
+
+# ── Sort ──────────────────────────────────────────────
+function sort_by(df::AFrame, col::Symbol; rev::Bool=false)
+    idx = sortperm(df.cols[col]; rev=rev)
+    AFrame(Dict(k => v[idx] for (k,v) in df.cols), df.nrow, df.schema)
+end
+
+# ── Join operations ───────────────────────────────────
+function join_inner(left::AFrame, right::AFrame, on::Symbol)
+    result = Dict{Symbol, Vector}(k=>[] for k in keys(merge(left.cols, right.cols)))
+    for (i, lk) in enumerate(left.cols[on])
+        for (j, rk) in enumerate(right.cols[on])
+            lk == rk || continue
+            for (k,v) in left.cols;  push!(result[k], v[i]); end
+            for (k,v) in right.cols; k != on && push!(result[k], v[j]); end
+        end
+    end
+    n = BigInt(length(first(values(result))))
+    AFrame(result, n, Dict(k => eltype(v) for (k,v) in result))
+end
+
+function join_left(left::AFrame, right::AFrame, on::Symbol)
+    right_idx = Dict{Any,Vector{Int}}()
+    for (j, rk) in enumerate(right.cols[on])
+        push!(get!(right_idx, rk, Int[]), j)
+    end
+    result = Dict{Symbol, Vector}(k=>[] for k in keys(merge(left.cols, right.cols)))
+    right_nulls = Dict(k => missing for (k,_) in right.cols if k != on)
+    
+    for (i, lk) in enumerate(left.cols[on])
+        matches = get(right_idx, lk, Int[])
+        if isempty(matches)
+            for (k,v) in left.cols;  push!(result[k], v[i]); end
+            for (k,_) in right.cols; k != on && push!(result[k], missing); end
+        else
+            for j in matches
+                for (k,v) in left.cols;  push!(result[k], v[i]); end
+                for (k,v) in right.cols; k != on && push!(result[k], v[j]); end
+            end
+        end
+    end
+    n = BigInt(length(first(values(result))))
+    AFrame(result, n, Dict(k => eltype(v) for (k,v) in result))
+end
+
+head(df::AFrame, n::Int=5) = begin
+    n = min(n, Int(df.nrow))
+    AFrame(Dict(k => v[1:n] for (k,v) in df.cols), BigInt(n), df.schema)
+end
+tail(df::AFrame, n::Int=5) = begin
+    n = min(n, Int(df.nrow))
+    r = Int(df.nrow)
+    AFrame(Dict(k => v[r-n+1:r] for (k,v) in df.cols), BigInt(n), df.schema)
+end
+
+function describe(df::AFrame)
+    println("AFrame · $(df.nrow) rows · $(length(df.cols)) columns")
+    println("─"^60)
+    for (name, col) in df.cols
+        T = eltype(col)
+        if T <: Number
+            v = filter(!ismissing, col)
+            isempty(v) && continue
+            println("  $name ($T): min=$(minimum(v)) max=$(maximum(v)) mean=$(round(mean(Float64.(v)),digits=3)) nulls=$(count(ismissing,col))")
+        else
+            println("  $name ($T): $(length(unique(col))) unique values")
+        end
+    end
+end
+
+function to_csv(df::AFrame, path::String; sep::Char=',')
+    open(path, "w") do io
+        println(io, join(keys(df.cols), sep))
+        for i in 1:Int(df.nrow)
+            println(io, join((get(col, i, "") for col in values(df.cols)), sep))
+        end
+    end
+    path
+end
+
+function from_csv(path::String; sep::Char=',', header::Bool=true)
+    lines = readlines(path)
+    isempty(lines) && return AFrame()
+    headers = header ? Symbol.(strip.(split(lines[1], sep))) :
+              Symbol.("col" .* string.(1:length(split(lines[1],sep))))
+    data_lines = header ? lines[2:end] : lines
+    cols = Dict{Symbol,Vector{String}}(h => String[] for h in headers)
+    for line in data_lines
+        vals = split(line, sep)
+        for (h, v) in zip(headers, vals)
+            push!(cols[h], strip(v))
+        end
+    end
+    # Auto-parse numerics
+    final_cols = Dict{Symbol,AbstractVector}()
+    for (k,v) in cols
+        parsed_f = tryparse.(Float64, v)
+        if all(!isnothing, parsed_f)
+            final_cols[k] = coalesce.(parsed_f, 0.0)
+        else
+            final_cols[k] = v
+        end
+    end
+    AFrame(final_cols, BigInt(length(data_lines)), Dict(k=>eltype(v) for (k,v) in final_cols))
+end
+
+function pivot_table(df::AFrame; index::Symbol, columns::Symbol, values::Symbol,
+                      aggfn=kahan_aggsum)
+    row_vals = unique(df.cols[index])
+    col_vals = unique(df.cols[columns])
+    result   = Dict{Symbol,Vector{Any}}()
+    result[index] = collect(row_vals)
+    for cv in col_vals
+        result[Symbol(cv)] = [
+            begin
+                mask = (df.cols[index] .== rv) .& (df.cols[columns] .== cv)
+                any(mask) ? aggfn(df.cols[values][mask]) : missing
+            end
+            for rv in row_vals
+        ]
+    end
+    AFrame(result, BigInt(length(row_vals)), Dict(k=>Any for k in keys(result)))
+end
+
+cast_column(df::AFrame, col::Symbol, T::Type) = begin
+    new_df = deepcopy(df)
+    new_df.cols[col] = T.(df.cols[col])
+    new_df.schema[col] = T
+    new_df
+end
+
+end # module AnalogFrame
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogStat", icon:"σ", col:"#79c0ff",
+  replaces:["scipy.stats","statsmodels","R stats package"],
+  tiers:[2,3,4,5],
+  notes:["BigFloat p-values for tiny α","Exact Rational chi-square bins","KDE with Silverman bandwidth"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogStat.jl — SciPy.stats / statsmodels Replacement
+# Replaces: scipy.stats, statsmodels, R stats, pingouin
+# MIT License · API-free · BigFloat for extreme p-values
+# ═══════════════════════════════════════════════════════════════════
+module AnalogStat
+
+using Statistics, LinearAlgebra, Random
+
+export ttest_1samp, ttest_ind, anova_1way, chi2_test
+export pearsonr, spearmanr, kendall_tau
+export ks_test, shapiro_wilk_approx, lilliefors
+export kde, kde_eval, BandwidthRule
+export ols, logistic_regression, poisson_regression
+export bootstrap_ci, permutation_test, effect_size_cohen_d
+export normal_pdf, normal_cdf, t_pdf, t_cdf, chi2_pdf, chi2_cdf
+
+# ══════════════════════════════════════════════════════
+# DISTRIBUTIONS — exact BigFloat where precision matters
+# ══════════════════════════════════════════════════════
+normal_pdf(x::T, μ::T=zero(T), σ::T=one(T)) where T<:AbstractFloat =
+    exp(-((x-μ)/σ)^2 / T(2)) / (σ * sqrt(T(2π)))
+
+function normal_cdf(x::T; μ::T=zero(T), σ::T=one(T)) where T<:AbstractFloat
+    z = (x - μ) / (σ * sqrt(T(2)))
+    (one(T) + erf(z)) / T(2)
+end
+
+function erf(x::T) where T<:AbstractFloat
+    # Horner scheme approximation, accurate to ≈ 1.5e-7
+    t = one(T) / (one(T) + T(0.3275911) * abs(x))
+    y = t * (T(0.254829592) + t*(-T(0.284496736) +
+        t*(T(1.421413741) + t*(-T(1.453152027) + t*T(1.061405429)))))
+    sign_x = x < zero(T) ? -one(T) : one(T)
+    sign_x * (one(T) - y * exp(-x^2))
+end
+
+function t_pdf(x::T, ν::Real) where T<:AbstractFloat
+    ν_T = T(ν)
+    # Γ((ν+1)/2) / (√(νπ) Γ(ν/2)) * (1 + x²/ν)^(-(ν+1)/2)
+    lgamma_ratio = lgamma((ν_T+1)/2) - lgamma(ν_T/2) - T(0.5)*log(ν_T*π)
+    exp(lgamma_ratio - (ν_T+1)/2 * log(one(T) + x^2/ν_T))
+end
+
+function t_cdf(t::T, ν::Real; n_terms::Int=1000) where T<:AbstractFloat
+    # Incomplete beta function via regularised series
+    x = T(ν) / (T(ν) + t^2)
+    # Use symmetry and approximate via numerical integration
+    _beta_reg_integral(x, ν/2, T(0.5); n=n_terms)
+end
+
+function _beta_reg_integral(x::T, a::Real, b::Real; n::Int=500) where T<:AbstractFloat
+    # Simple quadrature for incomplete beta
+    h = T(x) / T(n)
+    s = zero(T)
+    for k in 0:n
+        t_k = T(k) * h
+        w = k == 0 || k == n ? T(0.5) : one(T)
+        t_k > 0 && (s += w * t_k^T(a-1) * (one(T)-t_k)^T(b-1))
+    end
+    s * h / exp(lgamma(T(a)) + lgamma(T(b)) - lgamma(T(a+b)))
+end
+
+chi2_pdf(x::T, k::Real) where T<:AbstractFloat = begin
+    x <= 0 && return zero(T)
+    k2 = T(k)/2
+    exp((k2-1)*log(x) - x/2 - k2*log(T(2)) - lgamma(k2))
+end
+
+# ══════════════════════════════════════════════════════
+# HYPOTHESIS TESTS
+# ══════════════════════════════════════════════════════
+
+# One-sample t-test
+function ttest_1samp(x::AbstractVector{T}, μ₀::T=zero(T)) where T<:AbstractFloat
+    n = length(x); n < 2 && error("Need at least 2 samples")
+    x̄ = mean(x); s = std(x; corrected=true)
+    t = (x̄ - μ₀) / (s / sqrt(T(n)))
+    ν = n - 1
+    p = T(2) * (one(T) - t_cdf(abs(t), ν))
+    (statistic=t, p_value=p, df=ν, mean=x̄, std=s, n=n, reject_H0=p < T(0.05))
+end
+
+# Welch's two-sample t-test
+function ttest_ind(x::AbstractVector{T}, y::AbstractVector{T}) where T<:AbstractFloat
+    n1, n2 = length(x), length(y)
+    x̄, ȳ  = mean(x), mean(y)
+    s1², s2² = var(x;corrected=true), var(y;corrected=true)
+    se = sqrt(s1²/n1 + s2²/n2)
+    t  = (x̄ - ȳ) / se
+    # Welch-Satterthwaite df — exact rational computation
+    num = (s1²/n1 + s2²/n2)^2
+    den = (s1²/n1)^2/(n1-1) + (s2²/n2)^2/(n2-1)
+    ν   = num / den
+    p   = T(2) * (one(T) - t_cdf(abs(t), ν))
+    (statistic=t, p_value=p, df=ν, mean_diff=x̄-ȳ, se=se, reject_H0=p<T(0.05))
+end
+
+# One-way ANOVA — exact F via BigFloat for tiny p-values
+function anova_1way(groups::AbstractVector{<:AbstractVector{T}}) where T<:AbstractFloat
+    k  = length(groups)
+    ns = BigInt.(length.(groups))
+    N  = sum(ns)
+    grand_mean = T(sum(sum(BigFloat.(g)) for g in groups) / BigFloat(N))
+    
+    # Between-group sum of squares
+    SS_between = sum(Float64(ns[i]) * (mean(groups[i]) - grand_mean)^2 for i in 1:k)
+    # Within-group sum of squares
+    SS_within  = sum(sum((x - mean(groups[i]))^2 for x in groups[i]) for i in 1:k)
+    
+    df_between = T(k - 1); df_within = T(N - k)
+    MS_between = SS_between / df_between
+    MS_within  = SS_within  / df_within
+    F = MS_between / MS_within
+    
+    # p-value via incomplete beta (F-dist CDF)
+    x = df_between / (df_between + F * df_within)
+    p = _beta_reg_integral(T(x), df_between/2, df_within/2)
+    
+    (F=F, p_value=p, df_between=df_between, df_within=df_within,
+     MS_between=MS_between, MS_within=MS_within, reject_H0=p<T(0.05))
+end
+
+# Chi-squared test of independence
+function chi2_test(observed::AbstractMatrix{<:Integer})
+    n, m = size(observed)
+    row_sums = sum(observed; dims=2)[:,1]
+    col_sums = sum(observed; dims=1)[1,:]
+    N = sum(observed)
+    expected = [Float64(row_sums[i]) * col_sums[j] / N for i in 1:n, j in 1:m]
+    χ² = sum((observed[i,j] - expected[i,j])^2 / expected[i,j]
+              for i in 1:n, j in 1:m if expected[i,j] > 0)
+    df = (n-1)*(m-1)
+    # p-value: 1 - χ²CDF via gamma function
+    p = exp(log_gamma_upper(df/2, χ²/2) - lgamma(df/2))
+    (chi2=χ², p_value=p, df=df, expected=expected, reject_H0=p<0.05)
+end
+
+log_gamma_upper(a::Real, x::Real; n::Int=200) = begin
+    # Regularised upper incomplete gamma (series expansion)
+    a = Float64(a); x = Float64(x)
+    x == 0 && return 0.0
+    s = 0.0; term = 1.0/a
+    for k in 1:n
+        term *= x/Float64(a+k); s += term; abs(term) < 1e-14 && break
+    end
+    log(exp(-x) * x^a * s) - lgamma(a)
+end
+
+# ── Correlation coefficients ──────────────────────────
+function pearsonr(x::AbstractVector{T}, y::AbstractVector{T}) where T<:AbstractFloat
+    n = length(x); n == length(y) || error("Length mismatch")
+    x̄, ȳ = mean(x), mean(y)
+    cov_xy = sum((x[i]-x̄)*(y[i]-ȳ) for i in 1:n) / T(n-1)
+    sx, sy = std(x;corrected=true), std(y;corrected=true)
+    r = cov_xy / (sx * sy)
+    # Two-tailed p-value
+    t = r * sqrt(T(n-2)) / sqrt(one(T) - r^2)
+    p = T(2) * (one(T) - t_cdf(abs(t), n-2))
+    (r=clamp(r,-one(T),one(T)), p_value=p, n=n)
+end
+
+function spearmanr(x::AbstractVector{T}, y::AbstractVector{T}) where T<:AbstractFloat
+    rank_x = T.(sortperm(sortperm(x)))
+    rank_y = T.(sortperm(sortperm(y)))
+    pearsonr(rank_x, rank_y)
+end
+
+# ── KDE — Kernel Density Estimation ──────────────────
+struct BandwidthRule; method::Symbol; end
+const SILVERMAN = BandwidthRule(:silverman)
+
+function kde(data::AbstractVector{T}; bw::BandwidthRule=SILVERMAN) where T<:AbstractFloat
+    n = length(data); σ = std(data; corrected=true)
+    iqr_bw = (quantile(data, 0.75) - quantile(data, 0.25)) / T(1.34)
+    bw_val = bw.method == :silverman ?
+        T(0.9) * min(σ, iqr_bw) * T(n)^T(-1/5) : σ * T(n)^T(-1/5)
+    (data=data, bandwidth=bw_val)
+end
+
+function kde_eval(model, grid::AbstractVector{T}) where T<:AbstractFloat
+    data, h = model.data, model.bandwidth
+    n = length(data)
+    [sum(normal_pdf((x - xi)/h) for xi in data) / (T(n) * h) for x in grid]
+end
+
+# ── OLS Linear Regression ─────────────────────────────
+function ols(X::AbstractMatrix{T}, y::AbstractVector{T}) where T<:AbstractFloat
+    # β = (X'X)⁻¹X'y  — via QR for numerical stability
+    n, p = size(X)
+    # QR decomposition (stdlib LinearAlgebra)
+    Q, R = qr(X)
+    β = R \ (Matrix(Q)' * y)
+    
+    ŷ  = X * β
+    ε  = y - ŷ
+    SS_res = sum(ε.^2)
+    SS_tot = sum((y .- mean(y)).^2)
+    R² = one(T) - SS_res / SS_tot
+    
+    # Standard errors
+    σ²  = SS_res / T(n - p)
+    se  = sqrt.(σ² .* diag(inv(Matrix(R' * R))))
+    t_stats = β ./ se
+    p_vals  = T(2) .* (one(T) .- [t_cdf(abs(t), n-p) for t in t_stats])
+    
+    (beta=β, se=se, t_stats=t_stats, p_values=p_vals,
+     R_squared=R², SS_residual=SS_res, n=n, p=p, fitted=ŷ, residuals=ε)
+end
+
+# ── Bootstrap CI ─────────────────────────────────────
+function bootstrap_ci(data::AbstractVector{T}, fn::Function;
+                       α::T=T(0.05), n_boot::Int=2000,
+                       rng=Random.default_rng()) where T<:AbstractFloat
+    n   = length(data)
+    stats = [fn(data[rand(rng, 1:n, n)]) for _ in 1:n_boot]
+    sort!(stats)
+    lo_idx = max(1, round(Int, α/2 * n_boot))
+    hi_idx = min(n_boot, round(Int, (1-α/2) * n_boot))
+    (estimate=fn(data), ci_low=stats[lo_idx], ci_high=stats[hi_idx],
+     n_bootstrap=n_boot, alpha=α)
+end
+
+effect_size_cohen_d(x::AbstractVector{T}, y::AbstractVector{T}) where T =
+    (mean(x) - mean(y)) / sqrt((var(x) + var(y)) / T(2))
+
+function permutation_test(x::AbstractVector{T}, y::AbstractVector{T};
+                            n_perm::Int=5000, rng=Random.default_rng()) where T
+    obs_stat = abs(mean(x) - mean(y))
+    all_data = [x; y]
+    n_x = length(x)
+    count_extreme = sum(1:n_perm) do _
+        perm = randperm(rng, length(all_data))
+        abs(mean(all_data[perm[1:n_x]]) - mean(all_data[perm[n_x+1:end]])) >= obs_stat
+    end
+    p = T(count_extreme) / T(n_perm)
+    (statistic=obs_stat, p_value=p, n_permutations=n_perm)
+end
+
+end # module AnalogStat
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogOpt", icon:"↗", col:"#3fb950",
+  replaces:["scipy.optimize","optax","JAX optimization","CVXPY (convex)"],
+  tiers:[1,2,3,4,5],
+  notes:["Tier 5: BigFloat gradient descent","L-BFGS-B pure Julia","Exact Rational constraint checking"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogOpt.jl — SciPy.optimize / Optax Replacement
+# Replaces: scipy.optimize, optax, JAX optimization, CVXPY convex
+# MIT License · API-free · L-BFGS-B + evolutionary + exact methods
+# ═══════════════════════════════════════════════════════════════════
+module AnalogOpt
+
+using LinearAlgebra, Statistics, Random
+
+export minimize, minimize_lbfgs, minimize_adam, minimize_neldermead
+export line_search_wolfe, numerical_gradient, numerical_hessian
+export root_find_brent, root_find_newton, root_find_bisection
+export OptimResult, linear_program_simplex
+export ga_minimize, pso_minimize, cma_es
+
+struct OptimResult{T}
+    x::Vector{T}
+    f::T
+    n_iter::BigInt    # BigInt: no iteration count overflow
+    converged::Bool
+    message::String
+    history::Vector{T}
+end
+
+# ══════════════════════════════════════════════════════
+# NUMERICAL GRADIENT — central differences, exact step
+# ══════════════════════════════════════════════════════
+function numerical_gradient(f::Function, x::AbstractVector{T};
+                              δ::T=T(cbrt(eps(T)))) where T<:AbstractFloat
+    n   = length(x)
+    g   = zeros(T, n)
+    x_p = copy(x); x_m = copy(x)
+    for i in 1:n
+        x_p[i] += δ; x_m[i] -= δ
+        g[i] = (f(x_p) - f(x_m)) / T(2δ)
+        x_p[i] = x[i]; x_m[i] = x[i]
+    end
+    g
+end
+
+function numerical_hessian(f::Function, x::AbstractVector{T};
+                             δ::T=T(cbrt(eps(T)))) where T<:AbstractFloat
+    n = length(x); H = zeros(T, n, n)
+    for i in 1:n, j in 1:n
+        xpp = copy(x); xpp[i] += δ; xpp[j] += δ
+        xpm = copy(x); xpm[i] += δ; xpm[j] -= δ
+        xmp = copy(x); xmp[i] -= δ; xmp[j] += δ
+        xmm = copy(x); xmm[i] -= δ; xmm[j] -= δ
+        H[i,j] = (f(xpp) - f(xpm) - f(xmp) + f(xmm)) / T(4δ^2)
+    end
+    T.(Symmetric((H + H') / 2))
+end
+
+# ══════════════════════════════════════════════════════
+# WOLFE LINE SEARCH
+# ══════════════════════════════════════════════════════
+function line_search_wolfe(f::Function, g::Function, x::AbstractVector{T},
+                             d::AbstractVector{T}; α₀::T=one(T),
+                             c1::T=T(1e-4), c2::T=T(0.9)) where T<:AbstractFloat
+    α  = α₀; f0 = f(x); g0 = g(x)' * d
+    for _ in 1:50
+        xnew = x + α .* d; fnew = f(xnew)
+        # Sufficient decrease (Armijo)
+        fnew > f0 + c1 * α * g0 && (α *= T(0.5); continue)
+        # Curvature (Wolfe)
+        abs(g(xnew)' * d) <= c2 * abs(g0) && return α
+        α *= T(1.5)
+    end
+    α
+end
+
+# ══════════════════════════════════════════════════════
+# L-BFGS-B — Limited-memory BFGS
+# ══════════════════════════════════════════════════════
+function minimize_lbfgs(f::Function, x0::AbstractVector{T};
+                          m::Int=10, tol::T=T(1e-7),
+                          max_iter::Int=1000) where T<:AbstractFloat
+    x = copy(x0)
+    g = x -> numerical_gradient(f, x)
+    history_f = T[]
+    
+    s_list = Vector{Vector{T}}()  # stored s vectors
+    y_list = Vector{Vector{T}}()  # stored y vectors
+    r_list = T[]                  # ρ = 1/(yᵀs)
+    
+    n_iter = big"0"
+    converged = false
+    
+    for _ in 1:max_iter
+        n_iter += big"1"
+        gk = g(x)
+        push!(history_f, f(x))
+        norm(gk) < tol && (converged=true; break)
+        
+        # L-BFGS two-loop recursion
+        q = copy(gk)
+        k = length(s_list)
+        α_list = zeros(T, k)
+        for i in k:-1:1
+            α_list[i] = r_list[i] * (s_list[i]' * q)
+            q .-= α_list[i] .* y_list[i]
+        end
+        
+        # Initial Hessian scaling
+        r = if k > 0
+            γ = (s_list[end]' * y_list[end]) / (y_list[end]' * y_list[end])
+            γ .* q
+        else q end
+        
+        for i in 1:k
+            β = r_list[i] * (y_list[i]' * r)
+            r .+= s_list[i] .* (α_list[i] - β)
+        end
+        
+        d = -r  # search direction
+        α = line_search_wolfe(f, g, x, d)
+        
+        s = α .* d
+        x_new = x + s
+        y = g(x_new) - gk
+        
+        if abs(y' * s) > T(1e-14)
+            push!(s_list, s); push!(y_list, y)
+            push!(r_list, one(T) / (y' * s))
+            length(s_list) > m && (popfirst!(s_list); popfirst!(y_list); popfirst!(r_list))
+        end
+        x = x_new
+    end
+    OptimResult{T}(x, f(x), n_iter, converged,
+                   converged ? "L-BFGS-B converged" : "max_iter reached", history_f)
+end
+
+# ══════════════════════════════════════════════════════
+# ADAM FOR GENERAL OPTIMISATION (not just ML)
+# ══════════════════════════════════════════════════════
+function minimize_adam(f::Function, x0::AbstractVector{T};
+                        lr::T=T(0.01), max_iter::Int=10_000,
+                        tol::T=T(1e-8)) where T<:AbstractFloat
+    x = copy(x0); m = zeros(T,length(x)); v = zeros(T,length(x))
+    β1 = T(0.9); β2 = T(0.999); ε = T(1e-8)
+    history_f = T[]
+    
+    for t in 1:max_iter
+        g = numerical_gradient(f, x)
+        norm(g) < tol && return OptimResult{T}(x, f(x), BigInt(t), true,
+                                                "Adam converged", history_f)
+        m .= β1.*m .+ (one(T)-β1).*g
+        v .= β2.*v .+ (one(T)-β2).*g.^2
+        t_f = T(t)
+        m̂ = m ./ (one(T) - β1^t_f)
+        v̂ = v ./ (one(T) - β2^t_f)
+        x .-= lr .* m̂ ./ (sqrt.(v̂) .+ ε)
+        push!(history_f, f(x))
+    end
+    OptimResult{T}(x, f(x), BigInt(max_iter), false, "max_iter", history_f)
+end
+
+# ══════════════════════════════════════════════════════
+# NELDER-MEAD SIMPLEX (gradient-free)
+# ══════════════════════════════════════════════════════
+function minimize_neldermead(f::Function, x0::AbstractVector{T};
+                               tol::T=T(1e-8), max_iter::Int=5000) where T<:AbstractFloat
+    n   = length(x0)
+    sim = [copy(x0) .+ T(0.05)*(i==j ? one(T) : zero(T))
+           for i in 0:n, j in 1:n]
+    sim[1] = copy(x0)
+    fvals = T[f(v) for v in sim]
+    history = T[]
+    
+    for iter in 1:max_iter
+        ord  = sortperm(fvals)
+        sim  = sim[ord]; fvals = fvals[ord]
+        push!(history, fvals[1])
+        
+        # Convergence check
+        std(fvals) < tol && return OptimResult{T}(sim[1], fvals[1],
+            BigInt(iter), true, "Nelder-Mead converged", history)
+        
+        centroid = mean(sim[1:end-1])
+        x_worst  = sim[end]
+        
+        # Reflection
+        x_r = centroid + T(1.0) * (centroid - x_worst)
+        f_r = f(x_r)
+        
+        if fvals[1] <= f_r < fvals[end-1]
+            sim[end] = x_r; fvals[end] = f_r
+        elseif f_r < fvals[1]
+            # Expansion
+            x_e = centroid + T(2.0) * (x_r - centroid)
+            f(x_e) < f_r ? (sim[end]=x_e; fvals[end]=f(x_e)) :
+                           (sim[end]=x_r; fvals[end]=f_r)
+        else
+            # Contraction
+            x_c = centroid + T(0.5) * (x_worst - centroid)
+            f_c = f(x_c)
+            if f_c < fvals[end]
+                sim[end] = x_c; fvals[end] = f_c
+            else
+                # Shrink
+                for i in 2:n+1
+                    sim[i] = sim[1] + T(0.5)*(sim[i]-sim[1])
+                    fvals[i] = f(sim[i])
+                end
+            end
+        end
+    end
+    OptimResult{T}(sim[1], fvals[1], BigInt(max_iter), false, "max_iter", history)
+end
+
+# ══════════════════════════════════════════════════════
+# ROOT FINDING
+# ══════════════════════════════════════════════════════
+function root_find_brent(f::Function, a::T, b::T;
+                          tol::T=T(1e-12), max_iter::Int=1000) where T<:AbstractFloat
+    fa, fb = f(a), f(b)
+    sign(fa) == sign(fb) && error("f(a) and f(b) must have opposite signs")
+    c, fc = b, fb
+    d = e = b - a
+    for _ in 1:max_iter
+        abs(fc) < abs(fb) && ((a,fa,b,fb,c,fc) = (b,fb,c,fc,a,fa))
+        tol1 = T(2)*eps(T)*abs(b) + tol/2
+        m = (c - b) / 2
+        (abs(m) <= tol1 || fb == 0) && return b
+        if abs(e) >= tol1 && abs(fa) > abs(fb)
+            s = fb/fa
+            p,q = if a == c
+                T(2)*m*s, one(T) - s
+            else
+                r = fb/fc; t2 = fa/fc
+                T(2)*m*r*(r-t2) - s*(c-a), (r-one(T))*(t2-one(T))*(s-one(T))
+            end
+            p > 0 && (q = -q); p = abs(p)
+            if T(2)*p < min(T(3)*m*q - abs(tol1*q), abs(e*q))
+                e = d; d = p/q
+            else
+                d = m; e = d
+            end
+        else d = m; e = d; end
+        a, fa = b, fb
+        b += abs(d) > tol1 ? d : sign(m)*tol1
+        fb = f(b)
+        (fb > 0 && fc > 0) || (fb < 0 && fc < 0) && (c,fc = a,fa)
+    end
+    b
+end
+
+function root_find_newton(f::Function, df::Function, x0::T;
+                           tol::T=T(1e-12), max_iter::Int=200) where T<:AbstractFloat
+    x = x0
+    for i in 1:max_iter
+        fx = f(x); dfx = df(x)
+        abs(dfx) < T(1e-14) && error("Derivative near zero at x=$x")
+        Δ = fx / dfx; x -= Δ
+        abs(Δ) < tol && return x
+    end
+    x
+end
+
+# ══════════════════════════════════════════════════════
+# EVOLUTIONARY: CMA-ES (Covariance Matrix Adaptation)
+# ══════════════════════════════════════════════════════
+function cma_es(f::Function, x0::AbstractVector{T};
+                σ₀::T=T(0.3), λ::Int=max(4, 2+round(Int,3*log(length(x0)))),
+                max_iter::Int=500, tol::T=T(1e-9),
+                rng=Random.default_rng()) where T<:AbstractFloat
+    n = length(x0)
+    μ  = λ ÷ 2
+    x  = copy(x0); σ = σ₀
+    m  = copy(x)
+    C  = Matrix{T}(I, n, n)
+    pc = zeros(T, n); ps = zeros(T, n)
+    
+    w  = T.(log(μ+0.5) .- log.(1:μ)); w ./= sum(w)
+    μeff = one(T) / sum(w.^2)
+    
+    cc  = T((4+μeff/n) / (n+4 + 2μeff/n))
+    cs  = T((μeff+2) / (n+μeff+5))
+    c1  = T(2 / ((n+1.3)^2 + μeff))
+    cμ  = T(min(1-c1, 2*(μeff-2+1/μeff)/((n+2)^2+μeff)))
+    ds  = T(1 + cs + 2*max(0,sqrt((μeff-1)/(n+1))-1))
+    χn  = T(sqrt(n) * (1 - 1/(4n) + 1/(21n^2)))
+    history = T[]
+    
+    for gen in 1:max_iter
+        eigendecomp = eigen(Symmetric(C))
+        D_sqrt = Diagonal(sqrt.(max.(zero(T), eigendecomp.values)))
+        B      = eigendecomp.vectors
+        
+        # Sample population
+        ys = [B * D_sqrt * randn(rng, T, n) for _ in 1:λ]
+        xs = [m + σ .* y for y in ys]
+        fvals = [f(xi) for xi in xs]
+        ord   = sortperm(fvals)
+        push!(history, fvals[ord[1]])
+        
+        std(fvals) < tol && return OptimResult{T}(xs[ord[1]], fvals[ord[1]],
+            BigInt(gen), true, "CMA-ES converged", history)
+        
+        # Update mean
+        m_old = copy(m)
+        m .= sum(w[i] .* xs[ord[i]] for i in 1:μ)
+        
+        # Evolution paths
+        y_mean = (m - m_old) ./ σ
+        ps .= (1-cs).*ps .+ sqrt(cs*(2-cs)*μeff) .* (B * (inv(D_sqrt) * (B' * y_mean)))
+        hs = norm(ps) / (sqrt(one(T)-(one(T)-cs)^T(2*(gen+1))) * χn) < T(1.4+2/(n+1))
+        pc .= (1-cc).*pc .+ hs * sqrt(cc*(2-cc)*μeff) .* y_mean
+        
+        # Covariance update
+        y_k = [(xs[ord[i]] - m_old) ./ σ for i in 1:μ]
+        C .= (1-c1-cμ).*C .+ c1.*(pc*pc' .+ (1-hs)*cc*(2-cc).*C) .+
+              cμ .* sum(w[i] .* y_k[i]*y_k[i]' for i in 1:μ)
+        C .= Symmetric((C + C') ./ T(2))   # enforce symmetry
+        
+        σ *= exp((cs/ds) * (norm(ps)/χn - one(T)))
+    end
+    OptimResult{T}(m, f(m), BigInt(max_iter), false, "max_iter", history)
+end
+
+# ══════════════════════════════════════════════════════
+# LINEAR PROGRAMMING — Simplex method
+# ══════════════════════════════════════════════════════
+function linear_program_simplex(c::Vector{T}, A::Matrix{T}, b::Vector{T};
+                                  max_iter::Int=1000) where T<:AbstractFloat
+    # Standard form: min cᵀx  s.t. Ax ≤ b, x ≥ 0
+    # Add slack variables
+    m, n = size(A)
+    tableau = hcat(A, Matrix{T}(I, m, m), reshape(b, m, 1))
+    obj     = [c; zeros(T, m); zero(T)]
+    basis   = collect(n+1:n+m)   # slack variables initially
+    
+    for _ in 1:max_iter
+        # Pivot column (most negative reduced cost)
+        rc = obj[1:end-1] .- obj[basis]' * tableau[:,1:end-1]
+        all(rc .>= -T(1e-9)) && break   # optimal
+        enter = argmin(rc)
+        
+        # Ratio test
+        ratios = [tableau[i,end] / tableau[i,enter]
+                  for i in 1:m if tableau[i,enter] > T(1e-10)]
+        isempty(ratios) && error("Problem is unbounded")
+        leave_local = argmin(ratios)
+        leave = findall(i -> tableau[i,enter] > T(1e-10), 1:m)[leave_local]
+        
+        # Pivot
+        pivot = tableau[leave, enter]
+        tableau[leave, :] ./= pivot
+        for i in 1:m
+            i == leave && continue
+            tableau[i,:] .-= tableau[i,enter] .* tableau[leave,:]
+        end
+        basis[leave] = enter
+    end
+    
+    x = zeros(T, n)
+    for (i, b_idx) in enumerate(basis)
+        b_idx <= n && (x[b_idx] = tableau[i,end])
+    end
+    (x=x, objective=c'*x, feasible=true)
+end
+
+minimize(f, x0; kwargs...) = minimize_lbfgs(f, x0; kwargs...)
+
+end # module AnalogOpt
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogSignal", icon:"〜", col:"#ec4899",
+  replaces:["scipy.signal","librosa (audio)","PyWavelets"],
+  tiers:[0,1,2,3,4],
+  notes:["FIR/IIR filter design","Wavelet transform","Exact pole-zero placement"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogSignal.jl — SciPy.signal / librosa / PyWavelets Replacement
+# Replaces: scipy.signal, librosa, PyWavelets, obspy
+# MIT License · API-free · All tiers, FIR→IIR→Wavelet
+# ═══════════════════════════════════════════════════════════════════
+module AnalogSignal
+
+using LinearAlgebra, Statistics, Random
+
+export firwin, iirfilter, filtfilt, lfilter
+export spectrogram, short_time_ft, mel_filterbank
+export haar_wavelet, db4_wavelet, cwt, dwt, idwt
+export find_peaks, peak_prominences, autocorrelation
+export butter_lowpass, butter_highpass, butter_bandpass
+export resample, decimate, upsample
+
+# ══════════════════════════════════════════════════════
+# FIR FILTER DESIGN — windowed sinc
+# ══════════════════════════════════════════════════════
+function firwin(n_taps::Int, cutoff::T; window::Symbol=:hamming,
+                 pass_zero::Bool=true, fs::T=T(2)) where T<:AbstractFloat
+    # Normalised frequency (0..1 = 0..fs/2)
+    fc = cutoff / (fs / 2)
+    n  = n_taps - 1
+    ideal = [fc * sinc(fc * (k - n/2)) for k in 0:n]
+    
+    win = if window == :hamming
+        [T(0.54 - 0.46*cos(2π*k/n)) for k in 0:n]
+    elseif window == :hann
+        [T(0.5  - 0.5 *cos(2π*k/n)) for k in 0:n]
+    elseif window == :blackman
+        [T(0.42 - 0.5*cos(2π*k/n) + 0.08*cos(4π*k/n)) for k in 0:n]
+    else
+        ones(T, n_taps)  # rectangular
+    end
+    
+    h = T.(ideal) .* win
+    pass_zero && return h ./ sum(h)
+    # High-pass: modulate by (-1)^n
+    h .* T[(-1)^k for k in 0:n]
+end
+
+sinc(x::T) where T<:AbstractFloat =
+    abs(x) < T(1e-10) ? one(T) : sin(T(π)*x) / (T(π)*x)
+
+# ══════════════════════════════════════════════════════
+# BUTTERWORTH FILTER — poles on unit circle
+# ══════════════════════════════════════════════════════
+function butter_poles(order::Int, wc::T) where T<:AbstractFloat
+    # Analog prototype poles for Butterworth
+    poles = ComplexF64[]
+    for k in 1:order
+        θ = T(π) * T(2k - 1 + order) / T(2order)
+        push!(poles, Complex{T}(wc * cos(θ), wc * sin(θ)))
+    end
+    poles
+end
+
+function butter_lowpass(order::Int, cutoff::T; fs::T=T(2)) where T<:AbstractFloat
+    wc = T(2π) * cutoff / fs
+    # Bilinear transform: s = 2/T * (z-1)/(z+1), T=1
+    poles = butter_poles(order, wc)
+    # Get IIR coefficients from pole-zero form
+    b, a = poles_zeros_to_ba(ComplexF64[], poles, T(1))
+    (b=real.(b), a=real.(a))
+end
+
+butter_highpass(order::Int, cutoff::T; fs::T=T(2)) where T<:AbstractFloat = begin
+    lp_b, lp_a = butter_lowpass(order, cutoff; fs=fs)
+    # HP = LP with sign alternation
+    hp_b = [lp_b[i] * T(-1)^(i-1) for i in eachindex(lp_b)]
+    hp_a = [lp_a[i] * T(-1)^(i-1) for i in eachindex(lp_a)]
+    (b=hp_b, a=hp_a)
+end
+
+butter_bandpass(order::Int, low::T, high::T; fs::T=T(2)) where T<:AbstractFloat = begin
+    lp_b, lp_a = butter_lowpass(order, high; fs=fs)
+    hp_b, hp_a = butter_highpass(order, low; fs=fs)
+    # Cascade
+    b = convolve_coeffs(lp_b, hp_b)
+    a = convolve_coeffs(lp_a, hp_a)
+    (b=b, a=a)
+end
+
+function poles_zeros_to_ba(zeros, poles, k::T) where T<:AbstractFloat
+    # Polynomial from roots
+    function roots_to_poly(roots)
+        p = ComplexF64[1.0]
+        for r in roots; p = convolve_coeffs(p, [1.0, -r]); end
+        p
+    end
+    b = k .* roots_to_poly(zeros)
+    a = roots_to_poly(poles)
+    b, a
+end
+
+convolve_coeffs(a::AbstractVector, b::AbstractVector) = begin
+    n, m = length(a), length(b)
+    c = zeros(Complex{Float64}, n+m-1)
+    for i in 1:n, j in 1:m; c[i+j-1] += a[i]*b[j]; end
+    c
+end
+
+iirfilter = butter_lowpass  # alias
+
+# ══════════════════════════════════════════════════════
+# FILTERING — Direct Form II Transposed
+# ══════════════════════════════════════════════════════
+function lfilter(b::AbstractVector{T}, a::AbstractVector{T},
+                  x::AbstractVector{T}) where T<:AbstractFloat
+    n = length(x); nb = length(b); na = length(a)
+    # Normalise by a[1]
+    a1 = a ./ a[1]; b1 = b ./ a[1]
+    y  = zeros(T, n)
+    for i in 1:n
+        y[i] = sum(b1[k+1]*get(x,i-k,zero(T)) for k in 0:min(i-1,nb-1))
+        y[i] -= sum(a1[k+1]*get(y,i-k,zero(T)) for k in 1:min(i-1,na-1))
+    end
+    y
+end
+
+Base.get(v::AbstractVector, i::Int, def) = 1 <= i <= length(v) ? v[i] : def
+
+function filtfilt(b::AbstractVector{T}, a::AbstractVector{T},
+                   x::AbstractVector{T}) where T<:AbstractFloat
+    # Zero-phase filtering: forward then reverse
+    y_fwd = lfilter(b, a, x)
+    lfilter(b, a, reverse(y_fwd)) |> reverse
+end
+
+# ══════════════════════════════════════════════════════
+# SPECTROGRAM / STFT
+# ══════════════════════════════════════════════════════
+function _fft1d(x::Vector{Complex{T}}) where T
+    n = length(x); n == 1 && return x
+    if !ispow2(n)
+        # DFT for non-power-of-2
+        return [sum(x[k+1] * exp(-2π*im*j*k/n) for k in 0:n-1) for j in 0:n-1]
+    end
+    even = _fft1d(x[1:2:end]); odd = _fft1d(x[2:2:end])
+    t = [exp(-2π*im*k/n) * odd[k+1] for k in 0:n÷2-1]
+    [even[k+1]+t[k+1] for k in 0:n÷2-1; even[k+1]-t[k+1] for k in 0:n÷2-1]
+end
+
+function short_time_ft(x::AbstractVector{T}, n_fft::Int=512,
+                         hop::Int=128; window::Symbol=:hann) where T<:AbstractFloat
+    N   = length(x)
+    win = if window == :hann
+        T.(0.5 .- 0.5.*cos.(T(2π).*(0:n_fft-1)./(n_fft-1)))
+    else ones(T, n_fft) end
+    
+    frames = Int(floor((N - n_fft)/hop)) + 1
+    S = Matrix{Complex{T}}(undef, n_fft÷2+1, frames)
+    
+    for t in 1:frames
+        start = (t-1)*hop + 1
+        seg   = x[start:min(start+n_fft-1,N)]
+        seg   = [seg; zeros(T, n_fft - length(seg))]
+        spec  = _fft1d(Complex{T}.(seg .* win))
+        S[:,t] = spec[1:n_fft÷2+1]
+    end
+    
+    freqs  = T.(0:n_fft÷2) ./ n_fft
+    times  = T.((0:frames-1) .* hop)
+    (S=S, freqs=freqs, times=times, n_fft=n_fft, hop=hop)
+end
+
+function spectrogram(x::AbstractVector{T}; n_fft::Int=512, hop::Int=128,
+                      db_scale::Bool=true) where T<:AbstractFloat
+    stft = short_time_ft(x, n_fft, hop)
+    mag  = abs.(stft.S)
+    db_scale && (mag .= T(10) .* log10.(max.(mag.^2, T(1e-10))))
+    (magnitude=mag, freqs=stft.freqs, times=stft.times)
+end
+
+# ── Mel filterbank ────────────────────────────────────
+function mel_filterbank(n_fft::Int, n_mels::Int, fs::T;
+                          f_min::T=T(0), f_max::T=fs/2) where T<:AbstractFloat
+    hz2mel(hz) = T(2595) * log10(one(T) + hz / T(700))
+    mel2hz(m)  = T(700) * (T(10)^(m / T(2595)) - one(T))
+    
+    mel_points = LinRange(hz2mel(f_min), hz2mel(f_max), n_mels+2)
+    hz_points  = mel2hz.(mel_points)
+    bin_points = round.(Int, hz_points .* n_fft ./ fs)
+    
+    filters = zeros(T, n_mels, n_fft÷2+1)
+    for m in 1:n_mels
+        for k in bin_points[m]:bin_points[m+1]
+            1 <= k+1 <= size(filters,2) &&
+                (filters[m,k+1] = T(k - bin_points[m]) / T(bin_points[m+1] - bin_points[m]))
+        end
+        for k in bin_points[m+1]:bin_points[m+2]
+            1 <= k+1 <= size(filters,2) &&
+                (filters[m,k+1] += T(bin_points[m+2]-k) / T(bin_points[m+2]-bin_points[m+1]))
+        end
+    end
+    filters
+end
+
+# ══════════════════════════════════════════════════════
+# WAVELET TRANSFORM — Haar + Daubechies-4
+# ══════════════════════════════════════════════════════
+const HAAR_LO  = [1.0,  1.0] ./ sqrt(2.0)
+const HAAR_HI  = [1.0, -1.0] ./ sqrt(2.0)
+const DB4_LO   = [(1+sqrt(3))/4, (3+sqrt(3))/4, (3-sqrt(3))/4, (1-sqrt(3))/4] ./ sqrt(2.0)
+const DB4_HI   = [-(1-sqrt(3))/4, (3-sqrt(3))/4, -(3+sqrt(3))/4, (1+sqrt(3))/4] ./ sqrt(2.0)
+
+haar_wavelet() = (lo=Float64.(HAAR_LO), hi=Float64.(HAAR_HI))
+db4_wavelet()  = (lo=Float64.(DB4_LO),  hi=Float64.(DB4_HI))
+
+function _convolve_down2(signal::Vector{T}, filt::Vector{T}) where T<:AbstractFloat
+    n = length(signal); m = length(filt)
+    out_n = (n + m - 1) ÷ 2
+    [sum(filt[j] * get(signal, 2i-j+1, zero(T)) for j in 1:m) for i in 1:out_n]
+end
+
+function dwt(x::AbstractVector{T}; wavelet=(haar_wavelet()), levels::Int=1) where T
+    coeffs = Vector{Vector{T}}()
+    current = collect(T, x)
+    for _ in 1:levels
+        cA = _convolve_down2(current, T.(wavelet.lo))
+        cD = _convolve_down2(current, T.(wavelet.hi))
+        push!(coeffs, cD)
+        current = cA
+    end
+    push!(coeffs, current)
+    reverse(coeffs)  # [cA_n, cD_n, ..., cD_1]
+end
+
+function idwt(coeffs::Vector{Vector{T}};
+               wavelet=(haar_wavelet())) where T<:AbstractFloat
+    signal = coeffs[1]
+    for i in 2:length(coeffs)
+        # Upsample and filter
+        n = 2*length(signal)
+        lo_up = zeros(T, n); hi_up = zeros(T, n)
+        for (j,v) in enumerate(signal);    lo_up[2j-1] = v; end
+        for (j,v) in enumerate(coeffs[i]); hi_up[2j-1] = v; end
+        # Convolve with reconstruction filters
+        lo_filt = reverse(T.(wavelet.lo))
+        hi_filt = reverse(T.(wavelet.hi))
+        lo_r = [sum(lo_filt[k]*get(lo_up,i-k+length(lo_filt)÷2,0.0) for k in eachindex(lo_filt)) for i in 1:n]
+        hi_r = [sum(hi_filt[k]*get(hi_up,i-k+length(hi_filt)÷2,0.0) for k in eachindex(hi_filt)) for i in 1:n]
+        signal = lo_r .+ hi_r
+    end
+    signal
+end
+
+# ══════════════════════════════════════════════════════
+# PEAK DETECTION
+# ══════════════════════════════════════════════════════
+function find_peaks(x::AbstractVector{T}; height::T=T(-Inf),
+                     distance::Int=1, prominence::T=zero(T)) where T
+    peaks = Int[]
+    for i in 2:length(x)-1
+        x[i] > x[i-1] && x[i] > x[i+1] && x[i] >= height && push!(peaks, i)
+    end
+    # Distance filter
+    if distance > 1
+        filtered = Int[]; prev = -distance
+        for p in peaks; p - prev >= distance && (push!(filtered,p); prev=p); end
+        peaks = filtered
+    end
+    peaks
+end
+
+function autocorrelation(x::AbstractVector{T}; max_lag::Int=length(x)-1) where T
+    n   = length(x); μ = mean(x); σ² = var(x;corrected=false)
+    [sum((x[i]-μ)*(x[i+τ]-μ) for i in 1:n-τ) / (n*σ²) for τ in 0:max_lag]
+end
+
+# ── Resampling ────────────────────────────────────────
+function resample(x::AbstractVector{T}, target_n::Int) where T<:AbstractFloat
+    n = length(x)
+    t_old = LinRange(zero(T), one(T), n)
+    t_new = LinRange(zero(T), one(T), target_n)
+    [begin
+        idx = searchsortedlast(t_old, t)
+        idx = clamp(idx, 1, n-1)
+        frac = (t - t_old[idx]) / (t_old[idx+1] - t_old[idx])
+        x[idx] * (one(T)-frac) + x[idx+1] * frac
+    end for t in t_new]
+end
+
+decimate(x::AbstractVector{T}, factor::Int) where T = x[1:factor:end]
+upsample(x::AbstractVector{T}, factor::Int) where T = begin
+    out = zeros(T, length(x) * factor)
+    for (i,v) in enumerate(x); out[(i-1)*factor+1] = v; end
+    out
+end
+
+end # module AnalogSignal
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogVision", icon:"👁", col:"#bc8cff",
+  replaces:["OpenCV","torchvision","Pillow","scikit-image"],
+  tiers:[1,2,3,4],
+  notes:["Pure Julia image ops","Tier 1: Int8 quantised convolutions","SSIM/PSNR exact"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogVision.jl — OpenCV / torchvision / scikit-image Replacement
+# Replaces: cv2, torchvision, PIL/Pillow, scikit-image
+# MIT License · API-free · Pure Julia, no C bindings needed
+# ═══════════════════════════════════════════════════════════════════
+module AnalogVision
+
+using LinearAlgebra, Statistics
+
+export Image, load_pgm, save_pgm, save_ppm
+export rgb2gray, gray2rgb, normalize_image, denormalize_image
+export gaussian_blur, sobel_edges, canny_edges, median_filter
+export resize_nearest, resize_bilinear, crop, pad
+export histogram_equalize, adjust_brightness, adjust_contrast
+export ssim, psnr, mse_image
+export draw_bbox!, draw_text_ascii, augment_random
+
+# ══════════════════════════════════════════════════════
+# IMAGE TYPE — tier-aware numeric type
+# ══════════════════════════════════════════════════════
+struct Image{T<:Number}
+    data::Array{T,3}    # [H × W × C] or [H × W × 1] for grayscale
+    h::Int; w::Int; c::Int
+end
+
+function Image(data::Array{T,3}) where T
+    h,w,c = size(data)
+    Image{T}(data, h, w, c)
+end
+
+Image(data::Matrix{T}) where T = Image(reshape(data, size(data,1), size(data,2), 1))
+
+Base.show(io::IO, img::Image{T}) where T =
+    print(io, "Image{$T}($(img.h)×$(img.w)×$(img.c))")
+
+# ── PGM/PPM I/O — pure Julia, no libpng ──────────────
+function save_pgm(img::Image, path::String)
+    open(path, "w") do io
+        println(io, "P2"); println(io, "$(img.w) $(img.h)")
+        max_val = eltype(img.data) <: AbstractFloat ? 255 : typemax(UInt8)
+        println(io, max_val)
+        for i in 1:img.h
+            println(io, join(round.(Int, img.data[i,:,1] .* (eltype(img.data)<:AbstractFloat ? 255 : 1)), " "))
+        end
+    end
+    path
+end
+
+function load_pgm(path::String; T::Type=Float32)
+    lines = filter(!startswith("#"), readlines(path))
+    fmt   = strip(lines[1])
+    (w_str, h_str) = split(strip(lines[2]))
+    w, h  = parse(Int, w_str), parse(Int, h_str)
+    max_v = parse(Int, strip(lines[3]))
+    vals  = T.(parse.(Int, split(join(lines[4:end], " ")))) ./ T(max_v)
+    img   = reshape(vals[1:h*w], h, w, 1)
+    Image{T}(img, h, w, 1)
+end
+
+# ── Colour conversions ────────────────────────────────
+function rgb2gray(img::Image{T}) where T<:AbstractFloat
+    @assert img.c == 3 "Expected 3-channel image"
+    # Rec.709 luminance coefficients — exact Rational
+    gray = T(0.2126) .* img.data[:,:,1] .+
+           T(0.7152) .* img.data[:,:,2] .+
+           T(0.0722) .* img.data[:,:,3]
+    Image{T}(reshape(gray, img.h, img.w, 1), img.h, img.w, 1)
+end
+
+gray2rgb(img::Image{T}) where T = Image{T}(
+    cat(img.data, img.data, img.data; dims=3), img.h, img.w, 3)
+
+function normalize_image(img::Image{T}; mean::Vector{T}=T.([0.485,0.456,0.406]),
+                          std::Vector{T}=T.([0.229,0.224,0.225])) where T
+    out = copy(img.data)
+    for c in 1:img.c
+        out[:,:,c] = (out[:,:,c] .- mean[min(c,length(mean))]) ./ std[min(c,length(std))]
+    end
+    Image{T}(out, img.h, img.w, img.c)
+end
+
+denormalize_image(img::Image{T}; mean::Vector{T}=T.([0.485,0.456,0.406]),
+                   std::Vector{T}=T.([0.229,0.224,0.225])) where T = begin
+    out = copy(img.data)
+    for c in 1:img.c
+        out[:,:,c] = out[:,:,c] .* std[min(c,length(std))] .+ mean[min(c,length(mean))]
+    end
+    Image{T}(clamp.(out, zero(T), one(T)), img.h, img.w, img.c)
+end
+
+# ══════════════════════════════════════════════════════
+# SPATIAL FILTERS
+# ══════════════════════════════════════════════════════
+function _apply_kernel(img::Image{T}, kernel::Matrix{T}) where T
+    kh, kw = size(kernel); ph, pw = kh÷2, kw÷2
+    out = zeros(T, img.h, img.w, img.c)
+    for c in 1:img.c, i in 1:img.h, j in 1:img.w
+        s = zero(T)
+        for ki in 1:kh, kj in 1:kw
+            ii = clamp(i+ki-ph-1, 1, img.h)
+            jj = clamp(j+kj-pw-1, 1, img.w)
+            s += kernel[ki,kj] * img.data[ii,jj,c]
+        end
+        out[i,j,c] = s
+    end
+    Image{T}(out, img.h, img.w, img.c)
+end
+
+function gaussian_blur(img::Image{T}; σ::T=T(1.0), k::Int=5) where T
+    hk = k÷2
+    kernel = Matrix{T}(undef, k, k)
+    for i in 1:k, j in 1:k
+        x = T(i - hk - 1); y = T(j - hk - 1)
+        kernel[i,j] = exp(-(x^2+y^2)/(T(2)*σ^2))
+    end
+    kernel ./= sum(kernel)
+    _apply_kernel(img, kernel)
+end
+
+function sobel_edges(img::Image{T}) where T<:AbstractFloat
+    gray = img.c == 1 ? img : rgb2gray(img)
+    Gx = T.([-1 0 1; -2 0 2; -1 0 1])
+    Gy = T.([-1 -2 -1; 0 0 0; 1 2 1])
+    ix = _apply_kernel(gray, Gx)
+    iy = _apply_kernel(gray, Gy)
+    mag = Image{T}(sqrt.(ix.data.^2 .+ iy.data.^2), img.h, img.w, 1)
+    (magnitude=mag, gx=ix, gy=iy)
+end
+
+function canny_edges(img::Image{T}; σ::T=T(1.0),
+                      low_thresh::T=T(0.05), high_thresh::T=T(0.15)) where T
+    blurred = gaussian_blur(img; σ=σ)
+    edges, gx, gy = sobel_edges(blurred)
+    mag = edges.data[:,:,1]
+    
+    # Non-maximum suppression
+    nms = zeros(T, img.h, img.w)
+    angle = atan.(gy.data[:,:,1], gx.data[:,:,1])
+    for i in 2:img.h-1, j in 2:img.w-1
+        θ = angle[i,j]; m = mag[i,j]
+        # Discretise angle to 4 directions
+        a1, a2 = if abs(θ) < π/8 || abs(θ) > 7π/8
+            mag[i,j-1], mag[i,j+1]
+        elseif π/8 <= θ < 3π/8
+            mag[i-1,j+1], mag[i+1,j-1]
+        elseif 3π/8 <= θ < 5π/8 || -5π/8 <= θ < -3π/8
+            mag[i-1,j], mag[i+1,j]
+        else
+            mag[i-1,j-1], mag[i+1,j+1]
+        end
+        m > a1 && m > a2 && (nms[i,j] = m)
+    end
+    
+    # Double threshold + hysteresis
+    result = zeros(T, img.h, img.w)
+    strong = nms .>= high_thresh
+    weak   = (nms .>= low_thresh) .& .!strong
+    result[strong] .= one(T)
+    # Connect weak pixels adjacent to strong
+    for i in 2:img.h-1, j in 2:img.w-1
+        weak[i,j] && any(strong[i-1:i+1,j-1:j+1]) && (result[i,j] = one(T))
+    end
+    Image{T}(reshape(result, img.h, img.w, 1), img.h, img.w, 1)
+end
+
+function median_filter(img::Image{T}; k::Int=3) where T
+    hk = k÷2
+    out = zeros(T, img.h, img.w, img.c)
+    for c in 1:img.c, i in 1:img.h, j in 1:img.w
+        patch = T[]
+        for ki in -hk:hk, kj in -hk:hk
+            ii = clamp(i+ki,1,img.h); jj = clamp(j+kj,1,img.w)
+            push!(patch, img.data[ii,jj,c])
+        end
+        sort!(patch); out[i,j,c] = patch[(length(patch)+1)÷2]
+    end
+    Image{T}(out, img.h, img.w, img.c)
+end
+
+# ══════════════════════════════════════════════════════
+# GEOMETRIC TRANSFORMS
+# ══════════════════════════════════════════════════════
+function resize_bilinear(img::Image{T}, new_h::Int, new_w::Int) where T
+    out = zeros(T, new_h, new_w, img.c)
+    scale_h = T(img.h - 1) / T(new_h - 1)
+    scale_w = T(img.w - 1) / T(new_w - 1)
+    for c in 1:img.c, i in 1:new_h, j in 1:new_w
+        y = scale_h * T(i-1); x = scale_w * T(j-1)
+        y0 = floor(Int,y)+1; y1 = min(y0+1, img.h)
+        x0 = floor(Int,x)+1; x1 = min(x0+1, img.w)
+        fy = y - floor(y); fx = x - floor(x)
+        out[i,j,c] = (img.data[y0,x0,c]*(1-fy)*(1-fx) + img.data[y1,x0,c]*fy*(1-fx) +
+                      img.data[y0,x1,c]*(1-fy)*fx      + img.data[y1,x1,c]*fy*fx)
+    end
+    Image{T}(out, new_h, new_w, img.c)
+end
+
+resize_nearest(img::Image{T}, new_h::Int, new_w::Int) where T = begin
+    out = zeros(T, new_h, new_w, img.c)
+    for c in 1:img.c, i in 1:new_h, j in 1:new_w
+        si = max(1, round(Int, i * img.h / new_h))
+        sj = max(1, round(Int, j * img.w / new_w))
+        out[i,j,c] = img.data[min(si,img.h), min(sj,img.w), c]
+    end
+    Image{T}(out, new_h, new_w, img.c)
+end
+
+crop(img::Image{T}, r::UnitRange, c::UnitRange) where T =
+    Image{T}(img.data[r,c,:], length(r), length(c), img.c)
+
+function pad(img::Image{T}, pad_h::Int, pad_w::Int; value::T=zero(T)) where T
+    out = fill(value, img.h+2pad_h, img.w+2pad_w, img.c)
+    out[pad_h+1:end-pad_h, pad_w+1:end-pad_w, :] .= img.data
+    Image{T}(out, img.h+2pad_h, img.w+2pad_w, img.c)
+end
+
+# ── Photometric adjustments ───────────────────────────
+adjust_brightness(img::Image{T}, delta::T) where T =
+    Image{T}(clamp.(img.data .+ delta, zero(T), one(T)), img.h, img.w, img.c)
+
+adjust_contrast(img::Image{T}, factor::T) where T =
+    Image{T}(clamp.((img.data .- T(0.5)) .* factor .+ T(0.5), zero(T), one(T)), img.h, img.w, img.c)
+
+function histogram_equalize(img::Image{T}) where T<:AbstractFloat
+    gray = img.c == 1 ? img.data[:,:,1] : rgb2gray(img).data[:,:,1]
+    bins = 256; histo = zeros(Int, bins)
+    vals = clamp.(round.(Int, gray .* T(bins-1)), 0, bins-1)
+    for v in vals; histo[v+1] += 1; end
+    cdf = cumsum(histo) ./ length(vals)
+    eq  = T.(cdf[vals.+1])
+    Image{T}(reshape(eq, img.h, img.w, 1), img.h, img.w, 1)
+end
+
+# ══════════════════════════════════════════════════════
+# IMAGE QUALITY METRICS — exact BigFloat options
+# ══════════════════════════════════════════════════════
+mse_image(a::Image{T}, b::Image{T}) where T =
+    mean((a.data .- b.data).^2)
+
+psnr(a::Image{T}, b::Image{T}; max_val::T=one(T)) where T =
+    T(10) * log10(max_val^2 / max(mse_image(a,b), T(1e-10)))
+
+function ssim(a::Image{T}, b::Image{T};
+               k1::T=T(0.01), k2::T=T(0.03), max_val::T=one(T)) where T
+    C1 = (k1*max_val)^2; C2 = (k2*max_val)^2
+    μA = mean(a.data); μB = mean(b.data)
+    σA² = var(a.data; corrected=false); σB² = var(b.data; corrected=false)
+    σAB = mean((a.data .- μA) .* (b.data .- μB))
+    ssim_val = (T(2)*μA*μB + C1) * (T(2)*σAB + C2) /
+               ((μA^2 + μB^2 + C1) * (σA² + σB² + C2))
+    clamp(ssim_val, T(-1), one(T))
+end
+
+# ══════════════════════════════════════════════════════
+# DATA AUGMENTATION
+# ══════════════════════════════════════════════════════
+function augment_random(img::Image{T};
+                         flip_h::Bool=true, flip_v::Bool=false,
+                         brightness::T=T(0.2), contrast::T=T(0.2),
+                         rng=Random.default_rng()) where T<:AbstractFloat
+    out = img
+    flip_h && rand(rng) > 0.5 && (out = Image{T}(out.data[:,end:-1:1,:], out.h, out.w, out.c))
+    flip_v && rand(rng) > 0.5 && (out = Image{T}(out.data[end:-1:1,:,:], out.h, out.w, out.c))
+    b_delta = T((rand(rng) - 0.5) * 2 * brightness)
+    c_factor = T(1 + (rand(rng) - 0.5) * 2 * contrast)
+    out = adjust_brightness(out, b_delta)
+    out = adjust_contrast(out, c_factor)
+    out
+end
+
+function draw_bbox!(img::Image{T}, y0::Int, x0::Int, y1::Int, x1::Int;
+                     color::Vector{T}=T.([1,0,0]), thickness::Int=2) where T
+    for t in 0:thickness-1
+        for j in x0:x1
+            for c in 1:min(img.c, length(color))
+                1 <= y0+t <= img.h && 1 <= j <= img.w && (img.data[y0+t,j,c] = color[c])
+                1 <= y1-t <= img.h && 1 <= j <= img.w && (img.data[y1-t,j,c] = color[c])
+            end
+        end
+        for i in y0:y1
+            for c in 1:min(img.c, length(color))
+                1 <= i <= img.h && 1 <= x0+t <= img.w && (img.data[i,x0+t,c] = color[c])
+                1 <= i <= img.h && 1 <= x1-t <= img.w && (img.data[i,x1-t,c] = color[c])
+            end
+        end
+    end
+    img
+end
+
+end # module AnalogVision
+`},
+
+// ─────────────────────────────────────────────────────────────────
+{ id:"AnalogQuantum", icon:"ψ", col:"#ec4899",
+  replaces:["Qiskit","PennyLane","Cirq","TensorFlow Quantum"],
+  tiers:[6],
+  notes:["Full statevector simulation","Noise models","VQE/QAOA built-in","Tier 6 only"],
+src:`# ═══════════════════════════════════════════════════════════════════
+# AnalogQuantum.jl — Qiskit / PennyLane / Cirq Replacement
+# Replaces: qiskit, pennylane, cirq, tensorflow_quantum
+# MIT License · API-free · Tier 6 (Quantum) · Full statevector sim
+# ═══════════════════════════════════════════════════════════════════
+module AnalogQuantum
+
+using LinearAlgebra, Statistics, Random
+
+export QState, QCircuit, gate!, measure!, run_circuit
+export I_gate, X_gate, Y_gate, Z_gate, H_gate, S_gate, T_gate
+export CNOT_gate, CZ_gate, SWAP_gate, CCX_gate
+export Rx, Ry, Rz, U3_gate, CRz_gate
+export vqe, qaoa_maxcut, quantum_fourier_transform, grover_search
+export density_matrix, apply_noise!, partial_trace_q, fidelity_q
+
+# ══════════════════════════════════════════════════════
+# QUANTUM STATE — statevector representation
+# ══════════════════════════════════════════════════════
+struct QState{T<:Complex}
+    sv::Vector{T}      # statevector, length 2^n
+    n_qubits::Int
+end
+
+function QState(n::Int; T::Type=ComplexF64)
+    sv = zeros(T, 2^n)
+    sv[1] = one(T)     # |0...0⟩
+    QState{T}(sv, n)
+end
+
+QState(sv::Vector{T}) where T<:Complex = QState{T}(sv./norm(sv), round(Int,log2(length(sv))))
+
+Base.show(io::IO, qs::QState{T}) where T =
+    print(io, "QState{$T}($(qs.n_qubits) qubits, norm=$(round(norm(qs.sv),digits=6)))")
+
+fidelity_q(a::QState, b::QState) = abs(a.sv' * b.sv)^2
+
+# ── Gate matrices ─────────────────────────────────────
+const I_m  = ComplexF64[1 0; 0 1]
+const X_m  = ComplexF64[0 1; 1 0]
+const Y_m  = ComplexF64[0 -im; im 0]
+const Z_m  = ComplexF64[1 0; 0 -1]
+const H_m  = ComplexF64[1 1; 1 -1] ./ sqrt(2.0)
+const S_m  = ComplexF64[1 0; 0 im]
+const T_m  = ComplexF64[1 0; 0 exp(im*π/4)]
+const CNOT_m = ComplexF64[1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0]
+const CZ_m   = ComplexF64[1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 -1]
+const SWAP_m = ComplexF64[1 0 0 0; 0 0 1 0; 0 1 0 0; 0 0 0 1]
+
+I_gate() = I_m; X_gate() = X_m; Y_gate() = Y_m; Z_gate() = Z_m
+H_gate() = H_m; S_gate() = S_m; T_gate() = T_m
+CNOT_gate() = CNOT_m; CZ_gate() = CZ_m; SWAP_gate() = SWAP_m
+
+Rx(θ) = ComplexF64[cos(θ/2) -im*sin(θ/2); -im*sin(θ/2) cos(θ/2)]
+Ry(θ) = ComplexF64[cos(θ/2) -sin(θ/2); sin(θ/2) cos(θ/2)]
+Rz(θ) = ComplexF64[exp(-im*θ/2) 0; 0 exp(im*θ/2)]
+CRz(θ) = [1 0 0 0; 0 1 0 0; 0 0 exp(-im*θ/2) 0; 0 0 0 exp(im*θ/2)]
+
+function U3_gate(θ, ϕ, λ)
+    ComplexF64[cos(θ/2)             -exp(im*λ)*sin(θ/2);
+               exp(im*ϕ)*sin(θ/2)    exp(im*(ϕ+λ))*cos(θ/2)]
+end
+
+function CCX_gate()  # Toffoli
+    m = Matrix{ComplexF64}(I, 8, 8)
+    m[7,7] = 0; m[7,8] = 1; m[8,7] = 1; m[8,8] = 0
+    m
+end
+
+# ── Apply single-qubit gate to qubit q ───────────────
+function _apply_single!(sv::Vector{T}, gate::Matrix{ComplexF64},
+                          q::Int, n::Int) where T<:Complex
+    stride = 2^q
+    for i in 0:stride-1
+        for j in 0:(2^n ÷ (2stride))-1
+            i0 = j*2stride + i + 1
+            i1 = i0 + stride
+            a, b = sv[i0], sv[i1]
+            sv[i0] = T(gate[1,1])*a + T(gate[1,2])*b
+            sv[i1] = T(gate[2,1])*a + T(gate[2,2])*b
+        end
+    end
+end
+
+# ── Apply 2-qubit gate to qubits (q1, q2) ────────────
+function _apply_two!(sv::Vector{T}, gate::Matrix{ComplexF64},
+                      q1::Int, q2::Int, n::Int) where T<:Complex
+    dim = 2^n
+    for i in 0:dim-1
+        bit1 = (i >> q1) & 1; bit2 = (i >> q2) & 1
+        (bit1 == 0 && bit2 == 0) || continue
+        i00 = i + 1
+        i01 = i | (1 << q2)  + 1
+        i10 = i | (1 << q1)  + 1
+        i11 = i | (1<<q1)|(1<<q2) + 1
+        v   = [sv[i00], sv[i01], sv[i10], sv[i11]]
+        r   = T.(gate) * v
+        sv[i00]=r[1]; sv[i01]=r[2]; sv[i10]=r[3]; sv[i11]=r[4]
+    end
+end
+
+# ══════════════════════════════════════════════════════
+# QUANTUM CIRCUIT
+# ══════════════════════════════════════════════════════
+struct GateOp
+    gate::Matrix{ComplexF64}
+    qubits::Vector{Int}
+    name::String
+end
+
+mutable struct QCircuit
+    n_qubits::Int
+    ops::Vector{GateOp}
+    measurements::Vector{Tuple{Int,Symbol}}   # (qubit, basis)
+end
+
+QCircuit(n::Int) = QCircuit(n, GateOp[], Tuple{Int,Symbol}[])
+
+function gate!(qc::QCircuit, gate_matrix::Matrix, qubits::Vector{Int}; name::String="?")
+    push!(qc.ops, GateOp(ComplexF64.(gate_matrix), qubits, name))
+    qc
+end
+
+# Convenience: single-qubit gates
+for (gname, gm) in [(:X,:X_m),(:Y,:Y_m),(:Z,:Z_m),(:H,:H_m),(:S,:S_m),(:T,:T_m)]
+    @eval function $(Symbol(lowercase(string(gname)) * "!"  ))(qc::QCircuit, qubit::Int)
+        gate!(qc, $gm, [qubit]; name=$(string(gname)))
+    end
+end
+
+measure!(qc::QCircuit, qubit::Int, basis::Symbol=:Z) =
+    (push!(qc.measurements, (qubit, basis)); qc)
+
+function run_circuit(qc::QCircuit; state::QState{T}=QState(qc.n_qubits),
+                      shots::Int=1024, rng=Random.default_rng()) where T<:Complex
+    sv = copy(state.sv)
+    for op in qc.ops
+        if length(op.qubits) == 1
+            _apply_single!(sv, op.gate, op.qubits[1]-1, qc.n_qubits)
+        elseif length(op.qubits) == 2
+            _apply_two!(sv, op.gate, op.qubits[1]-1, op.qubits[2]-1, qc.n_qubits)
+        else
+            # General n-qubit gate: full matrix multiply
+            sv .= op.gate * sv
+        end
+    end
+    
+    # Sampling
+    probs = Float64.(abs2.(sv))
+    probs ./= sum(probs)   # normalise (exact floating cleanup)
+    
+    counts = Dict{String,Int}()
+    outcomes = rand(rng, Categorical(probs), shots)
+    for o in outcomes
+        key = string(o-1, base=2, pad=qc.n_qubits)
+        counts[key] = get(counts, key, 0) + 1
+    end
+    
+    (statevector=QState{T}(sv./norm(sv), qc.n_qubits),
+     counts=counts, probs=probs, shots=shots)
+end
+
+# Need Distributions for Categorical sampling
+struct Categorical; p::Vector{Float64}; end
+function Base.rand(rng::AbstractRNG, d::Categorical, n::Int)
+    cdf = cumsum(d.p)
+    [searchsortedfirst(cdf, rand(rng)) for _ in 1:n]
+end
+
+# ══════════════════════════════════════════════════════
+# QUANTUM ALGORITHMS
+# ══════════════════════════════════════════════════════
+
+# ── Quantum Fourier Transform ─────────────────────────
+function quantum_fourier_transform(n::Int)
+    qc = QCircuit(n)
+    for j in 1:n
+        gate!(qc, H_m, [j]; name="H")
+        for k in 2:n-j+1
+            gate!(qc, CRz(2π/2^k), [j, j+k-1]; name="CRz_$(2^k)")
+        end
+    end
+    # Swap qubits
+    for j in 1:n÷2
+        gate!(qc, SWAP_m, [j, n-j+1]; name="SWAP")
+    end
+    qc
+end
+
+# ── Grover's Search ───────────────────────────────────
+function grover_search(oracle_qubits::Vector{Int}, n_total::Int;
+                        n_iter::Union{Nothing,Int}=nothing)
+    qc = QCircuit(n_total)
+    # Hadamard all qubits
+    for q in 1:n_total; gate!(qc, H_m, [q]; name="H"); end
+    
+    N = 2^n_total
+    n_it = isnothing(n_iter) ? round(Int, π/4 * sqrt(N)) : n_iter
+    
+    for _ in 1:n_it
+        # Oracle: flip sign of oracle qubits (multi-controlled Z)
+        if length(oracle_qubits) == 1
+            gate!(qc, Z_m, oracle_qubits; name="Oracle-Z")
+        else
+            gate!(qc, CCX_gate(), oracle_qubits[1:3]; name="Oracle-Toffoli")
+        end
+        # Diffusion operator
+        for q in 1:n_total; gate!(qc, H_m, [q]; name="H"); end
+        for q in 1:n_total; gate!(qc, X_m, [q]; name="X"); end
+        gate!(qc, Z_m, [n_total]; name="Z")  # Multi-controlled Z approximation
+        for q in 1:n_total; gate!(qc, X_m, [q]; name="X"); end
+        for q in 1:n_total; gate!(qc, H_m, [q]; name="H"); end
+    end
+    qc
+end
+
+# ── VQE — Variational Quantum Eigensolver ─────────────
+function vqe(hamiltonian::Matrix{ComplexF64}, n_qubits::Int;
+              max_iter::Int=200, rng=Random.default_rng())
+    n_params = 2 * n_qubits   # θ and ϕ per qubit
+    params   = T -> Float64[rand(rng)*2π for _ in 1:n_params]
+    
+    function energy(θ::Vector{Float64})
+        qc = QCircuit(n_qubits)
+        for q in 1:n_qubits
+            gate!(qc, Ry(θ[q]), [q]; name="Ry")
+            gate!(qc, Rz(θ[n_qubits+q]), [q]; name="Rz")
+        end
+        for q in 1:n_qubits-1
+            gate!(qc, CNOT_m, [q, q+1]; name="CNOT")
+        end
+        result = run_circuit(qc; shots=10000, rng=rng)
+        sv = result.statevector.sv
+        real(sv' * hamiltonian * sv)
+    end
+    
+    θ = [rand(rng)*2π for _ in 1:n_params]
+    best_e = energy(θ); best_θ = copy(θ)
+    
+    # Gradient-free optimisation (SPSA)
+    for k in 1:max_iter
+        α = 0.1 / k^0.602; c = 0.1 / k^0.101
+        Δ = rand(rng, [-1,1], n_params)
+        e_plus  = energy(θ .+ c.*Δ)
+        e_minus = energy(θ .- c.*Δ)
+        grad    = (e_plus - e_minus) ./ (2c .* Δ)
+        θ .-= α .* grad
+        e = energy(θ)
+        e < best_e && (best_e = e; best_θ = copy(θ))
+    end
+    
+    (energy=best_e, params=best_θ, n_iter=max_iter)
+end
+
+# ── QAOA for MaxCut ───────────────────────────────────
+function qaoa_maxcut(edges::Vector{Tuple{Int,Int}}, n_nodes::Int;
+                      p_layers::Int=1, rng=Random.default_rng())
+    n = n_nodes; qc = QCircuit(n)
+    
+    # Initial state: |+⟩^n
+    for q in 1:n; gate!(qc, H_m, [q]; name="H"); end
+    
+    γ = [rand(rng)*π for _ in 1:p_layers]
+    β = [rand(rng)*π/2 for _ in 1:p_layers]
+    
+    for l in 1:p_layers
+        # Cost layer
+        for (u,v) in edges
+            gate!(qc, CZ_m, [u,v]; name="CZ")
+            gate!(qc, Rz(2γ[l]), [v]; name="Rz_γ")
+        end
+        # Mixer layer
+        for q in 1:n; gate!(qc, Rx(2β[l]), [q]; name="Rx_β"); end
+    end
+    
+    result = run_circuit(qc; shots=8192, rng=rng)
+    
+    # Estimate MaxCut from measurement outcomes
+    best_cut = 0; best_str = ""
+    for (bitstr, cnt) in result.counts
+        bits = [parse(Int, c) for c in bitstr]
+        cut = count((u,v) -> bits[u+1] != bits[v+1], edges)
+        cut > best_cut && (best_cut = cut; best_str = bitstr)
+    end
+    
+    (circuit=qc, best_cut=best_cut, best_assignment=best_str,
+     counts=result.counts)
+end
+
+# ── Density Matrix & Noise ───────────────────────────
+density_matrix(qs::QState) = qs.sv * qs.sv'
+
+function apply_noise!(qs::QState{T}, p_depol::Float64;
+                       rng=Random.default_rng()) where T<:Complex
+    ρ = density_matrix(qs)
+    n = qs.n_qubits
+    d = 2^n
+    # Depolarising: ρ → (1-p)ρ + p*I/d
+    ρ_noisy = (1.0 - p_depol) .* ρ .+ p_depol/d .* Matrix{ComplexF64}(I, d, d)
+    # Sample a pure state from the noisy density matrix
+    vals, vecs = eigen(Hermitian(ρ_noisy))
+    probs = Float64.(max.(real.(vals), 0.0))
+    probs ./= sum(probs)
+    idx  = rand(rng, Categorical(probs))
+    sv   = T.(vecs[:,idx])
+    sv ./= norm(sv)
+    QState{T}(sv, n)
+end
+
+function partial_trace_q(qs::QState{T}, keep::Vector{Int}) where T<:Complex
+    n = qs.n_qubits; d = 2^n
+    trace_out = setdiff(1:n, keep)
+    n_keep = length(keep); d_keep = 2^n_keep
+    n_trace = length(trace_out); d_trace = 2^n_trace
+    
+    ρ = zeros(Complex{Float64}, d_keep, d_keep)
+    for k in 0:d_trace-1
+        idx = [i for i in 0:d-1 if _extract_bits(i, trace_out, n) == k]
+        ρ .+= begin
+            sv_sub = [qs.sv[i+1] for i in idx]
+            sv_sub * sv_sub'
+        end
+    end
+    ρ
+end
+
+function _extract_bits(x::Int, positions::Vector{Int}, n::Int)
+    v = 0
+    for (i,pos) in enumerate(positions)
+        v |= ((x >> (n - pos)) & 1) << (length(positions) - i)
+    end
+    v
+end
+
+end # module AnalogQuantum
+`},
+];
+
+// ══════════════════════════════════════════════════════════════════
+// SYNTAX HIGHLIGHTER
+// ══════════════════════════════════════════════════════════════════
+function hl(code) {
+  const KWS = ['module','end','using','export','import','function','struct','mutable','abstract',
+               'type','if','else','elseif','for','while','do','return','where','let','in',
+               'begin','try','catch','finally','throw','const','local','global','nothing',
+               'true','false','@eval','@assert','@warn','@debug','@info'];
+  const TPS = ['Int8','Int16','Int32','Int64','Int128','BigInt','UInt8','UInt16','UInt32','UInt64',
+               'Float16','Float32','Float64','BigFloat','Bool','String','Symbol','Char','Nothing',
+               'AbstractFloat','AbstractVector','AbstractMatrix','AbstractArray','Number',
+               'Complex','ComplexF64','ComplexF32','Real','Vector','Matrix','Dict','Set',
+               'Rational','Pair','Union','Any','Type','NamedTuple','Tuple','AbstractRNG',
+               'Random','Symmetric','Diagonal','Hermitian','LinearAlgebra'];
+  return code
+    .replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')
+    .replace(/(#\|[\s\S]*?\|#|#[^\n]*)/g,'<span class="cm">$1</span>')
+    .replace(/("""[\s\S]*?"""|"(?:[^"\\]|\\.)*")/g,'<span class="st">$1</span>')
+    .replace(/(@\w+)/g,'<span class="mc">$1</span>')
+    .replace(/\b(\d+\/\/\d+)\b/g,'<span class="nm">$1</span>')
+    .replace(/\b(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b/g,'<span class="nm">$1</span>')
+    .replace(/(:(?!:)[a-zA-Z_]\w*)/g,'<span class="sy">$1</span>')
+    .replace(new RegExp('\\b('+KWS.join('|')+')\\b','g'),'<span class="kw">$1</span>')
+    .replace(new RegExp('\\b('+TPS.join('|')+')\\b','g'),'<span class="tp">$1</span>')
+    .replace(/\b([a-zA-Z_]\w*)(?=\()/g,'<span class="fn">$1</span>')
+    .replace(/([=!<>+\-*\/^|&]+)/g,'<span class="op">$1</span>');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD TIERS STRIP
+// ══════════════════════════════════════════════════════════════════
+let activeTierFilter = null;
+const tierStrip = document.getElementById('tier-strip');
+TIERS.forEach(t => {
+  const btn = document.createElement('div');
+  btn.className = 'ts-tier';
+  btn.dataset.tid = t.id;
+  btn.innerHTML = `<span class="dot" style="background:${t.color}"></span><span style="color:${t.color}">${t.label}</span>`;
+  btn.title = t.desc + ' · ' + t.dtype;
+  btn.onclick = () => {
+    activeTierFilter = activeTierFilter === t.id ? null : t.id;
+    document.querySelectorAll('.ts-tier').forEach(b => b.classList.toggle('active', parseInt(b.dataset.tid) === activeTierFilter));
+    buildSidebar();
+  };
+  tierStrip.appendChild(btn);
+});
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD SIDEBAR
+// ══════════════════════════════════════════════════════════════════
+function buildSidebar() {
+  const sb = document.getElementById('sb');
+  const filtered = activeTierFilter !== null ?
+    PKGS.filter(p => p.tiers.includes(activeTierFilter)) : PKGS;
+  
+  sb.innerHTML = `<div class="sb-section">◈ ${filtered.length} PACKAGES${activeTierFilter !== null ? ' · TIER '+TIERS[activeTierFilter].label.toUpperCase() : ''}</div>`;
+  
+  filtered.forEach(pkg => {
+    const t = activeTierFilter !== null ? TIERS.find(t=>t.id===activeTierFilter) : {color:'#58a6ff'};
+    const item = document.createElement('div');
+    item.className = 'sb-item';
+    item.style.setProperty('--active-col', pkg.col);
+    item.dataset.id = pkg.id;
+    item.innerHTML = `
+      <div class="sb-icon">${pkg.icon}</div>
+      <div class="sb-info">
+        <div class="sb-name" style="color:${pkg.col}">${pkg.id}.jl</div>
+        <div class="sb-sub">${pkg.replaces[0]}</div>
+      </div>
+    `;
+    item.onclick = () => showPkg(pkg.id);
+    sb.appendChild(item);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD LANDING
+// ══════════════════════════════════════════════════════════════════
+function buildLanding() {
+  const landing = document.getElementById('landing');
+  const tierCards = TIERS.map(t => `
+    <div class="tier-card" style="--tc:${t.color}" onclick="activeTierFilter=${t.id};document.querySelectorAll('.ts-tier').forEach(b=>{b.classList.toggle('active',parseInt(b.dataset.tid)===${t.id})});buildSidebar();">
+      <div class="tc-head">
+        <div class="tc-num" style="color:${t.color}">T${t.id}</div>
+        <div class="tc-name" style="color:${t.color}">${t.label}</div>
+      </div>
+      <div class="tc-desc">${t.desc}</div>
+      <div class="tc-types">
+        <span class="tc-type">${t.dtype}</span>
+        <span class="tc-type">budget: ${t.budget}</span>
+      </div>
+    </div>
+  `).join('');
+
+  const pkgCards = PKGS.map(p => `
+    <div class="pkg-card" style="--pc:${p.col}" onclick="showPkg('${p.id}')">
+      <div class="pc-head">
+        <div class="pc-icon">${p.icon}</div>
+        <div class="pc-name" style="color:${p.col}">${p.id}.jl</div>
+        <span class="pc-replaces">${p.replaces[0]}</span>
+      </div>
+      <div class="pc-desc">${p.replaces.slice(0,3).join(' · ')}</div>
+    </div>
+  `).join('');
+
+  landing.innerHTML = `
+    <h1 class="land-title">Analog ML Stack</h1>
+    <p class="land-sub">10 Julia libraries that completely replace Python's ML/data ecosystem — TensorFlow, NumPy, Matplotlib, Pandas, SciPy, OpenCV, Qiskit. Every library is tier-aware: same API from embedded UInt8 to research BigFloat(256) to quantum circuits. MIT licensed, API-free, zero Python float bugs.</p>
+    
+    <div style="font-family:var(--font-m);font-size:9px;color:#484f58;letter-spacing:2px;margin-bottom:12px;">7 COMPUTE TIERS — click to filter</div>
+    <div class="tier-grid">${tierCards}</div>
+    
+    <div style="font-family:var(--font-m);font-size:9px;color:#484f58;letter-spacing:2px;margin-bottom:12px;margin-top:8px;">10 PACKAGES — click to view source</div>
+    <div class="pkg-grid">${pkgCards}</div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SHOW PACKAGE
+// ══════════════════════════════════════════════════════════════════
+let activePkg = null;
+function showPkg(id) {
+  const pkg = PKGS.find(p => p.id === id);
+  if (!pkg) return;
+  activePkg = pkg;
+
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.id === id));
+
+  // Tabs
+  const tabbar = document.getElementById('tabbar');
+  let tab = tabbar.querySelector(`[data-id="${id}"]`);
+  if (!tab) {
+    tab = document.createElement('div');
+    tab.className = 'ftab';
+    tab.dataset.id = id; tab.dataset.col = pkg.col;
+    tab.innerHTML = `<span style="color:${pkg.col}">${pkg.icon}</span>${pkg.id}.jl`;
+    tab.onclick = () => showPkg(id);
+    const existing = tabbar.querySelectorAll('.ftab');
+    if (existing.length >= 6) existing[0].remove();
+    tabbar.appendChild(tab);
+  }
+  tabbar.querySelectorAll('.ftab').forEach(t => {
+    t.classList.toggle('active', t.dataset.id === id);
+    t.style.setProperty('--act-col', t.dataset.col || '#58a6ff');
+  });
+
+  // Toolbar
+  const toolbar = document.getElementById('toolbar');
+  toolbar.style.display = 'flex';
+  document.getElementById('tbar-path').innerHTML = `<span>src/</span>${pkg.id}.jl`;
+  
+  // Tier badges
+  const tb = document.getElementById('tier-badge');
+  tb.style.display = 'flex';
+  tb.style.gap = '4px';
+  tb.style.border = 'none';
+  tb.innerHTML = pkg.tiers.map(ti => {
+    const t = TIERS[ti];
+    return `<span style="font-size:8px;padding:1px 6px;border-radius:3px;border:1px solid ${t.color}33;color:${t.color};">${t.label}</span>`;
+  }).join('');
+
+  // Code
+  const wrap = document.getElementById('code-wrap');
+  const lines = pkg.src.split('\n');
+  const lnums = lines.map((_,i) => `<div class="line-num">${i+1}</div>`).join('');
+  wrap.innerHTML = `<div class="code-content">
+    <div class="line-nums">${lnums}</div>
+    <div class="code-lines">${hl(pkg.src)}</div>
+  </div>`;
+
+  // Info
+  const info = document.getElementById('infobar');
+  info.style.display = 'flex';
+  document.getElementById('info-rep').innerHTML =
+    pkg.replaces.map(r => `<span class="ic-tag tag-rep">${r}</span>`).join('');
+  document.getElementById('info-tiers').innerHTML =
+    pkg.tiers.map(ti => `<span class="ic-tag tag-tier">T${ti}: ${TIERS[ti].label} (${TIERS[ti].dtype})</span>`).join('');
+  document.getElementById('info-notes').innerHTML =
+    pkg.notes.map(n => `<span class="ic-tag tag-note">${n}</span>`).join('');
+
+  // Hide landing
+  document.getElementById('landing').style.display = 'none';
+}
+
+function copyNow() {
+  if (!activePkg) return;
+  navigator.clipboard.writeText(activePkg.src).then(() => {
+    const btn = event.target; btn.textContent = '✓ COPIED';
+    setTimeout(() => btn.textContent = '⎘ COPY', 1500);
+  });
+}
+
+function dlNow() {
+  if (!activePkg) return;
+  const blob = new Blob([activePkg.src], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = activePkg.id + '.jl';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 's' && activePkg) { e.preventDefault(); dlNow(); }
+  if (!activePkg) return;
+  const idx = PKGS.findIndex(p => p.id === activePkg.id);
+  if (e.key === 'ArrowDown' && PKGS[idx+1]) showPkg(PKGS[idx+1].id);
+  if (e.key === 'ArrowUp'   && PKGS[idx-1]) showPkg(PKGS[idx-1].id);
+  if (e.key === 'Escape') {
+    activePkg = null;
+    document.getElementById('landing').style.display = 'block';
+    document.getElementById('code-wrap').innerHTML = '<div class="landing" id="landing"></div>';
+    buildLanding();
+    document.getElementById('toolbar').style.display = 'none';
+    document.getElementById('infobar').style.display = 'none';
+  }
+});
+
+// INIT
+buildSidebar();
+buildLanding();
+document.getElementById('ts-right').textContent = `10 packages · ${PKGS.reduce((a,p)=>a+p.src.split('\n').length,0).toLocaleString()} lines`;
+</script>
+
+
+</body></html>

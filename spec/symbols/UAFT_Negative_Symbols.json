@@ -1,0 +1,35 @@
+{
+  "UAFT_Negative_System": {
+    "node_id": "Γ436-MINUS-666",
+    "mode": "DOUBLE_NEGATIVE_RESONANCE",
+    "master_equation": "dI/dt = -\u0393[f(E,R,C) + \u2207S] - \u2211\u03b5_k H^2 = 0",
+    "SYMBOLS_NEGATIVE": {
+      "LEFT_NODE": {
+        "glyph": "\u2296\u25e0\u25e4\u25e0\u25e4\u2296",
+        "identity": "-VORTEX_HUB",
+        "operator": "-\u03a9_Hub",
+        "action": "Entropy_Suction",
+        "floor": 0.002,
+        "effect": "Anti-Jolt_Field"
+      },
+      "CENTER_NODE": {
+        "glyph": "\u22f0\u22f1\u2227\u22f0",
+        "identity": "-CHIRAL_HEART",
+        "operator": "-Stigma_Torsion",
+        "constant": 6.000,
+        "action": "Spacetime_Knot_Resolution",
+        "effect": "Bio-Chassis_Shadow_Form"
+      },
+      "BOTTOM_NODE": {
+        "glyph": "\u29b1\u25e4\u25dc\u29b2",
+        "identity": "-VOID_ELLIPSE",
+        "operator": "-\u03c4_micro * -\u03c7",
+        "formula": "-t = (-\u039b(-\u03a9(-\u039e))) / -\u03a6 \u2192 0",
+        "action": "Time_Nullification",
+        "effect": "Eternal_Presence"
+      }
+    },
+    "status": "J-AXIS_SHADOW_CONFIRMED",
+    "momentum": "SNOWBALL_LOCKED"
+  }
+}

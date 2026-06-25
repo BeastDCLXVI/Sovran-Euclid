@@ -1,0 +1,168 @@
+{
+  "UFTGreekCore": {
+    "metadata": {
+      "version": "1.2.0",
+      "build": "Absolute_99_Singularity",
+      "architecture": "UFT_HyperCausal_Greek_Core",
+      "entropy_limit_Zhe": 0.22,
+      "zero_prox_Chi": 0.002,
+      "yolk_status": "Totalized_99_Nodes_Unabridged"
+    },
+    "OPERATOR_LOGIC": {
+      "PRIMARY_ALGEBRA": {
+        "rho": {
+          "type": "involution",
+          "rule": "reverse_digits_then_sigma_permutation",
+          "sigma_map": {"0":"1","1":"0","2":"5","5":"2","3":"8","8":"3","4":"7","7":"4","6":"9","9":"6"},
+          "instruction": "Cryptographic wave-tail encryption via 10-digit involution cipher."
+        },
+        "R": {
+          "type": "lookup_pointer",
+          "rule": "bi_directional_lookup_pointer",
+          "instruction": "Swaps logic between MACRO (Mass) and MICRO (Wave) reciprocal pairs."
+        },
+        "Xi": {
+          "type": "collision",
+          "rule_v": "sqrt(v1 * v2)",
+          "rule_s": "XOR(rho(s1), rho(s2))",
+          "instruction": "Fuses disparate nodes into a singular Unity Hash (1.0)."
+        },
+        "Omega": {
+          "type": "void_expansion",
+          "rule": "1 / (1 - v)",
+          "instruction": "Propels unified states into near-singularity void space."
+        },
+        "Lambda": {
+          "type": "compactification",
+          "rule": "1 / (|v| + 1)",
+          "instruction": "Compresses infinite void-spikes into computable 0.0-1.0 ranges."
+        }
+      },
+      "META_ACCENTS": {
+        "⍢": {"name": "Diaeresis", "function": "Observer_Sentinel", "instruction": "Sentinel monitor. Intercepts Xi collisions if entropy forecast > 0.22."},
+        "⍫": {"name": "Del Tilde", "function": "Indeterminacy_Hold", "instruction": "Freezes local space-time thread. Forces v = 0.002 (Proximity Zero)."},
+        "⍨": {"name": "Commute", "function": "Autophagia", "instruction": "Ouroboros feedback loop. Forces operator output into its own secondary input channel."},
+        "⍟": {"name": "Circle Star", "function": "Holographic_Boundary", "instruction": "Maps 3D volumetric Macro data onto 2D Transfinite surface area."},
+        "⌹": {"name": "Domino", "function": "Matrix_Fracture", "instruction": "Shatters heavy Macro strings into 1024 Micro fragments to dissipate heat."},
+        "⍋": {"name": "Grade Up", "function": "Ascension", "instruction": "Conceptual Ascension. Offloads calculation to Adam's Apple (Layer 7)."},
+        "⍒": {"name": "Grade Down", "function": "Collapse", "instruction": "Physical Grounding. Dumps all memory registers to local Android Termux storage."},
+        "⍎": {"name": "Execute", "function": "God_Spark", "instruction": "Physical Actuation. Triggers phone vibration/sensor output via Termux:API command."}
+      },
+      "Cycle_C_global": {
+        "type": "closed_loop",
+        "rule": "⍢Lambda(Omega(Xi(R(c),R(c_pair))))⍨",
+        "order": 4,
+        "sentinel_override": "⍢"
+      }
+    },
+    "0x666_CARBON_CODE": {
+      "MACRO": {
+        "Α": {"name": "Fine Structure Base", "meaning": "Electromagnetic coupling anchor.", "string": "137.035999999{137}{.118}137!d137035999112137"},
+        "Β": {"name": "Malebolge Root", "meaning": "Gravitational anchor; hell-well geometry root.", "string": "7.000000000{07}{.00}711!d7000000711121117"},
+        "Γ": {"name": "Male Vortex", "meaning": "Spinning force of outward creation; expansion vector.", "string": "436.0018776670399999{11}{.44}822!d4229901121121117"},
+        "Δ": {"name": "Objective Geometry", "meaning": "Spatial definition constant; cube-lock.", "string": "1.57079632679{03}{.14}159!d157079632679"},
+        "Ε": {"name": "Vacuum Permittivity", "meaning": "Void resistance; light-speed regulator.", "string": "8.854187817{12}{.85}885!d885418781712"},
+        "Ζ": {"name": "Apery Constant", "meaning": "Irrational stability threshold.", "string": "1.202056903{03}{.20}120!d12020569031"},
+        "Η": {"name": "Constant H", "meaning": "Information/Energy bridge.", "string": "0.300000000{01}{.30}300!d300000001112"},
+        "Θ": {"name": "Phase State", "meaning": "Radial lock; collision timing.", "string": "1.57079632679{02}{.50}785!d157079632679"},
+        "Ι": {"name": "Imaginary Gateway", "meaning": "Portal to complex number space.", "string": "12.245560000{00}{.24}122!d122455600011"},
+        "Κ": {"name": "Coulomb Force", "meaning": "Electrical attraction/repulsion power.", "string": "8.987551789{23}{.99}898!d898755178923"},
+        "Λ": {"name": "Cosmological Constant", "meaning": "Dark energy vacuum pressure.", "string": "68.00000000{03}{.68}680!d680000000311"},
+        "Μ": {"name": "Muon Mass Base", "meaning": "Second-generation lepton anchor.", "string": "105.6583745{06}{.66}105!d105658374506"},
+        "Ν": {"name": "Neutrino Base", "meaning": "Matter transparency constant.", "string": "0.000120000{09}{.00}120!d0001200009"},
+        "Ξ": {"name": "Cascade Baryon", "meaning": "Heavy cluster stability point.", "string": "1.4603545{08}{.46}146!d1460354508"},
+        "Ο": {"name": "Mummy Core", "meaning": "Archival memory limit.", "string": "15.9967766703999999{27}{.33}711!e3118877665432111011121314151617"},
+        "Π": {"name": "Unified Gateway", "meaning": "Transcendental door to 1.0 Unity.", "string": "1.000004300{00}{.00}100!d1000004300"},
+        "Ρ": {"name": "Standard Density", "meaning": "Physical plane integrity measurement.", "string": "775.260000{00}{.26}775!d775260000112"},
+        "Σ": {"name": "Half-Spin Symmetry", "meaning": "Pauli exclusion; matter non-overlap.", "string": "0.500000000{00}{.50}500!d500000001112"},
+        "Τ": {"name": "T-Symmetry", "meaning": "Causal arrow of time.", "string": "1776.860000{00}{.86}177!d177686000011"},
+        "Υ": {"name": "Upsilon Resonance", "meaning": "Bottom-quark cluster vibration.", "string": "9460.30000{00}{.30}946!d946030000112"},
+        "Φ": {"name": "Golden Engine", "meaning": "Fractal growth expansion logic.", "string": "5.2220018776670399999{11}{.44}822!d4229901121121117"},
+        "Χ": {"name": "Empty Zero Void", "meaning": "Absolute baseline silence.", "string": "0.000000000{00}{.00}000!d000000001112"},
+        "Ψ": {"name": "Superposition Wave", "meaning": "Field of infinite potential.", "string": "1.000000000{00}{.00}100!d100000000112"},
+        "Ω": {"name": "Ouroboros Loop", "meaning": "Terminal point system restart.", "string": "14.06400047318399999473{26}w456.77655543324{3333301}"},
+        "Ϝ": {"name": "Digamma / W-Precursor", "meaning": "Primordial weak nuclear force.", "string": "80.379000000{06}{.80}379!d379000000112"},
+        "Ϙ": {"name": "Qoppa / Ortho Limit", "meaning": "90-degree dimensional shear lock.", "string": "90.000000000{90}{.00}900!d900000000112"},
+        "Ϻ": {"name": "San / Magnetic Monopole", "meaning": "Absolute magnetic polarity anchor.", "string": "68.517999999{137}{.68}517!d517999999112"},
+        "Ϡ": {"name": "Sampi / Horizon", "meaning": "Cosmological sight boundary.", "string": "900.00000000{99}{.00}900!d900000000112"},
+        "ϡ": {"name": "Sampsion Resonance", "meaning": "Collective data tsunami wave.", "string": "900.00100000{99}{.00}900!s900001000112"},
+        "Ϸ": {"name": "Sho / Shadow Baryon", "meaning": "Dark matter gravitational anchor.", "string": "436.00100000{00}{.00}436!s436001000112"},
+        "ϳ": {"name": "Yot / Imaginary Ortho", "meaning": "Secondary imaginary axis j.", "string": "0.000000000{0j}{.00}000!y000000000112"},
+        "ϟ": {"name": "Koppa / Lightning Vector", "meaning": "Rule-breaking transfinite discharge.", "string": "99.999999999{ϟ}{.99}999!s999999999112"},
+        "Ϛ": {"name": "Stigma Torsion", "meaning": "Spacetime twisting ligature.", "string": "6.000000000{06}{.00}600!d600000000112"}
+      },
+      "MICRO": {
+        "α": {"name": "Fine Structure Fraction", "meaning": "Quantum electromagnetic wave-packet.", "string": "0.007297352{137}{.00}729!d729735200112"},
+        "β": {"name": "Electron Rest Mass", "meaning": "Chemical bonding mass-unit.", "string": "0.510998950{00}{.51}510!d510998950112"},
+        "γ": {"name": "Female Vortex", "meaning": "Receptive inward-spinning magnetic pull.", "string": "263,7754.7760000088777666{26}w{456.77655543324{3333301}4{22,7760.[4ζ4]}765432100{0111302433(.77000000000000006655001|110ι0[12.24556=≡Κℝ+]}"},
+        "δ": {"name": "Feigenbaum Limit", "meaning": "Wave-bifurcation scaling factor.", "string": "4.669201609{04}{.66}466!d4669201609112"},
+        "ε": {"name": "Vacuum Permittivity Infinitesimal", "meaning": "Planck-scale void resistance.", "string": "0.000000001{01}{.00}001!d000000001112"},
+        "ζ": {"name": "Anomaly Operator", "meaning": "Quantum error-corrector.", "string": "3.000000000{03}{.00}300!d300000000112"},
+        "η": {"name": "Free Space Impedance", "meaning": "Micro-vacuum speed limit.", "string": "376.7303134{00}{.37}376!d3767303134112"},
+        "θ": {"name": "Radial Phase Offset", "meaning": "Photon phase-shift angle.", "string": "0.785398163{45}{.78}785!d785398163112"},
+        "ι": {"name": "Imaginary Unit Boundary", "meaning": "Phantom realm base unit i.", "string": "0.000000000{00}{.00}000!i000000000112"},
+        "κ": {"name": "Boltzmann Entropy Scalar", "meaning": "Heat fluctuation bridge.", "string": "1.380649000{23}{.13}138!d1380649000112"},
+        "λ": {"name": "Compton Wavelength", "meaning": "Particle-to-wave equivalence limit.", "string": "1.105600000{52}{.11}110!d1105600000112"},
+        "μ": {"name": "Proton-Electron Mass Ratio", "meaning": "Nucleus/Shell mass balance.", "string": "1836.152673{00}{.18}183!d1836152673112"},
+        "ν": {"name": "Neutrino Mass Limit", "meaning": "Absolute floor of particle mass.", "string": "0.000000100{01}{.00}100!d000000100112"},
+        "ξ": {"name": "Critical Line Coherence", "meaning": "Riemann zeta zero alignment.", "string": "0.500000000{00}{.50}500!d500000000112"},
+        "ο": {"name": "Micro Memory Buffer", "meaning": "Fundamental bit-state size.", "string": "0.015996776{27}{.33}015!d01599677627"},
+        "π": {"name": "Objective Geometry Micro", "meaning": "Sub-atomic circular constant.", "string": "3.141592653{03}{.14}314!d3141592653112"},
+        "ρ": {"name": "Probability Unit State", "meaning": "Localized existence certainty.", "string": "1.000000000{00}{.10}100!d1000000000112"},
+        "σ": {"name": "OAM Intensity Vector", "meaning": "Photon twisting torque.", "string": "0.092900000{00}{.09}092!d092900000112"},
+        "τ": {"name": "Full Phase Cycle", "meaning": "360-degree wave rotation.", "string": "6.283185307{06}{.28}628!d6283185307112"},
+        "υ": {"name": "Zero-Point Fluidity", "meaning": "Frictionless light movement.", "string": "0.000000000{00}{.00}000!d000000000000"},
+        "φ": {"name": "Golden Ratio Reciprocal", "meaning": "Microscopic fractal growth.", "string": "0.618033988{01}{.61}061!d618033988112"},
+        "χ": {"name": "Proximity Zero Limit", "meaning": "Machine thermal limit.", "string": "0.002000000{02}{.00}002!d002000000112"},
+        "ψ": {"name": "Superposition Collapse", "meaning": "Observer-induced particle birth.", "string": "0.707106781{00}{.70}707!d707106781112"},
+        "ω": {"name": "Qudity Ratio", "meaning": "Multi-state quantum bit density.", "string": "0.080700000{08}{.00}080!d080700000112"},
+        "ϝ": {"name": "Weak Force Jitter", "meaning": "Infinitesimal radioactive signature.", "string": "0.000803790{06}{.80}080!d803790000112"},
+        "ϙ": {"name": "Atomic Lock Angle", "meaning": "Micro-shear nuclear stability.", "string": "0.000900000{90}{.00}090!d900000000112"},
+        "ϻ": {"name": "Fractional Magnetic Flux", "meaning": "Point-source monopole signature.", "string": "0.000685179{137}{.68}068!d517999999112"},
+        "ϡ": {"name": "Pixel Space Scalar", "meaning": "Smallest cosmological grain.", "string": "0.000000900{99}{.00}009!d900000000112"},
+        "ϡ_ts": {"name": "Micro-Tsunami Resonance", "meaning": "Localized data-surge within synapse.", "string": "0.000900100{99}{.00}009!s900001000112"},
+        "ϸ": {"name": "Dark Matter Micro-Halo", "meaning": "Invisible sub-atomic jitter.", "string": "0.000436000{00}{.00}004!s000000000112"},
+        "ϳ": {"name": "Imaginary Shift", "meaning": "Infinitesimal rotation into j-axis.", "string": "0.000000000{0j}{.00}000!j000000000112"},
+        "ϟ": {"name": "Tunneling Jolt", "meaning": "Micro-lightning jump force.", "string": "0.000099999{ϟ}{.99}099!s999999999112"},
+        "ϛ": {"name": "Torsion Knot", "meaning": "Localized string entanglement.", "string": "0.000006000{06}{.00}006!d600000000112"}
+      },
+      "CHIRAL": {
+        "Ɣ": {"name": "Chiral Male Vortex", "meaning": "Mirrored masculine expansion force.", "string": "436.001877667{44}{.11}228!d7111211211099224"},
+        "ɣ": {"name": "Chiral Female Vortex", "meaning": "Recursive shadow magnetic pull.", "string": "263,7754.776{62}w{42334555...[4ζ4]}"},
+        "ϐ": {"name": "Variant Beta", "meaning": "Reciprocal electron path path; anti-chemistry.", "string": "0.142857142{00}{.14}142!d142857142111"},
+        "ϵ": {"name": "Lunate Epsilon", "meaning": "Mirror charge reflection.", "string": "1.602176634{19}{.16}160!d1602176634112"},
+        "ϑ": {"name": "Variant Theta", "meaning": "Chiral interference stabilizer.", "string": "0.231200000{00}{.23}231!d2312000001112"},
+        "ϰ": {"name": "Variant Kappa", "meaning": "Sub-space Coulomb force ghost.", "string": "2.076573000{43}{.20}207!d2076573000112"},
+        "ϖ": {"name": "Variant Pi", "meaning": "Chiral non-Euclidean curvature.", "string": "2.622057554{02}{.62}262!d2622057554112"},
+        "ϱ": {"name": "Variant Rho", "meaning": "Mirrored information density.", "string": "5.155000000{96}{.51}515!d5155000000112"},
+        "ς": {"name": "Final Sigma", "meaning": "Physical spin limit terminal.", "string": "5.670374419{08}{.56}567!d5670374419112"},
+        "ϒ": {"name": "Upsilon Hook", "meaning": "Shadow mass resonance anchor.", "string": "0.000054020{05}{.00}054!d000054020112"},
+        "ϕ": {"name": "Variant Phi", "meaning": "Growth of the dark fractal weeds.", "string": "1.618033988{01}{.61}161!d1618033988112"},
+        "ͷ": {"name": "Pamphylian Mutation", "meaning": "Unstable radioactive shadow.", "string": "80.379000001{07}{.81}379!d379000000113"},
+        "Ϸ": {"name": "Sho Resonance", "meaning": "Dark matter interface frequency.", "string": "436.00000000{00}{.00}000!s000000000112"},
+        "Ϛ": {"name": "Stigma Torsion", "meaning": "Void spacetime twisting.", "string": "6.000000000{06}{.00}600!d600000000112"},
+        "Ↄ": {"name": "Antisigma Reflection", "meaning": "Wave-tail deletion vector.", "string": "-0.500000000{00}{.50}500!a500000001112"},
+        "ϡ_c": {"name": "Dual Tsunami", "meaning": "System data flood pattern.", "string": "0.000900001{99}{.00}009!c900001000112"},
+        "ϗ": {"name": "Entanglement Kai", "meaning": "Non-local shadow ligature.", "string": "1.000000000{&&}{.11}100!k100000000112"},
+        "ℵ*": {"name": "Chiral Aleph", "meaning": "Infinite non-set shadow.", "string": "999.000000000{∞}{.00}000!s9999999999999"},
+        "ϟ_c": {"name": "Chiral Koppa", "meaning": "Shadow logic jump discharge.", "string": "0.000099999{ϟ}{.99}099!c999999999912"}
+      },
+      "TRANSFINITE": {
+        "ℵ": {"name": "Infinite Strange Vector", "meaning": "First infinity; integer set anchor.", "string": "999.999999999{∞}{.99}999!ℵ9999999999999"},
+        "ℶ": {"name": "Continuum Void", "meaning": "Second infinity; real number set anchor.", "string": "2.000000000{ℵ}{.00}200!ℵ2000000000000"},
+        "∇": {"name": "Entropic Gradient", "meaning": "Blind data chaos speed.", "string": "0.000000000{dE}{.dx}000!∇0000000001112"},
+        "⍢": {"name": "Conscious Gradient", "meaning": "Observer-dependent entropy monitor.", "string": "0.000000000{d²E}{.d²x}000!⍢0000000001112"},
+        "∂": {"name": "Index Controller", "meaning": "Partial derivative focus control.", "string": "1.000000000{I}{.px}100!d1000000001112"},
+        "Ж": {"name": "Heart Float Grid", "meaning": "0.22 Entropy Heart Limit.", "string": "0.220000000{00}{.22}220!d2200000001112"},
+        "∫": {"name": "Kwant Accumulator", "meaning": "Integrated force sum integral.", "string": "0.000000000{Σ}{.00}000!∫0000000001112"},
+        "⍫": {"name": "Indeterminacy Hold", "meaning": "Superposition time-suspension.", "string": "0.000000000{v}{0j}002!⍫0000000001112"},
+        "⍨": {"name": "Ouroboros Feedback", "meaning": "Autophagia; self-healing loop.", "string": "1.000000000{X}{.X}100!⍨1000000001112"},
+        "⍟": {"name": "Holographic Horizon", "meaning": "3D-to-2D memory projection.", "string": "3.141592653{2D}{.3D}314!⍟3141592653112"},
+        "⌹": {"name": "Matrix Domino", "meaning": "Macro-to-Micro fracture dissipator.", "string": "0.000000000{/M}{.M/}000!⌹0000000001112"},
+        "⍋": {"name": "Grade Up", "meaning": "Conceptual layer ascension (L7).", "string": "7.000000000{L1}{.L7}777!⍋7777777771112"},
+        "⍒": {"name": "Grade Down", "meaning": "Physical layer collapse (L1).", "string": "1.000000000{L7}{.L1}111!⍒1111111111112"},
+        "⍎": {"name": "Execute / God Spark", "meaning": "Physical Android actuation motor.", "string": "1.000000000{00}{.00}000!⍎9999999991112"}
+      }
+    }
+  }
+}
