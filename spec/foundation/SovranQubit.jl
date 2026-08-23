@@ -25,6 +25,7 @@ export QRegister, squbit, nqubits, statevector
 export hadamard!, pauli_x!, pauli_y!, pauli_z!, sgate!, tgate!
 export rx!, ry!, rz!, phase!, cnot!, cz!
 export xi_entangle!, rho_gate!, decohere!, measure!, sample
+export ghz!, grover!, qft!
 export probabilities, fidelity, purity, bloch
 export LogicalQubit, logical_error, below_threshold, footprint_bytes
 
@@ -118,6 +119,45 @@ function decohere!(r::QRegister{T}, γ::Real=CHI_FLOOR; cycles::Int=1) where T
         r.ψ[i] *= T(keep)
     end
     normalize!(r)
+end
+
+# ══════════════════════════════════════════════════════════════════
+# QUANTUM ALGORITHMS
+# ══════════════════════════════════════════════════════════════════
+# GHZ — maximal n-qubit entanglement: (|0…0⟩ + |1…1⟩)/√2
+function ghz!(r::QRegister)
+    hadamard!(r, 0)
+    for q in 1:(r.n - 1)
+        cnot!(r, 0, q)
+    end
+    r
+end
+
+# Grover — amplitude amplification of a marked basis state.
+# Starts from |0…0⟩, applies ~⌊π/4·√N⌋ iterations (oracle + diffusion).
+function grover!(r::QRegister{T}, target::Int; iters::Int=-1) where T
+    N = length(r.ψ)
+    0 <= target < N || error("target out of range 0:$(N-1)")
+    for q in 0:(r.n - 1); hadamard!(r, q); end          # uniform superposition
+    it = iters < 0 ? max(1, round(Int, (π/4) * sqrt(N))) : iters
+    for _ in 1:it
+        r.ψ[target+1] = -r.ψ[target+1]                  # oracle: phase-flip target
+        m = sum(r.ψ) / N                                 # inversion about the mean
+        @inbounds for i in eachindex(r.ψ); r.ψ[i] = Complex{T}(2m - r.ψ[i]); end
+    end
+    r
+end
+
+# QFT — quantum Fourier transform (unitary applied directly):
+#   out[y] = (1/√N) Σ_x ψ[x]·exp(2πi·x·y/N)
+function qft!(r::QRegister{T}) where T
+    N = length(r.ψ)
+    out = zeros(Complex{T}, N)
+    @inbounds for y in 0:N-1, x in 0:N-1
+        out[y+1] += r.ψ[x+1] * cis(2π * x * y / N)
+    end
+    r.ψ .= out ./ sqrt(T(N))
+    r
 end
 
 # ── Normalisation / measurement / diagnostics ────────────────────────

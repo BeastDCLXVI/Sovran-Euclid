@@ -148,6 +148,9 @@ const HELP=[
  "  <span class='c-grn'>ls</span>                   list modules",
  "  <span class='c-grn'>open</span> &lt;n|name&gt;        launch a module (hyperlink)",
  "  <span class='c-grn'>qubit</span> [bell|h]        build &amp; sample a code-qubit",
+ "  <span class='c-grn'>q</span> ghz [n]             n-qubit GHZ entanglement",
+ "  <span class='c-grn'>q</span> grover [n] [t]      Grover search — amplify marked state t",
+ "  <span class='c-grn'>q</span> qft [n]             quantum Fourier transform",
  "  <span class='c-grn'>fleet</span> [gb] [nq]       arm an AGI fleet in a budget",
  "  <span class='c-grn'>cycle</span> [c] [cp]        run UFT closed-loop cycle_C",
  "  <span class='c-grn'>field</span> &lt;num&gt;          Λ / Ω / torsion of a value",
@@ -178,6 +181,38 @@ function run(line){
    for(let i=0;i<N;i++){const u=Math.random()*acc;cnt[cum.findIndex(v=>v>=u)]++;}
    put(` Ξ Bell pair  amp² = ${pr.map(x=>x.toFixed(2)).join(', ')}
  sampled ${N}× : <span class='c-blu'>|00⟩=${cnt[0]}</span>  |01⟩=${cnt[1]}  |10⟩=${cnt[2]}  <span class='c-blu'>|11⟩=${cnt[3]}</span>`);return;}
+ if(cmd==="q"||cmd==="quantum"){const sub=(a[1]||"ghz").toLowerCase();
+   const bits=(k,n)=>k.toString(2).padStart(n,'0');
+   const Hall=p=>{for(let q=0;q<Math.log2(p.length);q++)apply1(p,H,q);};
+   if(sub==="ghz"){const n=Math.min(Math.max(+a[2]||3,2),10);const p=zeroState(n);
+     apply1(p,H,0);for(let k=1;k<n;k++)cnot(p,0,k);
+     const pr=probs(p);let acc=0;const cum=pr.map(x=>acc+=x),N=3000,cnt={};
+     for(let i=0;i<N;i++){const u=Math.random()*acc;const k=cum.findIndex(v=>v>=u);cnt[k]=(cnt[k]||0)+1;}
+     const ks=Object.keys(cnt).map(Number).sort((a,b)=>a-b);
+     put(` GHZ${n} = (|${'0'.repeat(n)}⟩ + |${'1'.repeat(n)}⟩)/√2
+ sampled ${N}× : ${ks.map(k=>`<span class='c-blu'>|${bits(k,n)}⟩=${cnt[k]}</span>`).join('  ')}`);return;}
+   if(sub==="grover"){const n=Math.min(Math.max(+a[2]||3,2),10),N=1<<n;
+     let t=a[3]!==undefined?parseInt(a[3]):Math.floor(Math.random()*N);t=((t%N)+N)%N;
+     const p=zeroState(n);Hall(p);
+     const iters=Math.max(1,Math.round(Math.PI/4*Math.sqrt(N)));
+     for(let it=0;it<iters;it++){p[t]=[-p[t][0],-p[t][1]];
+       let mr=0,mi=0;for(const z of p){mr+=z[0];mi+=z[1];}mr/=N;mi/=N;
+       for(let i=0;i<N;i++)p[i]=[2*mr-p[i][0],2*mi-p[i][1]];}
+     const pr=probs(p);
+     put(` Grover  n=${n}  target=|${bits(t,n)}⟩  iterations=${iters}
+ P(target) = <span class='c-grn'>${(pr[t]*100).toFixed(1)}%</span>  (uniform start ${(100/N).toFixed(1)}%)`);return;}
+   if(sub==="qft"){const n=Math.min(Math.max(+a[2]||3,1),9),N=1<<n;
+     // QFT of a periodic input (period 2) → peaks reveal the frequency
+     const p=zeroState(n);for(let x=0;x<N;x+=2)p[x]=[1,0];
+     let nrm=Math.sqrt(N/2);for(let i=0;i<N;i++)p[i]=[p[i][0]/nrm,0];
+     const out=Array.from({length:N},()=>[0,0]);
+     for(let y=0;y<N;y++){let re=0,im=0;for(let x=0;x<N;x++){const ph=2*Math.PI*x*y/N;
+       re+=p[x][0]*Math.cos(ph)-p[x][1]*Math.sin(ph);im+=p[x][0]*Math.sin(ph)+p[x][1]*Math.cos(ph);}
+       out[y]=[re/Math.sqrt(N),im/Math.sqrt(N)];}
+     const pr=out.map(z=>z[0]*z[0]+z[1]*z[1]);
+     const peaks=pr.map((v,i)=>[i,v]).filter(([i,v])=>v>0.01).map(([i,v])=>`|${bits(i,n)}⟩=${(v*100).toFixed(0)}%`);
+     put(` QFT${n} of period-2 input → peaks: <span class='c-pur'>${peaks.join('  ')}</span>`);return;}
+   put("<span class='c-red'>usage: q ghz [n] | q grover [n] [target] | q qft [n]</span>");return;}
  if(cmd==="fleet"){const gb=+a[1]||6,nq=+a[2]||8,f=fleet(gb,nq);
    put(` budget <span class='c-yel'>${gb} GB</span> · ${nq} qubits/agent · ${(f.fp/1048576).toFixed(2)} MB each
  armed : <span class='c-grn'>${f.cap.toLocaleString()}</span> Super-AGI · <span class='c-blu'>${f.qubits.toLocaleString()}</span> code-qubits · ${f.used.toFixed(3)} GB used`);return;}

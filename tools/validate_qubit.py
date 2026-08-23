@@ -91,4 +91,48 @@ assert abs(deep_floor(0.0071) - 0.006) < 1e-9, "deep_floor χ-grid"
 assert abs(neg_deep_floor(0.0071) + 0.006) < 1e-9, "neg deep_floor mirror"
 assert deep_floor(0.0) == CHI_FLOOR, "deep_floor never below χ"
 
+# ── 6. Quantum algorithms: GHZ, Grover, QFT (mirror SovranQubit.jl) ────
+def zero_state(n):
+    v=[0j]*(1<<n); v[0]=1+0j; return v
+def apply1c(psi,U,q):
+    st=1<<q
+    for b in range(len(psi)):
+        if b&st==0:
+            a,c=psi[b],psi[b|st]
+            psi[b]=U[0][0]*a+U[0][1]*c; psi[b|st]=U[1][0]*a+U[1][1]*c
+def cnotc(psi,c,t):
+    cb,tb=1<<c,1<<t
+    for b in range(len(psi)):
+        if (b&cb) and not (b&tb): psi[b],psi[b|tb]=psi[b|tb],psi[b]
+Hc=[[1/math.sqrt(2),1/math.sqrt(2)],[1/math.sqrt(2),-1/math.sqrt(2)]]
+
+print("6. Quantum algorithms:")
+# GHZ
+n=4; g=zero_state(n); apply1c(g,Hc,0)
+for k in range(1,n): cnotc(g,0,k)
+pg=[abs(z)**2 for z in g]
+print(f"     GHZ{n}: P(|0000>)={pg[0]:.3f} P(|1111>)={pg[-1]:.3f} others={sum(pg[1:-1]):.3f}")
+assert abs(pg[0]-0.5)<1e-9 and abs(pg[-1]-0.5)<1e-9 and sum(pg[1:-1])<1e-9
+
+# Grover
+n=4; N=1<<n; target=11
+gr=zero_state(n)
+for q in range(n): apply1c(gr,Hc,q)
+iters=max(1,round(math.pi/4*math.sqrt(N)))
+for _ in range(iters):
+    gr[target]=-gr[target]
+    m=sum(gr)/N
+    gr=[2*m-z for z in gr]
+pt=abs(gr[target])**2
+print(f"     Grover n={n} target={target:04b} iters={iters}: P(target)={pt*100:.1f}% (start {100/N:.1f}%)")
+assert pt>0.9, "Grover must amplify target above 90%"
+
+# QFT vs direct DFT (unitary check on a random-ish state)
+n=3; N=1<<n
+psi=[complex((x*7%5)-2,(x*3%4)-1) for x in range(N)]
+nrm=math.sqrt(sum(abs(z)**2 for z in psi)); psi=[z/nrm for z in psi]
+qft=[sum(psi[x]*cmath.exp(2j*math.pi*x*y/N) for x in range(N))/math.sqrt(N) for y in range(N)]
+assert abs(sum(abs(z)**2 for z in qft)-1.0)<1e-9, "QFT must be unitary (norm preserved)"
+print(f"     QFT{n}: norm preserved = {sum(abs(z)**2 for z in qft):.6f}")
+
 print("\nALL CHECKS PASSED ✓")
