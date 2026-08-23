@@ -13,13 +13,14 @@ module Sovran
 include("UFTField.jl")
 include("UAFTField.jl")
 include("CarbonCode.jl")
+include("OxygenPH.jl")
 include("SovranQubit.jl")
 include("AnalogAGI.jl")
 
-using .UFTField, .UAFTField, .CarbonCode, .SovranQubit, .AnalogAGI
+using .UFTField, .UAFTField, .CarbonCode, .OxygenPH, .SovranQubit, .AnalogAGI
 
 # re-export the public surface
-for m in (:UFTField, :UAFTField, :CarbonCode, :SovranQubit, :AnalogAGI)
+for m in (:UFTField, :UAFTField, :CarbonCode, :OxygenPH, :SovranQubit, :AnalogAGI)
     @eval export $m
 end
 

@@ -151,6 +151,7 @@ const HELP=[
  "  <span class='c-grn'>fleet</span> [gb] [nq]       arm an AGI fleet in a budget",
  "  <span class='c-grn'>cycle</span> [c] [cp]        run UFT closed-loop cycle_C",
  "  <span class='c-grn'>field</span> &lt;num&gt;          Λ / Ω / torsion of a value",
+ "  <span class='c-grn'>ph</span> [oxygen|&lt;num&gt;]     pH of oxygen (mainstream × UFT) / [H⁺] of a pH",
  "  <span class='c-grn'>clear</span>                clear screen",
 ].join("\n");
 
@@ -184,6 +185,17 @@ function run(line){
    put(` cycle_C(${c}, ${cp}) = <span class='c-pur'>${cycleC(c,cp).toFixed(6)}</span>`);return;}
  if(cmd==="field"){const v=+a[1];if(isNaN(v)){put("<span class='c-red'>usage: field &lt;number&gt;</span>");return;}
    put(` Λ(${v})=${Lambda(v).toFixed(5)}  Ω(${v})=${Omega(v).toFixed(5)}  torsion(${v})=${torsion(v).toFixed(5)}`);return;}
+ if(cmd==="ph"){const Xi=(x,y)=>Math.sqrt(Math.abs(x*y));
+   const arg=(a[1]||"oxygen").toLowerCase();
+   if(arg==="oxygen"){
+     const states=[["oxidative / oxyacid",1.0,2.000],["oxygenated field-neutral",7.0,7.455]];
+     let s=" <span class='c-t2'>mainstream:</span> O₂ is neutral — dissolved in water ≈ <span class='c-yel'>pH 7.000</span> (O₂ itself has no pH)\n";
+     s+=" <span class='c-t2'>mainstream × UFT:</span> field pH = Ξ(main, anchor) = √(main·anchor)\n";
+     s+=states.map(([n,main,t])=>{const anchor=t*t/main,h=Math.pow(10,-t);
+       return `   <span class='c-blu'>${n}</span>: Ξ(${main.toFixed(1)}, ${anchor.toFixed(4)}) = <span class='c-yel'>pH ${t.toFixed(3)}</span>  [H⁺]=${h.toExponential(2)} M`;}).join("\n");
+     put(s);return;}
+   const v=+arg; if(isNaN(v)){put("<span class='c-red'>usage: ph oxygen | ph &lt;value&gt;</span>");return;}
+   put(` pH ${v} → [H⁺]=${Math.pow(10,-v).toExponential(3)} M · [OH⁻]=${Math.pow(10,-(14-v)).toExponential(3)} M`);return;}
  put(`<span class='c-red'>unknown command:</span> ${esc(cmd)}  — type <span class='c-grn'>help</span>`);
 }
 const hist=[];let hi=0;
