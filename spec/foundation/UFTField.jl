@@ -12,6 +12,7 @@ module UFTField
 
 export UFTOperator, OPERATORS, register_operator!, apply
 export rho, R_swap, Xi, Omega, Lambda, cycle_C
+export hat, maat, maat_true, deep_floor
 export ZHE_LIMIT, CHI_FLOOR, UNITY_HASH
 
 const ZHE_LIMIT  = 0.22      # entropy ceiling — Sentinel intercepts above this
@@ -44,6 +45,19 @@ Omega(v::Real) = 1 / (1 - clamp(v, -Inf, 1 - CHI_FLOOR))
 # Λ — compactification: collapse void-spikes into [0,1]
 Lambda(v::Real) = 1 / (abs(v) + 1)
 
+# ── ACCENTS (positive) ───────────────────────────────────────────────
+# ˆ′ Simple_hat (prime:P) — primed unit cap / operator hat: â′ = a/‖a‖.
+hat(v::Real) = iszero(v) ? zero(float(v)) : v / abs(v)
+
+# 𓆄 Ma'at Feather — weigh the heart against the feather of truth.
+#    balance ≥ 0 ⇒ heart lighter than the feather (true / in balance).
+maat(v::Real)      = ZHE_LIMIT - abs(v)
+maat_true(v::Real) = abs(v) <= ZHE_LIMIT      # judgement of Ma'at
+
+# ⌊⌋ Floor Major·Simple·Deepened — deep grounding to the χ grid.
+#    Physical-layer collapse: quantise down to the χ grain, never below χ.
+deep_floor(v::Real) = max(CHI_FLOOR, floor(v / CHI_FLOOR) * CHI_FLOOR)
+
 # ── Cycle_C_global — closed-loop order-4 cycle with Sentinel override ──
 #   ⍢Λ(Ω(Ξ(R(c), R(c_pair))))⍨
 function cycle_C(c::Real, c_pair::Real)
@@ -69,6 +83,10 @@ const OPERATORS = Dict{Symbol,UFTOperator}(
     :Xi     => UFTOperator("Ξ","Unity Collision",     :collision,  Xi,     "fuse → 1.0"),
     :Omega  => UFTOperator("Ω","Void Expansion",      :void,       Omega,  "1/(1-v)"),
     :Lambda => UFTOperator("Λ","Compactification",    :compact,    Lambda, "→ [0,1]"),
+    # ── accents ──
+    :hat        => UFTOperator("ˆ′","Simple_hat",                  :accent, hat,        "(prime:P) unit cap â′=a/‖a‖"),
+    :maat       => UFTOperator("𓆄","Ma'at Feather",               :accent, maat,       "truth vs Zhe heart 0.22"),
+    :deep_floor => UFTOperator("⌊⌋","Floor Major·Simple·Deepened", :accent, deep_floor, "deep χ grounding 0.002"),
 )
 
 """Register a new field operator — the algebra is open/expandable."""

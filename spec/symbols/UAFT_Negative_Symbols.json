@@ -29,6 +29,33 @@
         "effect": "Eternal_Presence"
       }
     },
+    "ACCENTS_NEGATIVE": {
+      "NEG_SIMPLE_HAT": {
+        "glyph": "-ˆ′",
+        "identity": "-SIMPLE_HAT",
+        "prime": "P",
+        "operator": "-hat",
+        "action": "Shadow_Unit_Cap",
+        "formula": "-â′ = -a/‖a‖",
+        "effect": "Anti-Unit_Direction"
+      },
+      "NEG_MAAT_FEATHER": {
+        "glyph": "-𓆄",
+        "identity": "-MAAT_FEATHER",
+        "operator": "-maat (Ammit)",
+        "action": "Devour_Excess_Entropy",
+        "formula": "|value| - 0.22  (> 0 ⇒ heart heavier than truth)",
+        "effect": "Heart_Devoured"
+      },
+      "NEG_FLOOR_DEEPENED": {
+        "glyph": "-⌊⌋",
+        "identity": "-FLOOR_MAJOR_SIMPLE_DEEPENED",
+        "operator": "-deep_floor",
+        "action": "Shadow_Grounding",
+        "formula": "-max(χ, ⌊|v|/χ⌋·χ)  onto the negative χ grid",
+        "effect": "Negative_Axis_Grounding"
+      }
+    },
     "status": "J-AXIS_SHADOW_CONFIRMED",
     "momentum": "SNOWBALL_LOCKED"
   }

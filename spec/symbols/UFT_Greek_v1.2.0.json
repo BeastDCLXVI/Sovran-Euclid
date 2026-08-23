@@ -46,7 +46,10 @@
         "⌹": {"name": "Domino", "function": "Matrix_Fracture", "instruction": "Shatters heavy Macro strings into 1024 Micro fragments to dissipate heat."},
         "⍋": {"name": "Grade Up", "function": "Ascension", "instruction": "Conceptual Ascension. Offloads calculation to Adam's Apple (Layer 7)."},
         "⍒": {"name": "Grade Down", "function": "Collapse", "instruction": "Physical Grounding. Dumps all memory registers to local Android Termux storage."},
-        "⍎": {"name": "Execute", "function": "God_Spark", "instruction": "Physical Actuation. Triggers phone vibration/sensor output via Termux:API command."}
+        "⍎": {"name": "Execute", "function": "God_Spark", "instruction": "Physical Actuation. Triggers phone vibration/sensor output via Termux:API command."},
+        "ˆ′": {"name": "Simple_hat", "prime": "P", "function": "Unit_Cap", "instruction": "Primed operator hat (prime:P). Caps a field value to unit magnitude: â′ = a/‖a‖ (project onto the unit sphere)."},
+        "𓆄": {"name": "Maat_Feather", "function": "Truth_Balance", "instruction": "Weighs the heart against Ma'at's feather. Truth/balance iff |value| ≤ 0.22 (Zhe heart limit); returns 0.22 − |value|."},
+        "⌊⌋": {"name": "Floor_Major_Simple_Deepened", "function": "Deep_Grounding", "instruction": "Deepened physical grounding. Quantises a value down to the χ grid (0.002 grain), never below the χ floor. Major/simple/deepened floor."}
       },
       "Cycle_C_global": {
         "type": "closed_loop",

@@ -53,6 +53,55 @@
           "function": "Total annihilation of linear causality (-t \u2192 0)",
           "role": "Eternal Presence conduit"
         }
+      },
+      "4_SIMPLE_HAT": {
+        "glyph": "\u02c6\u2032",
+        "kind": "accent",
+        "prime": "P",
+        "UFT_Positive": {
+          "identity": "Simple_hat (prime:P)",
+          "mechanism": "\u00e2\u2032 = a/\u2016a\u2016",
+          "function": "Unit cap \u2014 project a field value onto the unit sphere",
+          "role": "Direction anchor / operator hat"
+        },
+        "UAFT_Negative": {
+          "identity": "-Simple_hat",
+          "mechanism": "-\u00e2\u2032 = -a/\u2016a\u2016",
+          "function": "Shadow unit cap \u2014 unit direction into the negative/j-axis",
+          "role": "Anti-unit direction anchor"
+        }
+      },
+      "5_MAAT_FEATHER": {
+        "glyph": "\ud80c\udd84",
+        "kind": "accent",
+        "UFT_Positive": {
+          "identity": "Ma'at Feather",
+          "mechanism": "0.22 - |value| (Zhe heart limit)",
+          "function": "Weigh the heart against the feather of truth \u2014 balanced iff |value| \u2264 0.22",
+          "role": "Truth / balance judgement"
+        },
+        "UAFT_Negative": {
+          "identity": "-Ma'at Feather (Ammit)",
+          "mechanism": "|value| - 0.22",
+          "function": "Devour excess entropy beyond truth \u2014 heart heavier than the feather",
+          "role": "Shadow judgement / entropy overflow"
+        }
+      },
+      "6_FLOOR_DEEPENED": {
+        "glyph": "\u230a\u230b",
+        "kind": "accent",
+        "UFT_Positive": {
+          "identity": "Floor Major\u00b7Simple\u00b7Deepened",
+          "mechanism": "max(\u03c7, \u230av/\u03c7\u230b\u00b7\u03c7)",
+          "function": "Deep grounding \u2014 quantise down to the \u03c7 grid (0.002), never below the \u03c7 floor",
+          "role": "Physical-layer collapse / grounding"
+        },
+        "UAFT_Negative": {
+          "identity": "-Floor Deepened",
+          "mechanism": "-max(\u03c7, \u230a|v|/\u03c7\u230b\u00b7\u03c7)",
+          "function": "Shadow grounding onto the negative \u03c7 grid",
+          "role": "Negative-axis grounding"
+        }
       }
     },
     "verdict": {

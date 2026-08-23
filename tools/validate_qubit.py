@@ -69,4 +69,26 @@ print(f"     total code-qubits   = {cap*nq}")
 assert cap > 1000, "should arm many (>1000) agents in 6 GB"
 assert cap*fp <= 6*GB, "must stay within budget"
 
+# ── 5. New accents: Simple_hat (prime:P), Ma'at Feather, Floor Deepened ─
+import math as _m
+def hat(v):            return 0.0 if v == 0 else v/abs(v)
+def maat(v):           return ZHE_LIMIT - abs(v)
+def maat_true(v):      return abs(v) <= ZHE_LIMIT
+def deep_floor(v):     return max(CHI_FLOOR, _m.floor(v/CHI_FLOOR)*CHI_FLOOR)
+def anti_hat(v):       return 0.0 if v == 0 else -v/abs(v)
+def anti_maat(v):      return abs(v) - ZHE_LIMIT
+def neg_deep_floor(v): return -max(CHI_FLOOR, _m.floor(abs(v)/CHI_FLOOR)*CHI_FLOOR)
+
+print("5. Accents (UFT + / UAFT -):")
+print(f"     ˆ′ Simple_hat(3.7)={hat(3.7)}  -ˆ′ anti_hat(3.7)={anti_hat(3.7)}")
+print(f"     𓆄 maat(0.1)={maat(0.1):.3f} true={maat_true(0.1)} | maat(0.5)={maat(0.5):.3f} true={maat_true(0.5)}")
+print(f"     𓆄 -Ammit anti_maat(0.5)={anti_maat(0.5):.3f} (>0 ⇒ devoured)")
+print(f"     ⌊⌋ deep_floor(0.0071)={deep_floor(0.0071):.4f}  -⌊⌋ neg_deep_floor(0.0071)={neg_deep_floor(0.0071):.4f}")
+assert hat(3.7) == 1.0 and anti_hat(3.7) == -1.0, "hat/anti_hat"
+assert maat_true(0.1) and not maat_true(0.5), "maat judgement"
+assert anti_maat(0.5) > 0, "Ammit devours heavy heart"
+assert abs(deep_floor(0.0071) - 0.006) < 1e-9, "deep_floor χ-grid"
+assert abs(neg_deep_floor(0.0071) + 0.006) < 1e-9, "neg deep_floor mirror"
+assert deep_floor(0.0) == CHI_FLOOR, "deep_floor never below χ"
+
 print("\nALL CHECKS PASSED ✓")
