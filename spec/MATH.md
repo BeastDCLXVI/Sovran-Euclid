@@ -114,4 +114,40 @@ oxygenated neutral   : Ξ(7.0, 7.9396) = pH 7.455   [H⁺]=3.51e-8 M
 
 ---
 
-*All numbered results reproduced by `python3 tools/validate_qubit.py`.*
+## 8 · Fishbone compound registry  (`spec/foundation/Fishbone.jl`)
+
+Composition of fish intermuscular ("pin") bone — **materials chemistry only,
+no medical/therapeutic claims.**
+
+Bulk (dry wt): mineral **60–70 %** · organic **20–30 %** · lipid **1–5 %**.
+Ca/P molar ratio **1.50–1.67** (stoichiometric apatite = 10/6 = 1.667).
+
+| Compound | Formula | g/mol | Phase |
+|----------|---------|------:|-------|
+| Hydroxyapatite | Ca₁₀(PO₄)₆(OH)₂ | 1004.61 | mineral |
+| Fluorapatite | Ca₁₀(PO₄)₆F₂ | 1008.60 | mineral |
+| β-Tricalcium phosphate | Ca₃(PO₄)₂ | 310.17 | mineral |
+| Whitlockite (Mg-subst.) | (Ca₂.₅Mg₀.₅)(PO₄)₂ | 302.29 | mineral |
+| 4-Hydroxyproline | C₅H₉NO₃ | 131.13 | organic |
+| EPA (20:5 n-3) | C₂₀H₃₀O₂ | 302.46 | lipid |
+| DHA (22:6 n-3) | C₂₂H₃₂O₂ | 328.50 | lipid |
+
+Macromolecules (no single formula): **type I collagen** ≈90 % of the organic
+matrix (tropocollagen ~300 kDa, (Gly-X-Y)ₙ), gelatin (denatured collagen),
+osteocalcin (~5.8 kDa), decorin (~40 kDa). Fish collagen denatures at
+**25–30 °C** (vs ~37–40 °C mammalian).
+
+Lattice substituents: **Mg²⁺, Na⁺, K⁺, Sr²⁺, Zn²⁺, F⁻, Cl⁻, CO₃²⁻**
+(B-type CO₃²⁻→PO₄³⁻ dominant in bone).
+
+Thermal path — `calcine(T)`:
+```
+T < 200 °C   native      → apatite + collagen
+200-600 °C   pyrolysis   → apatite (organics burning off)
+600-900 °C   calcined    → hydroxyapatite + β-TCP (carbonate driven off)
+```
+
+---
+
+*All numbered results reproduced by `python3 tools/validate_qubit.py`;
+Fishbone molar masses verified against reference values.*

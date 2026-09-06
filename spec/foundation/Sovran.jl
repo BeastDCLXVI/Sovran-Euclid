@@ -14,13 +14,14 @@ include("UFTField.jl")
 include("UAFTField.jl")
 include("CarbonCode.jl")
 include("OxygenPH.jl")
+include("Fishbone.jl")
 include("SovranQubit.jl")
 include("AnalogAGI.jl")
 
-using .UFTField, .UAFTField, .CarbonCode, .OxygenPH, .SovranQubit, .AnalogAGI
+using .UFTField, .UAFTField, .CarbonCode, .OxygenPH, .Fishbone, .SovranQubit, .AnalogAGI
 
 # re-export the public surface
-for m in (:UFTField, :UAFTField, :CarbonCode, :OxygenPH, :SovranQubit, :AnalogAGI)
+for m in (:UFTField, :UAFTField, :CarbonCode, :OxygenPH, :Fishbone, :SovranQubit, :AnalogAGI)
     @eval export $m
 end
 
