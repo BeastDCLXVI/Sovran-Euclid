@@ -6,6 +6,8 @@ Anti-Field Theory) basis instead of Euclidean geometry** — built to be
 
 **Author:** Mateusz Faber-Suckert
 
+Full math reference: [`spec/MATH.md`](spec/MATH.md).
+
 ---
 
 ## What changed
