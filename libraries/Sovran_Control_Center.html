@@ -156,6 +156,8 @@ const HELP=[
  "  <span class='c-grn'>field</span> &lt;num&gt;          Λ / Ω / torsion of a value",
  "  <span class='c-grn'>ph</span> [oxygen|&lt;num&gt;]     pH of oxygen (mainstream × UFT) / [H⁺] of a pH",
  "  <span class='c-grn'>fishbone</span> [calcine T]  fish pin-bone compounds (composition only)",
+ "  <span class='c-grn'>hep</span> a|b|after|flags   hepatitis clinical course (reference only)",
+ "  <span class='c-grn'>hep</span> sero + + - [igm]  HBV serology interpretation",
  "  <span class='c-grn'>clear</span>                clear screen",
 ].join("\n");
 
@@ -221,6 +223,52 @@ function run(line){
    put(` cycle_C(${c}, ${cp}) = <span class='c-pur'>${cycleC(c,cp).toFixed(6)}</span>`);return;}
  if(cmd==="field"){const v=+a[1];if(isNaN(v)){put("<span class='c-red'>usage: field &lt;number&gt;</span>");return;}
    put(` Λ(${v})=${Lambda(v).toFixed(5)}  Ω(${v})=${Omega(v).toFixed(5)}  torsion(${v})=${torsion(v).toFixed(5)}`);return;}
+ if(cmd==="hep"){
+   const DIS=" <span class='c-t2'>⚠ reference only — does not diagnose or replace clinical assessment</span>";
+   const CRS={a:[["Incubation","15–50 d (mean ~28)","asymptomatic; most infectious late incubation"],
+     ["Prodromal (pre-icteric)","3–10 d","fever · malaise · anorexia · nausea/vomiting · RUQ discomfort"],
+     ["Icteric","1–3 wk","jaundice · dark urine · pale stools · pruritus · hepatomegaly"],
+     ["Convalescent","wk–2 mo","resolves; lifelong immunity; NO chronic carrier state"]],
+    b:[["Incubation","30–180 d (mean ~90)","asymptomatic"],
+     ["Prodromal","d–wk","fatigue · anorexia · serum-sickness-like: arthralgia, urticaria, rash"],
+     ["Icteric (acute)","1–3 wk","jaundice · dark urine · RUQ pain — often subclinical"],
+     ["Chronic",">6 mo HBsAg+","usually asymptomatic; fatigue; extrahepatic PAN, membranous GN"],
+     ["Cirrhosis/decompensation","yr–decades","ascites · spider naevi · splenomegaly · varices · encephalopathy"]]};
+   const sub=(a[1]||"a").toLowerCase();
+   if(sub==="a"||sub==="b"){
+     put(` <span class='c-yel'>Hepatitis ${sub.toUpperCase()} — clinical course (before diagnosis)</span>\n`+
+       CRS[sub].map(([n,t,f])=>`   <span class='c-blu'>${n}</span> <span class='c-t2'>(${t})</span>\n      ${f}`).join("\n")+
+       "\n"+DIS);return;}
+   if(sub==="sero"||sub==="serology"){
+     const tf=s=>s==="+"||s==="1"||s==="true";
+     const hbsag=tf(a[2]||""),ahbc=tf(a[3]||""),ahbs=tf(a[4]||""),igm=tf(a[5]||"");
+     let r;
+     if(!hbsag&&!ahbc&&!ahbs) r="Susceptible — never infected, not immune (vaccination indicated)";
+     else if(!hbsag&&ahbc&&ahbs) r="Immune due to natural (resolved) infection";
+     else if(!hbsag&&!ahbc&&ahbs) r="Immune due to VACCINATION";
+     else if(hbsag&&ahbc&&igm) r="ACUTE hepatitis B infection";
+     else if(hbsag&&ahbc&&!igm) r="CHRONIC hepatitis B (confirm HBsAg >6 months)";
+     else if(!hbsag&&ahbc&&!ahbs) r="Isolated anti-HBc — resolved, occult HBV, false positive, or window";
+     else r="Uncommon/indeterminate pattern — repeat testing and clinical review";
+     put(` HBsAg=${hbsag?'+':'-'}  anti-HBc=${ahbc?'+':'-'}  anti-HBs=${ahbs?'+':'-'}  IgM=${igm?'+':'-'}\n`+
+       ` → <span class='c-grn'>${r}</span>\n`+DIS);return;}
+   if(sub==="after"){
+     put(" <span class='c-yel'>After diagnosis — staging & monitoring</span>\n"+
+       ["FibroScan (kPa) · APRI · FIB-4 · ELF/PRO-C3 · biopsy METAVIR F0–F4",
+        "Hep A: supportive, confirm resolution — no chronic follow-up",
+        "Hep B: serial ALT + HBV DNA; HBeAg/anti-HBe; treatment eligibility",
+        "HCC surveillance: US ± AFP every 6 months if cirrhosis/high-risk HBV",
+        "Scores: Child-Pugh · MELD",
+        "Screen co-infection: HIV, HCV, HDV (needs HBsAg+)",
+        "Vaccinate contacts; HBIG + vaccine for newborns/exposures",
+        "Avoid alcohol; caution with hepatotoxic drugs & herbal supplements"]
+       .map(s=>"   · "+s).join("\n")+"\n"+DIS);return;}
+   if(sub==="flags"){
+     put(" <span class='c-red'>RED FLAGS — urgent assessment (possible acute liver failure)</span>\n"+
+       ["confusion, drowsiness, asterixis (encephalopathy)","rising INR / coagulopathy",
+        "persistent vomiting, unable to keep fluids down","haematemesis or melaena",
+        "deepening jaundice with shrinking liver"].map(s=>"   · "+s).join("\n")+"\n"+DIS);return;}
+   put("<span class='c-red'>usage: hep a|b|after|flags | hep sero &lt;HBsAg&gt; &lt;anti-HBc&gt; &lt;anti-HBs&gt; [IgM]  (+/-)</span>");return;}
  if(cmd==="fishbone"||cmd==="fb"){
    const AW={H:1.008,C:12.011,N:14.007,O:15.999,F:18.998403,Mg:24.305,P:30.973762,Ca:40.078};
    const mm=c=>Object.entries(c).reduce((s,[e,n])=>s+AW[e]*n,0);
